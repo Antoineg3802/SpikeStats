@@ -44,7 +44,7 @@ function registerUser(firstname, lastname, mail, password) {
                         message: "User already exist with email '" + mail + "'"
                     })
                 } else {
-                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '");')
+                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`, `role_id`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '", 2);')
                         .then((request) => {
                             if (request.affectedRows) {
                                 resolve({
