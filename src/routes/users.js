@@ -35,7 +35,7 @@ router.get('/', function (req, res) {
 router.get('/currentUser/', function (req, res) {
 	if (req.headers.authorization == undefined){
 		res.status(401).send({
-			error: true,
+			success: false,
 			message: "Invalid JWT token"
 		})
 	}else {
@@ -43,11 +43,14 @@ router.get('/currentUser/', function (req, res) {
 		if (authorization[0] == 'Bearer') {
 			userController.getCurrentUser(authorization[1])
 				.then((response) => {
-					res.send(response)
+					res.send({
+						success: true,
+						data: response
+					})
 				})
 		} else {
 			res.status(401).send({
-				error: true,
+				success: false,
 				message: 'No JWT token submitted'
 			})
 		}
@@ -58,18 +61,27 @@ router.get('/one/:id', function (req, res) {
 	if (!isNaN(parseInt(req.params.id))) {
 		userController.getOneUser(parseInt(req.params.id))
 			.then((user) => {
-				if (user.error != undefined) {
-					res.status(404).send(user)
+				if (!user) {
+					res.status(404).send({
+						success: false,
+						message: 'No user found for id : "' + req.params.id + '"'
+					})
 				} else {
-					res.status(200).send(user)
+					res.status(200).send({
+						success: true,
+						data: user
+					})
 				}
 			}).catch((err) => {
-				res.status(500).send(err.message)
+				res.status(500).send({
+					success: false,
+					data: err.message
+				})
 			})
 	} else {
 		res.status(400).send({
-			code: 404,
-			error: 'Invalid parameter'
+			success: false,
+			message: 'Invalid parameter'
 		})
 	}
 });
@@ -79,14 +91,23 @@ router.post('/login', (req, res) => {
 		userController.logUser(req.body.email.toLowerCase(), req.body.password)
 			.then((responseObject) => {
 				if (responseObject.error) {
-					res.status(responseObject.status).send({ error: true, message: responseObject.message })
+					res.status(responseObject.status).send({
+						success: false, 
+						message: responseObject.message
+					})
 				} else {
-					res.status(200).send(responseObject)
+					res.status(200).send({
+						success: true,
+						data: {
+							token: responseObject.token,
+							maxAge: responseObject.maxAge
+						}
+					})
 				}
 			})
 	} else {
 		res.status(400).send({
-			error: true,
+			success: false,
 			message: 'Invalid credentials'
 		})
 	}
@@ -97,14 +118,23 @@ router.post('/register/', (req, res) => {
 		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password)
 			.then((objectResponse) => {
 				if (!objectResponse.error) {
-					res.status(201).send({ token: objectResponse.token, maxAge: 259560000 })
+					res.status(201).send({
+						success:true,
+						data:{
+							token: objectResponse.token, 
+							maxAge: 259560000 
+						}
+					})
 				} else {
-					res.status(objectResponse.status).send({ error: true, message: objectResponse.message })
+					res.status(objectResponse.status).send({
+						success: false,
+						message: objectResponse.message 
+					})
 				}
 			})
 	} else {
 		res.status(400).send({
-			error: true,
+			success: false,
 			message: 'Invalid parameters'
 		})
 	}
@@ -123,7 +153,7 @@ router.patch('/modify/:userId', (req, res) => {
 router.delete('/', (req, res) => {
 	if (req.headers.authorization == undefined){
 		res.status(400).send({
-			error: true,
+			success: false,
 			message: "Invalid JWT token"
 		})
 	}else{
@@ -132,14 +162,20 @@ router.delete('/', (req, res) => {
 			userController.deleteUser(authorization[1])
 				.then(result => {
 					if (result.error != undefined){
-						res.status(404).send(result)
+						res.status(404).send({
+							success: false,
+							data : result
+						})
 					}else{
-						res.status(202).send()
+						res.status(202).send({
+							success: true,
+							mssage : 'User successfully deleted'
+						})
 					}
 				})
 		}else {
 			res.status(400).send({
-				error: true,
+				success: false,
 				message: "Invalid JWT token"
 			})
 		}	

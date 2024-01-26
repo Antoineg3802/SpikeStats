@@ -20,10 +20,7 @@ function getOneUser(id) {
         mysqlController.getOneUser(id)
             .then((user) => {
                 if (user.length == 0) {
-                    resolve({
-                        code: 404,
-                        error: 'User not found'
-                    })
+                    resolve(false)
                 }
                 resolve(user[0])
             })

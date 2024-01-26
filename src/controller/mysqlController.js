@@ -13,8 +13,7 @@ function getAllUsers() {
 
 function getOneUser(id) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT id, firstname, lastname, mail, level as role FROM `users` WHERE id = ' + id +
-        'INNER JOIN `roles` ON users.role_id = roles.id')
+        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, roles.level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE users.id = ' + id)
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
