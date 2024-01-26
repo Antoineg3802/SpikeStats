@@ -65,11 +65,11 @@ function logUser(email, password) {
     })
 }
 
-function registerUser(firstname, lastname, mail, password, phone) {
+function registerUser(firstname, lastname, mail, password) {
     return new Promise((resolve, reject) => {
         bcrypt.hash(password, 10)
             .then((hashPswd) => {
-                mysqlController.registerUser(firstname, lastname, mail, hashPswd, phone)
+                mysqlController.registerUser(firstname, lastname, mail, hashPswd)
                     .then((res) => {
                         if (!resolve.error){
                             res.token = createToken(res.userId)

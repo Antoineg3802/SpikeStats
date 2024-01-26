@@ -2,7 +2,7 @@ const {SQLRequest} = require('../models/mysqlModel');
 
 function getAllUsers() {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, users.phone FROM `users`')
+        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -13,7 +13,8 @@ function getAllUsers() {
 
 function getOneUser(id) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT id, firstname, lastname, mail, phone FROM `users` WHERE id = ' + id)
+        SQLRequest('SELECT id, firstname, lastname, mail, level as role FROM `users` WHERE id = ' + id +
+        'INNER JOIN `roles` ON users.role_id = roles.id')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -33,7 +34,7 @@ function verifyAccount(email) {
     })
 }
 
-function registerUser(firstname, lastname, mail, password, phone) {
+function registerUser(firstname, lastname, mail, password) {
     return new Promise((resolve, reject) => {
         doUserExistInDb(mail)
             .then((isUserInDb) => {
@@ -44,7 +45,7 @@ function registerUser(firstname, lastname, mail, password, phone) {
                         message: "User already exist with email '" + mail + "'"
                     })
                 } else {
-                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`, `phone`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '","' + phone + '");')
+                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '");')
                         .then((request) => {
                             if (request.affectedRows) {
                                 resolve({

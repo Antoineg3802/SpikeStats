@@ -5,8 +5,7 @@ const testUserData = {
     firstname: 'John',
     lastname: 'Doe',
     email: 'john.doe@example.com',
-    password: 'password123',
-    phone: '1234567890',    
+    password: 'password123', 
 };
 
 let authToken = '';
@@ -57,7 +56,7 @@ describe('POST /users/register', () => {
         const invalidUserData = {
             firstname: 'John',
             lastname: 'Doe',
-            // Missing email, password or phone
+            // Missing email or password
         };
 
         const response = await request(app)

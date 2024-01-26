@@ -10,15 +10,25 @@ router.get('/', function (req, res) {
 	const cachedData = cache.get(cacheKey);
 
 	if (cachedData){
-		return res.status(304).send(cachedData);
+		res.status(200).send({
+			success: true,
+			data: cachedData
+		});
+		return ;
 	}
 
 	userController.getAllUsers()
 	.then((users) => {
 			cache.set(cacheKey, users, 20);
-			res.status(200).send(users);
+			res.status(200).send({
+				success: true,
+				data: users
+			});
 		}).catch((err) => {
-			res.status(500).send(err.message)
+			res.status(500).send({
+				success: false,
+				message: err.message
+			})
 		})
 });
 
@@ -83,8 +93,8 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/register/', (req, res) => {
-	if (req.body.firstname && req.body.lastname && req.body.email && req.body.password && req.body.phone) {
-		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.phone)
+	if (req.body.firstname && req.body.lastname && req.body.email && req.body.password) {
+		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password)
 			.then((objectResponse) => {
 				if (!objectResponse.error) {
 					res.status(201).send({ token: objectResponse.token, maxAge: 259560000 })
