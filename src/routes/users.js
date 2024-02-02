@@ -166,12 +166,12 @@ router.delete('/', (req, res) => {
 					if (result.error != undefined){
 						res.status(404).send({
 							success: false,
-							data : result
+							message : result.message
 						})
 					}else{
 						res.status(202).send({
 							success: true,
-							mssage : 'User successfully deleted'
+							message : 'User successfully deleted'
 						})
 					}
 				})
