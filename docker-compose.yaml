@@ -7,6 +7,7 @@ services:
     image: mysql:5.7
     volumes:
       - db_data:/var/lib/mysql
+      - ./sql-scripts:/docker-entrypoint-initdb.d
     restart: always
     ports:
       - "3036:3306"
@@ -16,6 +17,7 @@ services:
       MYSQL_PASSWORD: root
     networks:
       - mysql-phpmyadmin
+    command: ["--init-file", "/docker-entrypoint-initdb.d/fullstack_db.sql"]
 
   # phpmyadmin
   phpmyadmin:
