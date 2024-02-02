@@ -56,7 +56,9 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `roles` (`id`, `level`) VALUES
-(1, 'admin');
+(1, 'admin'),
+(2, 'coach'),
+(3, 'player');
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `mail`, `role_id`) VALUES
 (1, 'Antoine', 'Guerin', '$2b$10$XBZwNgezncURTtumhDyB4enNVxRg.Kg.B.6B4c0kEQM3dxGj9kH.2', 'antoineg3802@gmail.com', 1);
