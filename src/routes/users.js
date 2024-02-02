@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var userController = require('../controller/userController');
 const NodeCache = require('node-cache');
 const cache = new NodeCache();
+var userController = require('../controller/userController');
 
 /* GET users listing. */
 router.get('/', function (req, res) {
@@ -96,12 +96,13 @@ router.post('/login', (req, res) => {
 						message: responseObject.message
 					})
 				} else {
-					res.status(200).send({
+					res.cookie("access_token", responseObject.token, {
+						httpOnly: true,
+						secure: process.env.NODE_ENV === "production",
+					})
+					.status(200).send({
 						success: true,
-						data: {
-							token: responseObject.token,
-							maxAge: responseObject.maxAge
-						}
+						message: "Connected",
 					})
 				}
 			})
@@ -118,12 +119,13 @@ router.post('/register/', (req, res) => {
 		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password)
 			.then((objectResponse) => {
 				if (!objectResponse.error) {
-					res.status(201).send({
+					res.cookie("access_token", objectResponse.token, {
+						httpOnly: true,
+						secure: process.env.NODE_ENV === "production",
+					})
+					.status(201).send({
 						success:true,
-						data:{
-							token: objectResponse.token, 
-							maxAge: 259560000 
-						}
+						data: objectResponse.user
 					})
 				} else {
 					res.status(objectResponse.status).send({
