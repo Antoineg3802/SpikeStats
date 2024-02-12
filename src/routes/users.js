@@ -34,6 +34,7 @@ router.get('/', function (req, res) {
 
 router.get('/currentUser/', function (req, res) {
 	const token = req.cookies.access_token;
+	console.log(token)
 	if (!token) {
 		res.status(401).send({
 			success: false,
@@ -42,10 +43,19 @@ router.get('/currentUser/', function (req, res) {
 	} else {
 		userController.getCurrentUser(token)
 			.then((response) => {
-				res.send({
-					success: true,
-					data: response
-				});
+				if(response.error){
+					res.send({
+						success: false,
+						data: response.message
+					});
+				}else{
+					res.send({
+						success: true,
+						data: response
+					});
+				}
+				console.log(response)
+				
 			});
 	}
 });
