@@ -54,8 +54,6 @@ router.get('/currentUser/', function (req, res) {
 						data: response
 					});
 				}
-				console.log(response)
-				
 			});
 	}
 });
