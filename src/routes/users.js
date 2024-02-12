@@ -33,28 +33,21 @@ router.get('/', function (req, res) {
 });
 
 router.get('/currentUser/', function (req, res) {
-	if (req.headers.authorization == undefined){
+	const token = req.cookies.access_token;
+	if (!token) {
 		res.status(401).send({
 			success: false,
 			message: "Invalid JWT token"
-		})
-	}else {
-		const authorization = req.headers.authorization.split(' ')
-		if (authorization[0] == 'Bearer') {
-			userController.getCurrentUser(authorization[1])
-				.then((response) => {
-					res.send({
-						success: true,
-						data: response
-					})
-				})
-		} else {
-			res.status(401).send({
-				success: false,
-				message: 'No JWT token submitted'
-			})
-		}
-	} 
+		});
+	} else {
+		userController.getCurrentUser(token)
+			.then((response) => {
+				res.send({
+					success: true,
+					data: response
+				});
+			});
+	}
 });
 
 router.get('/one/:id', function (req, res) {
@@ -114,9 +107,61 @@ router.post('/login', (req, res) => {
 	}
 })
 
-router.post('/register/', (req, res) => {
+router.post('/register/player', (req, res) => {
 	if (req.body.firstname && req.body.lastname && req.body.email && req.body.password) {
 		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password)
+			.then((objectResponse) => {
+				if (!objectResponse.error) {
+					res.cookie("access_token", objectResponse.token, {
+						httpOnly: true,
+						secure: process.env.NODE_ENV === "production",
+					})
+					.status(201).send({
+						success:true,
+						data: objectResponse
+					})
+				} else {
+					res.status(objectResponse.status).send({
+						success: false,
+						message: objectResponse.message 
+					})
+				}
+			})
+	} else {
+		res.status(400).send({
+			success: false,
+			message: 'Invalid parameters'
+		})
+	}
+})
+
+router.post('/register/manager', (req, res) => {
+	if (req.body.firstname && req.body.lastname && req.body.email && req.body.password) {
+		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password, 3)
+			.then((objectResponse) => {
+				if (!objectResponse.error) {
+					res.status(201).send({
+						success:true,
+						data: objectResponse
+					})
+				} else {
+					res.status(objectResponse.status).send({
+						success: false,
+						message: objectResponse.message 
+					})
+				}
+			})
+	} else {
+		res.status(400).send({
+			success: false,
+			message: 'Invalid parameters'
+		})
+	}
+})
+
+router.post('/register/admin', (req, res) => {
+	if (req.body.firstname && req.body.lastname && req.body.email && req.body.password) {
+		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password, 1)
 			.then((objectResponse) => {
 				if (!objectResponse.error) {
 					res.cookie("access_token", objectResponse.token, {

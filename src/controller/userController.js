@@ -72,25 +72,19 @@ function logUser(email, password) {
 	});
 }
 
-function registerUser(firstname, lastname, mail, password) {
+function registerUser(firstname, lastname, mail, password, roleId) {
 	return new Promise((resolve, reject) => {
 		bcrypt
 			.hash(password, 10)
 			.then((hashPswd) => {
 				mysqlController
-					.registerUser(firstname, lastname, mail, hashPswd)
+					.registerUser(firstname, lastname, mail, hashPswd, roleId)
 					.then((res) => {
-						if (!resolve.error) {
-							let token = createToken(res.userId);
+						if (!res.error) {
 							resolve({
-								token: token,
-								user: {
-									firstname: firstname,
-									lastname: lastname,
-									mail: mail,
-									password: password,
-									token: token,
-								},
+								firstname: firstname,
+								lastname: lastname,
+								mail: mail,
 							});
 						} else {
 							resolve(res);
@@ -103,10 +97,11 @@ function registerUser(firstname, lastname, mail, password) {
 	});
 }
 
-function createToken(userId) {
+function createToken(userId, role) {
 	const token = jwt.sign(
 		{
 			user_id: userId,
+			role: role ? role : 2
 		},
 		process.env.SHA_KEY,
 		{

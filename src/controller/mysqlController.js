@@ -24,7 +24,7 @@ function getOneUser(id) {
 
 function verifyAccount(email) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `users` WHERE `mail` = "' + email + '"')
+        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.password, users.mail, roles.level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE `mail` = "' + email + '"')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -33,7 +33,7 @@ function verifyAccount(email) {
     })
 }
 
-function registerUser(firstname, lastname, mail, password) {
+function registerUser(firstname, lastname, mail, password, roleId = 2) {
     return new Promise((resolve, reject) => {
         doUserExistInDb(mail)
             .then((isUserInDb) => {
@@ -44,7 +44,7 @@ function registerUser(firstname, lastname, mail, password) {
                         message: "User already exist with email '" + mail + "'"
                     })
                 } else {
-                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`, `role_id`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '", 2);')
+                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`, `role_id`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '", '+ roleId + ');')
                         .then((request) => {
                             if (request.affectedRows) {
                                 resolve({
