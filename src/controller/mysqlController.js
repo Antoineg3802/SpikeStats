@@ -92,25 +92,42 @@ function doUserExistInDbById(userId) {
     })
 }
 
-function updateUser(user_id, body) {
+function updateUser(userId, body) {
+    // Utilisation de la fonction dans la fonction `updateUser`
     return new Promise(async (resolve) => {
-        if (await doUserExistInDbById(user_id)) {
-            SQLRequest('UPDATE table SET ' + body + ' WHERE id=' + user_id)
-                .then((query) => {
-                    if (query.affectedRows == 0) {
-                        resolve(false)
-                    } else {
-                        resolve(true)
-                    }
-                })
+        if (await doUserExistInDbById(userId)) {
+            if (areKeysAllowed(body)) {
+                const updateFields = Object.keys(body).map(key => `${key}='${body[key]}'`).join(', ');
+                SQLRequest('UPDATE `users` SET ' + updateFields + ' WHERE id = ' + userId)
+                    .then((query) => {
+                        if (query.affectedRows == 0) {
+                            resolve(false)
+                        } else {
+                            resolve(true)
+                        }
+                    })
+            } else {
+                resolve({
+                    error: true,
+                    status: 400,
+                    message: 'Invalid keys provided'
+                });
+            }
         } else {
             resolve({
                 error: true,
                 status: 404,
                 message: 'User not found'
-            })
+            });
         }
-    })
+    });
+}
+
+function areKeysAllowed(body) {
+    const allowedKeys = ['firstname', 'lastname', 'mail', 'password'];
+    const keys = Object.keys(body);
+
+    return keys.every(key => allowedKeys.includes(key));
 }
 
 function deleteUser(userId) {

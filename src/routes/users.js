@@ -34,7 +34,6 @@ router.get('/', function (req, res) {
 
 router.get('/currentUser/', function (req, res) {
 	const token = req.cookies.access_token;
-	console.log(token)
 	if (!token) {
 		res.status(401).send({
 			success: false,
@@ -195,13 +194,23 @@ router.post('/register/admin', (req, res) => {
 	}
 })
 
-router.patch('/modify/:userId', (req, res) => {
-	let userId = req.params.userId
+router.patch('/modify/', (req, res) => {
 	const updateData = req.body;
+	const token = req.cookies.access_token;
 
-	userController.updateUser(userId, updateData)
+	userController.updateUser(token, updateData)
 		.then(result => {
-			res.send(result)
+			if (result.error != undefined){
+				res.status(result.status).send({
+					success: false,
+					message : result.message
+				})
+			}else{
+				res.status(202).send({
+					success: true,
+					data : result
+				})
+			}
 		})
 })
 

@@ -112,40 +112,66 @@ function createToken(userId, role) {
 	return token;
 }
 
-function updateUser(userId, body) {
+function updateUser(token, body) {
+	let decodedToken = verifyToken(token)
 	return new Promise((resolve) => {
-		mysqlController.updateUser(userId, body).then((response) => {
-			resolve(response);
-		});
+		if (!decodedToken) {
+			resolve({ error: true, status: 401, message: "Invalid JWT token" });
+		}else{
+			if (body.password) {
+				bcrypt
+				.hash(body.password, 10)
+				.then((hashPswd) => {
+					body.password = hashPswd
+
+					mysqlController.updateUser(decodedToken.user_id, body).then((response) => {
+						resolve(response);
+					});
+				})
+			}
+		}
 	});
 }
 
 function getCurrentUser(token) {
 	return new Promise((resolve) => {
-		jwt.verify(token, process.env.SHA_KEY, (err, decoded) => {
-			if (err) {
-				resolve({ error: true, message: "Invalid JWT token" });
-			} else {
-				mysqlController.getOneUser(decoded.user_id).then((response) => {
-					resolve(response[0]);
-				});
-			}
-		});
+		let decodedToken = verifyToken(token)
+		if (decodedToken) {
+			mysqlController.getOneUser(decodedToken.user_id).then((response) => {
+				resolve(response[0]);
+			});
+		} else {
+			resolve({ error: true, message: "Invalid JWT token" });
+		}
 	});
 }
 
 function deleteUser(token) {
 	return new Promise((resolve) => {
-		jwt.verify(token, process.env.SHA_KEY, (err, decoded) => {
-			if (err) {
-				resolve({ error: true, message: "Invalid JWT token" });
-			} else {
-				mysqlController.deleteUser(decoded.user_id).then((response) => {
-					resolve(response);
-				});
-			}
-		});
+		let decodedToken = verifyToken(token)
+		if (decodedToken) {
+			mysqlController.deleteUser(decodedToken.user_id).then((response) => {
+				resolve(response);
+			});
+		}else{
+			resolve({ error: true, message: "Invalid JWT token" });
+		}
 	});
+}
+
+function verifyToken(token){
+	let decodedToken
+	if (token == undefined){
+		return false
+	}
+	jwt.verify(token, process.env.SHA_KEY, (err, decoded)=>{
+		if (err) {
+			return false
+		} else {
+			decodedToken = decoded
+		}
+	})
+	return decodedToken
 }
 
 module.exports = {
