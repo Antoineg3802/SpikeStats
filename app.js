@@ -17,12 +17,14 @@ app.use(express.static(path.join(__dirname, '/client/build')));
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
 var teamsRouter = require('./src/routes/teams');
+var matchesRouter = require('./src/routes/matches');
 
 app.use(cors())
 
 app.use('/api/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/teams', teamsRouter);
+app.use('/api/matches', matchesRouter);
 
 app.use('/api/*', (req, res) => {
 	res.status(404).json({ 

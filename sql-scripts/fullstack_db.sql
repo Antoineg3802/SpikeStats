@@ -16,13 +16,17 @@ CREATE TABLE `fault_type` (
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `matchs` (
+CREATE TABLE `matches` (
   `id` int(20) NOT NULL,
   `date` datetime NOT NULL,
   `team_id` int(11) NOT NULL,
   `opponent` varchar(255) NOT NULL,
-  `lieu` varchar(255) NOT NULL
+  `location` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `matches` (`id`, `date`, `team_id`, `opponent`, `location`) VALUES
+(1, '2022-03-14 15:09:26', 4, 'PESD', 'Gymnase Alice MILLIAT'),
+(5, '2022-03-14 15:09:26', 4, 'PESD', 'Gymnase Alice MILLIAT');
 
 CREATE TABLE `points` (
   `id` int(11) NOT NULL,
@@ -86,12 +90,16 @@ CREATE TABLE `users` (
   `role_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `mail`, `role_id`) VALUES
 (1, 'Antoine', 'Guerin', '$2b$10$XBZwNgezncURTtumhDyB4enNVxRg.Kg.B.6B4c0kEQM3dxGj9kH.2', 'antoineg3802@gmail.com', 1),
 (2, 'ta', 'ta', '$2b$10$isxlRBpoAXyxL1QAZfqmL.l.CHyZcQVf4Qg63mJS5YIATOpqPLFaG', 'tata@gmail.com', 3),
 (3, 'tu', 'tu', '$2b$10$22P5ZnzeQjoStE2ZxrRv4eYkqRZzptRmnB6iwHjc5uidxanlVCC3m', 'tutu@gmail.com', 2),
 (4, 'to', 'to', '$2b$10$K78DLf8NgGCYSCBWFwW9ROfbOiXozEgd64YA9WKFi/dJiUR5I9M4u', 'toto@gmail.com', 2);
+
+CREATE TABLE `users_matches` (
+  `user_id` int(11) NOT NULL,
+  `match_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `faults`
   ADD PRIMARY KEY (`id`),
@@ -102,7 +110,7 @@ ALTER TABLE `faults`
 ALTER TABLE `fault_type`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `matchs`
+ALTER TABLE `matches`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`) USING BTREE,
   ADD KEY `team_id` (`team_id`);
@@ -137,11 +145,15 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `role_id` (`role_id`);
 
+ALTER TABLE `users_matches`
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `match_id` (`match_id`);
+
 ALTER TABLE `fault_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `matchs`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `matches`
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 ALTER TABLE `point_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -163,8 +175,8 @@ ALTER TABLE `faults`
   ADD CONSTRAINT `faults_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `fk_fault_type` FOREIGN KEY (`fault_type_id`) REFERENCES `fault_type` (`id`);
 
-ALTER TABLE `matchs`
-  ADD CONSTRAINT `matchs_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`);
+ALTER TABLE `matches`
+  ADD CONSTRAINT `matches_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`);
 
 ALTER TABLE `points`
   ADD CONSTRAINT `fk_point_type` FOREIGN KEY (`point_type_id`) REFERENCES `point_type` (`id`),
@@ -172,7 +184,7 @@ ALTER TABLE `points`
   ADD CONSTRAINT `points_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `users` (`id`);
 
 ALTER TABLE `sets`
-  ADD CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`match_id`) REFERENCES `matchs` (`id`);
+  ADD CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`);
 
 ALTER TABLE `teams`
   ADD CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -183,4 +195,8 @@ ALTER TABLE `teams_users`
 
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `users_matches`
+  ADD CONSTRAINT `users_matches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `users_matches_ibfk_2` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`);
 COMMIT;
