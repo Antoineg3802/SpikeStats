@@ -24,6 +24,10 @@ app.use('/api/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/teams', teamsRouter);
 
+app.use('/api/*', (req, res) => {
+	res.status(404).json({ error: 'Not Found' });
+});
+
 app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
@@ -31,7 +35,7 @@ app.get('*', (req, res) => {
 const port = process.env.APP_PORT || 8080;
 
 app.listen(port, function () {
-	console.log('API started on : http://localhost:' + port);
+	console.log('API started on : http://localhost:' + port + '/api/');
 });
 
 module.exports = app;
