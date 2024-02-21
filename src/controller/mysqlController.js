@@ -1,4 +1,4 @@
-const {SQLRequest} = require('../models/mysqlModel');
+const { SQLRequest } = require('../models/mysqlModel');
 
 function getAllUsers() {
     return new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ function registerUser(firstname, lastname, mail, password, roleId = 2) {
                         message: "User already exist with email '" + mail + "'"
                     })
                 } else {
-                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`, `role_id`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '", '+ roleId + ');')
+                    SQLRequest('INSERT INTO `users` (`firstname`, `lastname`, `mail`, `password`, `role_id`) VALUES ("' + firstname + '","' + lastname + '","' + mail + '","' + password + '", ' + roleId + ');')
                         .then((request) => {
                             if (request.affectedRows) {
                                 resolve({
@@ -150,11 +150,61 @@ function deleteUser(userId) {
     })
 }
 
+function getAllTeams() {
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `teams`')
+            .then((rows) => {
+                resolve(rows)
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
+function postTeam(name, description, ownerId) {
+    return new Promise((resolve, reject) => {
+        getOneUser(ownerId)
+            .then((user) => {
+                if (!user) {
+                    resolve({
+                        error: true,
+                        status: 404,
+                        message: "User not found"
+                    })
+                } else {
+                    SQLRequest('INSERT INTO `teams` (`name`, `description`, owner_id) VALUES ("' + name + '","' + description + '","' + ownerId + '")')
+                        .then((request) => {
+                            if (request.affectedRows) {
+                                resolve({
+                                    error: false,
+                                    data: {
+                                        name : name,
+                                        description : description,
+                                        owner : user[0]
+                                    }
+                                })
+                            } else {
+                                resolve({
+                                    error: true,
+                                    status: 500,
+                                    message: 'Internal server error'
+                                })
+                            }
+                        }).catch((err) => {
+                            reject(err)
+                        })
+                }
+            })
+    })
+}
+
 module.exports = {
     getAllUsers,
     getOneUser,
     verifyAccount,
     registerUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getAllTeams,
+    postTeam
 }

@@ -1,5 +1,5 @@
 const mysqlController = require("./mysqlController");
-const jwt = require("jsonwebtoken");
+const functionController = require("./functionController");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 
@@ -43,9 +43,9 @@ function logUser(email, password) {
 						.then((isCorrect) => {
 							if (isCorrect) {
 								resolve({
-									token: createToken(
+									token: functionController.createToken(
 										user[0].id,
-										user[0].role_id
+										user[0].role
 									),
 									maxAge: 259560000,
 								});
@@ -97,23 +97,8 @@ function registerUser(firstname, lastname, mail, password, roleId) {
 	});
 }
 
-function createToken(userId, role) {
-	const token = jwt.sign(
-		{
-			user_id: userId,
-			role: role ? role : 2
-		},
-		process.env.SHA_KEY,
-		{
-			expiresIn: "72h",
-		}
-	);
-
-	return token;
-}
-
 function updateUser(token, body) {
-	let decodedToken = verifyToken(token)
+	let decodedToken = functionController.decodeToken(token)
 	return new Promise((resolve) => {
 		if (!decodedToken) {
 			resolve({ error: true, status: 401, message: "Invalid JWT token" });
@@ -135,7 +120,7 @@ function updateUser(token, body) {
 
 function getCurrentUser(token) {
 	return new Promise((resolve) => {
-		let decodedToken = verifyToken(token)
+		let decodedToken = functionController.decodeToken(token)
 		if (decodedToken) {
 			mysqlController.getOneUser(decodedToken.user_id).then((response) => {
 				resolve(response[0]);
@@ -148,7 +133,7 @@ function getCurrentUser(token) {
 
 function deleteUser(token) {
 	return new Promise((resolve) => {
-		let decodedToken = verifyToken(token)
+		let decodedToken = functionController.decodeToken(token)
 		if (decodedToken) {
 			mysqlController.deleteUser(decodedToken.user_id).then((response) => {
 				resolve(response);
@@ -157,21 +142,6 @@ function deleteUser(token) {
 			resolve({ error: true, message: "Invalid JWT token" });
 		}
 	});
-}
-
-function verifyToken(token){
-	let decodedToken
-	if (token == undefined){
-		return false
-	}
-	jwt.verify(token, process.env.SHA_KEY, (err, decoded)=>{
-		if (err) {
-			return false
-		} else {
-			decodedToken = decoded
-		}
-	})
-	return decodedToken
 }
 
 module.exports = {

@@ -16,10 +16,13 @@ app.use(express.static(path.join(__dirname, '/client/build')));
 // Import des routes
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
+var teamsRouter = require('./src/routes/teams');
 
 app.use(cors())
-app.use('/api', indexRouter);
-app.use('/api/users', usersRouter);
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/teams', teamsRouter);
 
 app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, 'client/build/index.html'));
