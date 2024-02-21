@@ -25,7 +25,10 @@ app.use('/api/users', usersRouter);
 app.use('/api/teams', teamsRouter);
 
 app.use('/api/*', (req, res) => {
-	res.status(404).json({ error: 'Not Found' });
+	res.status(404).json({ 
+		success: false,
+		message: 'Endpoint not found'
+	});
 });
 
 app.get('*', (req, res) => {
