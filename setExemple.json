@@ -1,0 +1,70 @@
+{
+    "setId": 1,
+    "debutSet": "2024-02-21T14:00:00Z",
+    "teams": {
+        "1": {
+            "points": 25,
+            "fautes": [
+                {
+                    "joueurId": "joueur1",
+                    "type": "faute de service",
+                    "pointEquipe": 7,
+                    "pointAdversaire": 8
+                },
+                {
+                    "joueurId": "joueur3",
+                    "type": "contact net",
+                    "pointEquipe": 15,
+                    "pointAdversaire": 16
+                }
+            ],
+            "pointsMarques": [
+                {
+                    "joueurId": "joueur2",
+                    "type": "attaque",
+                    "pointEquipe": 10,
+                    "pointAdversaire": 9
+                },
+                {
+                    "joueurId": "joueur4",
+                    "type": "bloc",
+                    "pointEquipe": 18,
+                    "pointAdversaire": 17
+                }
+            ]
+        },
+        "2": {
+            "points": 23,
+            "fautes": [
+                {
+                    "joueurId": "joueur6",
+                    "type": "faute de service",
+                    "pointEquipe": 8,
+                    "pointAdversaire": 9
+                },
+                {
+                    "joueurId": "joueur8",
+                    "type": "double contact",
+                    "pointEquipe": 16,
+                    "pointAdversaire": 17
+                }
+            ],
+            "pointsMarques": [
+                {
+                    "joueurId": "joueur5",
+                    "type": "attaque",
+                    "pointEquipe": 11,
+                    "pointAdversaire": 10
+                },
+                {
+                    "joueurId": "joueur7",
+                    "type": "service ace",
+                    "pointEquipe": 19,
+                    "pointAdversaire": 18
+                }
+            ]
+        }
+    },
+    "duree": "00:45:00",
+    "vainqueur": 1
+}
