@@ -167,6 +167,7 @@ router.post('/register/manager', (req, res) => {
 })
 
 router.post('/register/admin', (req, res) => {
+	// TODO : Add a check to see if the user is an admin to register admin
 	if (req.body.firstname && req.body.lastname && req.body.email && req.body.password) {
 		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password, 1)
 			.then((objectResponse) => {

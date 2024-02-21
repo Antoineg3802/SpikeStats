@@ -16,10 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Import des routes
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
+var teamsRouter = require('./src/routes/teams');
 
 app.use(cors())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/teams', teamsRouter);
 
 // Route pour toutes les autres routes non définies
 app.use((req, res) => {
