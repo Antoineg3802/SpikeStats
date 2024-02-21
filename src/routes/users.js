@@ -119,11 +119,7 @@ router.post('/register/player', (req, res) => {
 		userController.registerUser(req.body.firstname, req.body.lastname, req.body.email, req.body.password)
 			.then((objectResponse) => {
 				if (!objectResponse.error) {
-					res.cookie("access_token", objectResponse.token, {
-						httpOnly: true,
-						secure: process.env.NODE_ENV === "production",
-					})
-					.status(201).send({
+					res.status(201).send({
 						success:true,
 						data: objectResponse
 					})

@@ -72,7 +72,7 @@ function logUser(email, password) {
 	});
 }
 
-function registerUser(firstname, lastname, mail, password, roleId) {
+function registerUser(firstname, lastname, mail, password, roleId = 2) {
 	return new Promise((resolve, reject) => {
 		bcrypt
 			.hash(password, 10)
