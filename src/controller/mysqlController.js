@@ -288,6 +288,42 @@ function verifyUserInTeam(teamId, userId) {
     });
 }
 
+function getTeam(teamId) {
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `teams` WHERE id = ' + teamId)
+            .then((query) => {
+                if (query.length == 0) {
+                    resolve(false);
+                } else {
+                    getTeamUsers(teamId)
+                    .then((users) => {
+                        query[0].users = users;
+                        resolve(query[0]);
+                    })
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}
+
+function getTeamUsers(teamId) {
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT users.id, firstname, lastname, mail, roles.level FROM `teams_users` INNER JOIN `users` ON teams_users.user_id = users.id INNER JOIN `roles` ON users.role_id = roles.id WHERE team_id = ' + teamId)
+            .then((query) => {
+                if (query.length == 0) {
+                    resolve(false);
+                } else {
+                    resolve(query);
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}
+
 module.exports = {
     getAllUsers,
     getOneUser,
@@ -298,5 +334,6 @@ module.exports = {
     getAllTeams,
     postTeam,
     getTeamByInvitationCode,
-    joinTeam
+    joinTeam,
+    getTeam
 }

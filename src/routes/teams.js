@@ -32,13 +32,24 @@ router.get('/', (req, res) => {
 });
 
 // Get a specific team
-router.get('/:id', (req, res) => {
-    // const team = teams.find((team) => team.id === req.params.id);
-    // if (team) {
-    //     res.json(team);
-    // } else {
-    //     res.status(404).json({ message: 'Team not found' });
-    // }
+router.get('/one/:id', (req, res) => {
+    const cacheKey = req.originalUrl || req.url;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+        res.status(200).send({
+            success: true,
+            data: cachedData
+        });
+        return;
+    }
+
+    teamController.getTeam(req.params.id)
+    .then((team) => {
+        res.status(200).send({
+            success: true,
+            data: team
+        })
+    })
 });
 
 // Create a new team

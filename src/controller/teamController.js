@@ -13,7 +13,14 @@ function getAllTeams() {
 }
 
 function getTeam(teamId) {
-    
+    return new Promise((resolve, reject) => {
+        mysqlController.getTeam(teamId)
+            .then((team) => {
+                resolve(team)
+            }).catch((err) => {
+                reject(err)
+            })
+    })
 }
 
 function postTeam(name, description, userId, token) {
@@ -64,7 +71,7 @@ function joinTeam(invitationCode, token){
                 mysqlController.getTeamByInvitationCode(invitationCode)
                     .then((team) => {
                         if (team){
-                            mysqlController.joinTeam(decodedToken.user_id, team.id)
+                            mysqlController.joinTeam(team.id, decodedToken.user_id)
                                 .then((response) => {
                                     if (response.error){
                                         resolve(response)
