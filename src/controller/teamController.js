@@ -50,8 +50,57 @@ function postTeam(name, description, userId, token) {
     })
 }
 
+function joinTeam(invitationCode, token){
+    return new Promise((resolve, reject) => {
+        let decodedToken = functionController.decodeToken(token)
+        if (decodedToken){
+            if (decodedToken.role !== "player"){
+                resolve({
+                    error: true,
+                    status: 403,
+                    message: "User must be a player to join a team"
+                })
+            }else{
+                mysqlController.getTeamByInvitationCode(invitationCode)
+                    .then((team) => {
+                        if (team){
+                            mysqlController.joinTeam(decodedToken.user_id, team.id)
+                                .then((response) => {
+                                    if (response.error){
+                                        resolve(response)
+                                    }else{
+                                        resolve({
+                                            team: team,
+                                            user: decodedToken.user_id
+                                        })
+                                    }
+                                }).catch((err) => {
+                                    reject(err)
+                                })
+                        }else{
+                            resolve({
+                                error: true,
+                                status: 400,
+                                message: "Invalid invitation code"
+                            })
+                        }
+                    }).catch((err) => {
+                        reject(err)
+                    })
+            }
+        }else{
+            resolve({
+                error: true,
+                status: 401,
+                message: "Invalid JWT token"
+            })
+        }
+    })
+}
+
 module.exports = {
     getAllTeams,
     getTeam,
-    postTeam
+    postTeam,
+    joinTeam
 }

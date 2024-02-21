@@ -224,6 +224,44 @@ function checkCode(code, resolve, reject) {
         });
 }
 
+function getTeamByInvitationCode(invitationCode) {
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `teams` WHERE invitation_code = "' + invitationCode + '"')
+            .then((query) => {
+                if (query.length == 0) {
+                    resolve(false);
+                } else {
+                    resolve(query[0]);
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}
+
+function joinTeam(teamId, userId) {
+    return new Promise((resolve, reject) => {
+        SQLRequest('INSERT INTO `teams_users` (`team_id`, `user_id`) VALUES (' + teamId + ',' + userId + ')')
+            .then((request) => {
+                if (request.affectedRows) {
+                    resolve({
+                        error: false
+                    })
+                } else {
+                    resolve({
+                        error: true,
+                        status: 500,
+                        message: 'Internal server error'
+                    })
+                }
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+
+}
+
 module.exports = {
     getAllUsers,
     getOneUser,
@@ -232,5 +270,7 @@ module.exports = {
     updateUser,
     deleteUser,
     getAllTeams,
-    postTeam
+    postTeam,
+    getTeamByInvitationCode,
+    joinTeam
 }

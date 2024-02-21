@@ -94,4 +94,22 @@ router.get('/linked', (req, res) => {
     // res.json(teams.filter((team) => team.members.includes(req.user.id)));
 });
 
+router.post('/join', (req, res) => {
+    teamController.joinTeam(req.body.invitationCode, req.cookies.access_token)
+        .then((response) => {
+            if (response.error){
+                res.status(response.status).send({
+                    success: false,
+                    message: response.message
+                })
+            }else{
+                res.status(200).send({
+                    success: true,
+                    data: response
+                })
+            }
+        })
+    // res.json(teams.filter((team) => team.members.includes(req.user.id)));
+});
+
 module.exports = router;
