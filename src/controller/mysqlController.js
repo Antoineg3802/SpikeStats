@@ -242,24 +242,50 @@ function getTeamByInvitationCode(invitationCode) {
 
 function joinTeam(teamId, userId) {
     return new Promise((resolve, reject) => {
-        SQLRequest('INSERT INTO `teams_users` (`team_id`, `user_id`) VALUES (' + teamId + ',' + userId + ')')
-            .then((request) => {
-                if (request.affectedRows) {
-                    resolve({
-                        error: false
+        verifyUserInTeam(teamId, userId)
+        .then((isUserInTeam) => {
+            if (isUserInTeam) {
+                resolve({
+                    error: true,
+                    status: 409,
+                    message: "User already in team"
+                })
+            } else {
+                SQLRequest('INSERT INTO `teams_users` (`team_id`, `user_id`) VALUES (' + teamId + ',' + userId + ')')
+                    .then((request) => {
+                        if (request.affectedRows) {
+                            resolve({
+                                error: false
+                            })
+                        } else {
+                            resolve({
+                                error: true,
+                                status: 500,
+                                message: 'Internal server error'
+                            })
+                        }
+                    }).catch((err) => {
+                        reject(err)
                     })
-                } else {
-                    resolve({
-                        error: true,
-                        status: 500,
-                        message: 'Internal server error'
-                    })
-                }
-            }).catch((err) => {
-                reject(err)
-            })
+            }
+        })
     })
+}
 
+function verifyUserInTeam(teamId, userId) {
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `teams_users` WHERE team_id = ' + teamId + ' AND user_id = ' + userId)
+            .then((query) => {
+                if (query.length == 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
 }
 
 module.exports = {
