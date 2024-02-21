@@ -295,10 +295,11 @@ function getTeam(teamId) {
                 if (query.length == 0) {
                     resolve(false);
                 } else {
-                    getTeamUsers(teamId)
-                    .then((users) => {
-                        query[0].users = users;
-                        resolve(query[0]);
+                    resolve({
+                        id: query[0].id,
+                        name: query[0].name,
+                        description: query[0].description,
+                        owner: query[0].owner_id
                     })
                 }
             })
@@ -324,6 +325,72 @@ function getTeamUsers(teamId) {
     });
 }
 
+function getAllMatches(){
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `matches`')
+            .then((rows) => {
+                resolve(rows)
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
+function getMatch(id){
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `matches` WHERE id = ' + id)
+            .then((rows) => {
+                if (rows.length == 0) {
+                    resolve(false);
+                } else {
+                    getSetsByMatch(id)
+                    .then((users) => {
+                        query[0].users = users;
+                        resolve(query[0]);
+                    })
+                }
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
+function getSetsByMatch(matchId){
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `sets` WHERE match_id = ' + matchId)
+            .then((rows) => {
+                resolve(rows)
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
+function postMatch(teamId, opponent, date, location){
+    return new Promise((resolve, reject) => {
+        SQLRequest('INSERT INTO `matches` (`team_id`, `opponent`, `date`, `location`) VALUES ("' + teamId + '","' + opponent + '","' + date + '","' + location + '")')
+            .then((request) => {
+                if (request.affectedRows) {
+                    resolve({
+                        id : request.insertId,
+                        teamId : teamId,
+                        opponent : opponent,
+                        date : date,
+                        location : location
+                    })
+                } else {
+                    resolve({
+                        error: true,
+                        status: 500,
+                        message: 'Internal server error'
+                    })
+                }
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
 module.exports = {
     getAllUsers,
     getOneUser,
@@ -335,5 +402,9 @@ module.exports = {
     postTeam,
     getTeamByInvitationCode,
     joinTeam,
-    getTeam
+    getTeam,
+    getTeamUsers,
+    getAllMatches,
+    getMatch,
+    postMatch
 }

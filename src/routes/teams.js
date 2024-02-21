@@ -45,10 +45,17 @@ router.get('/one/:id', (req, res) => {
 
     teamController.getTeam(req.params.id)
     .then((team) => {
-        res.status(200).send({
-            success: true,
-            data: team
-        })
+        if (team.error){
+            res.status(team.status).send({
+                success: false,
+                message: "Team not found"
+            })
+        }else{
+            res.status(200).send({
+                success: true,
+                data: team
+            })
+        }
     })
 });
 

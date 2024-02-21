@@ -16,7 +16,19 @@ function getTeam(teamId) {
     return new Promise((resolve, reject) => {
         mysqlController.getTeam(teamId)
             .then((team) => {
-                resolve(team)
+                if (!team){
+                    resolve({
+                        error: true,
+                        status: 404,
+                        message: "Team not found"
+                    })
+                }else{
+                    mysqlController.getTeamUsers(teamId)
+                    .then((users) => {
+                        team.users = users;
+                        resolve(team);
+                    })
+                }
             }).catch((err) => {
                 reject(err)
             })
