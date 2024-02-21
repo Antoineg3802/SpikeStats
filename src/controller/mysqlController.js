@@ -1,4 +1,5 @@
 const { SQLRequest } = require('../models/mysqlModel');
+const { randomString } = require('./functionController');
 
 function getAllUsers() {
     return new Promise((resolve, reject) => {
@@ -172,30 +173,55 @@ function postTeam(name, description, ownerId) {
                         message: "User not found"
                     })
                 } else {
-                    SQLRequest('INSERT INTO `teams` (`name`, `description`, owner_id) VALUES ("' + name + '","' + description + '","' + ownerId + '")')
-                        .then((request) => {
-                            if (request.affectedRows) {
-                                resolve({
-                                    error: false,
-                                    data: {
-                                        name : name,
-                                        description : description,
-                                        owner : user[0]
+                    getInvitationCode()
+                        .then((code) => {
+                            SQLRequest('INSERT INTO `teams` (`name`, `description`, owner_id, invitation_code) VALUES ("' + name + '","' + description + '","' + ownerId + '","' + code + '")')
+                                .then((request) => {
+                                    if (request.affectedRows) {
+                                        resolve({
+                                            error: false,
+                                            data: {
+                                                name : name,
+                                                description : description,
+                                                owner : user[0]
+                                            }
+                                        })
+                                    } else {
+                                        resolve({
+                                            error: true,
+                                            status: 500,
+                                            message: 'Internal server error'
+                                        })
                                     }
+                                }).catch((err) => {
+                                    reject(err)
                                 })
-                            } else {
-                                resolve({
-                                    error: true,
-                                    status: 500,
-                                    message: 'Internal server error'
-                                })
-                            }
-                        }).catch((err) => {
-                            reject(err)
                         })
                 }
             })
     })
+}
+
+function getInvitationCode() {
+    let code = randomString(10);
+    return new Promise((resolve, reject) => {
+        checkCode(code, resolve, reject);
+    });
+}
+
+function checkCode(code, resolve, reject) {
+    SQLRequest('SELECT * FROM `teams` WHERE invitation_code = "' + code + '"')
+        .then((query) => {
+            if (query.length == 0) {
+                resolve(code);
+            } else {
+                let newCode = randomString(10);
+                checkCode(newCode, resolve, reject);
+            }
+        })
+        .catch((err) => {
+            reject(err);
+        });
 }
 
 module.exports = {

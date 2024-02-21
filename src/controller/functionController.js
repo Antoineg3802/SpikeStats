@@ -30,7 +30,17 @@ function createToken(userId, role = 2) {
     return token;
 }
 
+function randomString(lenght){
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    for (let i = 0; i < lenght; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
 module.exports = {
     decodeToken,
-    createToken
+    createToken,
+    randomString
 }
