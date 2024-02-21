@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon -e js app.js",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
+    "dev-server": "nodemon -e js app.js",
+    "dev-client": "cd client && npm start",
     "test": "jest"
   },
   "dependencies": {
@@ -25,6 +27,7 @@
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "jest": "^29.7.0",
     "nodemon": "^2.0.22",
     "supertest": "^6.3.3"

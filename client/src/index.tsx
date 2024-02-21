@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+// Pages import
+import App from './App';
+import NotFound from './components/pages/NotFound';
 
 const router = createBrowserRouter([
 	{
@@ -18,6 +21,10 @@ const router = createBrowserRouter([
 		path: "/tutu",
 		element: <App />,
 	},
+	{
+		path: "*",
+		element: <NotFound />
+	}
 ]);
 
 
