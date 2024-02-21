@@ -4,10 +4,37 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+CREATE TABLE `faults` (
+  `id` int(11) NOT NULL,
+  `set_id` int(11) NOT NULL,
+  `player_id` int(11) DEFAULT NULL,
+  `fault_type_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `fault_type` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `matchs` (
+  `id` int(20) NOT NULL,
+  `date` datetime NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `opponent` varchar(255) NOT NULL,
+  `lieu` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `points` (
+  `id` int(11) NOT NULL,
+  `set_id` int(11) NOT NULL,
+  `player_id` int(11) DEFAULT NULL,
+  `point_type_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `point_type` (
+  `id` int(11) NOT NULL,
+  `point_type` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
@@ -18,6 +45,17 @@ INSERT INTO `roles` (`id`, `level`) VALUES
 (1, 'admin'),
 (2, 'player'),
 (3, 'coach');
+
+CREATE TABLE `sets` (
+  `id` int(20) NOT NULL,
+  `match_id` int(11) NOT NULL,
+  `number_set` int(11) NOT NULL,
+  `start_set` datetime NOT NULL,
+  `end_set` datetime NOT NULL,
+  `team_score` int(11) NOT NULL,
+  `opponent_score` int(11) NOT NULL,
+  `winner` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `teams` (
   `id` int(11) NOT NULL,
@@ -55,8 +93,36 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `mail`, `role_id
 (3, 'tu', 'tu', '$2b$10$22P5ZnzeQjoStE2ZxrRv4eYkqRZzptRmnB6iwHjc5uidxanlVCC3m', 'tutu@gmail.com', 2),
 (4, 'to', 'to', '$2b$10$K78DLf8NgGCYSCBWFwW9ROfbOiXozEgd64YA9WKFi/dJiUR5I9M4u', 'toto@gmail.com', 2);
 
+ALTER TABLE `faults`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `set_id` (`set_id`),
+  ADD KEY `player_id` (`player_id`),
+  ADD KEY `fk_fault_type` (`fault_type_id`);
+
+ALTER TABLE `fault_type`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `matchs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`) USING BTREE,
+  ADD KEY `team_id` (`team_id`);
+
+ALTER TABLE `points`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `set_id` (`set_id`),
+  ADD KEY `player_id` (`player_id`),
+  ADD KEY `fk_point_type` (`point_type_id`);
+
+ALTER TABLE `point_type`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `sets`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `match_id` (`match_id`);
 
 ALTER TABLE `teams`
   ADD PRIMARY KEY (`id`),
@@ -71,14 +137,42 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `role_id` (`role_id`);
 
+ALTER TABLE `fault_type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `matchs`
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `point_type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `roles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+ALTER TABLE `sets`
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `teams`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+ALTER TABLE `faults`
+  ADD CONSTRAINT `faults_ibfk_1` FOREIGN KEY (`set_id`) REFERENCES `sets` (`id`),
+  ADD CONSTRAINT `faults_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `fk_fault_type` FOREIGN KEY (`fault_type_id`) REFERENCES `fault_type` (`id`);
+
+ALTER TABLE `matchs`
+  ADD CONSTRAINT `matchs_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`);
+
+ALTER TABLE `points`
+  ADD CONSTRAINT `fk_point_type` FOREIGN KEY (`point_type_id`) REFERENCES `point_type` (`id`),
+  ADD CONSTRAINT `points_ibfk_1` FOREIGN KEY (`set_id`) REFERENCES `sets` (`id`),
+  ADD CONSTRAINT `points_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `sets`
+  ADD CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`match_id`) REFERENCES `matchs` (`id`);
 
 ALTER TABLE `teams`
   ADD CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
