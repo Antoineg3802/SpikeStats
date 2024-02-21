@@ -9,7 +9,12 @@ function decodeToken(token) {
         if (err) {
             return false
         } else {
-            decodedToken = decoded
+            let currentTime = new Date().getTime()
+            if (currentTime <= decoded.exp * 1000) {
+                decodedToken = decoded
+            }else{
+                decodedToken = false
+            }
         }
     })
     return decodedToken
@@ -23,7 +28,7 @@ function createToken(userId, role = 2) {
 		},
         process.env.SHA_KEY,
         {
-            expiresIn: "72h",
+            expiresIn: "4h",
         }
     );
 
