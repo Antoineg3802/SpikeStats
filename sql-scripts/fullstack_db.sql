@@ -8,13 +8,27 @@ CREATE TABLE `faults` (
   `id` int(11) NOT NULL,
   `set_id` int(11) NOT NULL,
   `player_id` int(11) DEFAULT NULL,
-  `fault_type_id` int(11) NOT NULL
+  `fault_type_id` int(11) NOT NULL,
+  `team_points` int(11) NOT NULL,
+  `oponent_points` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `fault_type` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `fault_type` (`id`, `name`) VALUES
+(1, 'Faute de service'),
+(2, 'Faute de rotation'),
+(3, 'Faute de filet'),
+(4, 'Pénétration'),
+(5, 'Porté'),
+(6, 'Collé'),
+(7, 'Mordu'),
+(8, 'Double contact'),
+(9, 'Out'),
+(10, 'Block Out');
 
 CREATE TABLE `matches` (
   `id` int(20) NOT NULL,
@@ -24,21 +38,26 @@ CREATE TABLE `matches` (
   `location` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `matches` (`id`, `date`, `team_id`, `opponent`, `location`) VALUES
-(1, '2022-03-14 15:09:26', 4, 'PESD', 'Gymnase Alice MILLIAT'),
-(5, '2022-03-14 15:09:26', 4, 'PESD', 'Gymnase Alice MILLIAT');
-
 CREATE TABLE `points` (
   `id` int(11) NOT NULL,
   `set_id` int(11) NOT NULL,
   `player_id` int(11) DEFAULT NULL,
-  `point_type_id` int(11) NOT NULL
+  `point_type_id` int(11) NOT NULL,
+  `team_points` int(11) NOT NULL,
+  `oponent_points` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `point_type` (
   `id` int(11) NOT NULL,
   `point_type` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `point_type` (`id`, `point_type`) VALUES
+(1, 'Attaque'),
+(2, 'Bloc'),
+(3, 'Service ace'),
+(4, "Faute de l'adversaire"),
+(5, 'Block Out');
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
@@ -58,7 +77,7 @@ CREATE TABLE `sets` (
   `end_set` datetime NOT NULL,
   `team_score` int(11) NOT NULL,
   `opponent_score` int(11) NOT NULL,
-  `winner` varchar(10) NOT NULL
+  `winner` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `teams` (
@@ -153,19 +172,19 @@ ALTER TABLE `fault_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `matches`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `point_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `sets`
   MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `teams`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;

@@ -336,18 +336,30 @@ function getAllMatches(){
     })
 }
 
-function getMatch(id){
+function getMatch(id, includeSets = true){
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT * FROM `matches` WHERE id = ' + id)
             .then((rows) => {
                 if (rows.length == 0) {
                     resolve(false);
                 } else {
-                    getSetsByMatch(id)
-                    .then((users) => {
-                        query[0].users = users;
-                        resolve(query[0]);
-                    })
+                    if (includeSets){
+                        getSetsByMatch(id)
+                        .then((users) => {
+                            if(users.length > 0){
+                                rows[0].users = users;
+                                resolve(rows[0]);
+                            }else{
+                                resolve({
+                                    error: true,
+                                    status: 404,
+                                    message: "No sets found for this match"
+                                })
+                            }
+                        })
+                    }else{
+                        resolve(rows[0])
+                    }
                 }
             }).catch((err) => {
                 reject(err)
@@ -391,6 +403,62 @@ function postMatch(teamId, opponent, date, location){
     })
 }
 
+function addSet(matchId, numberSet, startSet, endSet, teamScore, opponentScore){
+    return new Promise((resolve)=>{
+        verifySet(matchId, numberSet)
+        .then((isSetValid) => {
+            if (isSetValid){
+                SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "')")
+                .then((request) => {
+                    if (request.affectedRows) {
+                        resolve({
+                            matchId : matchId,
+                            numberSet : numberSet,
+                            startSet : startSet,
+                            endSet : endSet,
+                            teamScore : teamScore,
+                            opponentScore : opponentScore
+                        })
+                    } else {
+                        resolve({
+                            error: true,
+                            status: 500,
+                            message: 'Internal server error'
+                        })
+                    }
+                })
+            }else{
+                resolve({
+                    error: true,
+                    status: 400,
+                    message: 'Set already exist'
+                })
+            }
+        })
+    })
+}
+
+function verifySet(matchId, numberSet){
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `sets` WHERE match_id = ' + matchId + ' AND number_set = ' + numberSet)
+            .then((query) => {
+                if (query.length == 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            })
+    });
+}
+
+function postFool(setId, player_id, type_id){
+    
+}
+
+function postPoint(setId, player_id, type_id){
+    
+}
+
 module.exports = {
     getAllUsers,
     getOneUser,
@@ -406,5 +474,8 @@ module.exports = {
     getTeamUsers,
     getAllMatches,
     getMatch,
-    postMatch
+    postMatch,
+    addSet,
+    postFool,
+    postPoint
 }

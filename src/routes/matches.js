@@ -64,4 +64,20 @@ router.post("/", (req, res) => {
     });
 });
 
+router.post("/:matchId/set", (req, res) => {
+	matchController.addSet(req.params.matchId, req.body, req.cookies.access_token).then((response) => {
+		if (response.error) {
+			res.status(response.status).send({
+				success: false,
+				message: response.message
+			});
+		}else{
+			res.status(201).send({
+				success: true,
+				message: 'Set added'
+			});
+		}
+	});
+})
+
 module.exports = router;
