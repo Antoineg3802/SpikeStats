@@ -6,21 +6,21 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 // Pages import
-import App from './App';
+import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <App />,
+		element: <HomePage />,
 	},
 	{
 		path: "/tata",
-		element: <App />,
+		element: <HomePage />,
 	},
 	{
 		path: "/tutu",
-		element: <App />,
+		element: <HomePage />,
 	},
 	{
 		path: "*",
