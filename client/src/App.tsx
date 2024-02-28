@@ -1,39 +1,35 @@
-import React from "react";
+// import { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import { useQuery } from "react-query";
+import HTTPResponse from "./data/HTTPResponse";
 
-function App() {
-	const [datas, setDatas] = React.useState<any[]>([]);
+const App = () => {
+	const { data, isLoading, error } = useQuery<HTTPResponse>('/api/users', () =>
+		fetch('/api/users')
+			.then(res => res.json())
+			.then(data => data)
+	);
 
-	React.useEffect(() => {
-		fetch("/api/users")
-			.then((res) => res.json())
-			.then((response: any) => {
-				console.log(response)
-				if (response.success){
-					setDatas(response.data)
-					console.log(datas)
-				}else{
-					console.log('error')
-				}
-			});
-	}, []);
+	if (isLoading) return <div>Loading...</div>;
 
-	return (
-		<div className="App">
-			<header className="App-header">
+	if (error) return <div>An error has occurred: " + {error.toString()}</div>;
+
+	else {
+		return (
+			<div className="App">
 				<img src={logo} className="App-logo" alt="logo" />
-				{datas.map(data =>
+				{data && data.data.map((data) => (
 					<div key={data.id}>
 						<p>{data.firstname}</p>
 						<p>{data.lastname}</p>
 						<p>{data.mail}</p>
 						<p>{data.role}</p>
 					</div>
-				)}
-			</header>
-		</div>
-	);
+				))}
+			</div>
+		);
+	}
 }
 
 export default App;
