@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import HTTPResponse from "../../data/HTTPResponse";
 import { fetchUsers } from "../../service/userService";
 import { User } from "../../data/Users";
 
@@ -10,7 +8,6 @@ const HomePage = () => {
 	useEffect(() => {
         fetchUsers()
         .then((data) => {
-            console.log(data)
             setUsers(data)
         })
     }, []);
