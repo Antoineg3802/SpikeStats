@@ -1,8 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Nexa;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +8,22 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@font-face {
+	font-family: "Nexa";
+	src: local("Nexa  Light"), local("Nexa--Light"),
+		url("./fonts/Nexa-Light.woff2") format("woff2"),
+		url("./fonts/Nexa-Light.woff") format("woff"),
+		url("./fonts/Nexa-Light.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;
+}
+
+/* Color vars */
+:root {
+	--white: #fff;
+	--black: #000000;
+	--dark-blue: #0B2647;
+	--orange: #FF7F32;
 }
