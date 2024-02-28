@@ -31,8 +31,8 @@ const LoginModale = () => {
         <div className={style}>
             <ModaleTitle title="Se Connecter" />
             <LogForm>
-                <FormInput type="text" placeholder="email" onChange={(e) => handlInputEmail(e.target.value)} />
-                <FormInput type="password" placeholder="password" onChange={(e) => handlInputPassword(e.target.value)} />
+                <FormInput type="text" placeholder="Email" onChange={(e) => handlInputEmail(e.target.value)} />
+                <FormInput type="password" placeholder="Mot de passe" onChange={(e) => handlInputPassword(e.target.value)} />
                 <SendFormBtn text="Se Connecter" onClick={sendForm} />
             </LogForm>
         </div>

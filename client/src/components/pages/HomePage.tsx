@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { css } from "@emotion/css";
 
 import LoginModale from "../organisms/LoginModale";
 
@@ -31,8 +30,5 @@ const HomePage = () => {
         </div>
     );
 }
-const style = css`
-    font-family: "Nexa";
-`
 
 export default HomePage;
