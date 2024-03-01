@@ -1,17 +1,25 @@
 import { css } from '@emotion/css';
-import React from 'react';
 
 type Props = {
     onClick: () => void;
     text: string;
+    disabled: boolean;
 };
 
-const SendFormBtn = ({onClick, text} : Props) => {
-    return <button className={style} onClick={onClick}>{text}</button>;
+const SendFormBtn = ({onClick, text, disabled} : Props) => {
+    return <button className={style(disabled)} onClick={onClick} disabled={disabled}>{text}</button>;
 };
-const style = css`
-    background-color: var(--orange);
-    color: var(--dark-blue);
+
+const style = (disabled: boolean)=>css`
+    background-color: ${disabled? 'var(--light-orange)': 'var(--orange)'};
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--orange);
+    color: var(--white);
+    font-size: 1rem;
+    &:hover{
+        ${disabled ? "": "background-color: var(--white); color: var(--orange);cursor: pointer;"}
+    }
 `
 
 export default SendFormBtn;

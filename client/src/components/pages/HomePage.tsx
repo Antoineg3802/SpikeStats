@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 import LoginModale from "../organisms/LoginModale";
 
-import { User } from "../../data/Users";
+import { User } from "../../data/User";
 import { fetchUsers } from "../../service/userService";
 
 const HomePage = () => {
     const [users, setUsers] = useState<User[]>([]);
+    let isAuthenticated = document.cookie.split('; ').find(row => row.startsWith('isAuthenticated'))?.split('=')[1] ? true : false;
 
-	useEffect(() => {
+    useEffect(() => {
         fetchUsers()
         .then((data) => {
             setUsers(data)
@@ -16,8 +17,8 @@ const HomePage = () => {
     }, []);
     
     return (
-        <div className="">
-            <LoginModale />
+        <div className="homepage">
+            <LoginModale visible={!isAuthenticated}/>
             {users.map((user) => (
                 <div key={user.id}>
                     <p>{user.id}</p>
