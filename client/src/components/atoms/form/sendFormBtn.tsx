@@ -1,12 +1,12 @@
 import { css } from '@emotion/css';
 
-type Props = {
+interface SendFormProps {
     onClick: () => void;
     text: string;
     disabled: boolean;
 };
 
-const SendFormBtn = ({onClick, text, disabled} : Props) => {
+const SendFormBtn = ({onClick, text, disabled} : SendFormProps) => {
     return <button className={style(disabled)} onClick={onClick} disabled={disabled}>{text}</button>;
 };
 

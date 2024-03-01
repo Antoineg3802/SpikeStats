@@ -10,6 +10,7 @@ import reportWebVitals from './reportWebVitals';
 // Pages import
 import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
+import CreateAccount from './components/pages/CreateAccount';
 
 const router = createBrowserRouter([
 	{
@@ -18,11 +19,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/create-account",
-		element: <HomePage />,
-	},
-	{
-		path: "/tutu",
-		element: <HomePage />,
+		element: <CreateAccount />,
 	},
 	{
 		path: "*",

@@ -1,8 +1,6 @@
 import { css } from "@emotion/css";
 
-type Props = {};
-
-const Separation = ({} : Props) => {
+const Separation = () => {
     return <hr className={style} />;
 };
 
