@@ -17,7 +17,7 @@ const router = createBrowserRouter([
 		element: <HomePage />,
 	},
 	{
-		path: "/tata",
+		path: "/create-account",
 		element: <HomePage />,
 	},
 	{

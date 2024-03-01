@@ -1,4 +1,4 @@
-import { User } from '../data/User';
+import { User } from '../../data/User';
 
 const baseUrl = '/api';
 

@@ -5,9 +5,10 @@ import FormInput from '../atoms/form/FormInput';
 import SendFormBtn from '../atoms/form/SendFormBtn';
 import LogForm from '../molecules/LogForm';
 import ModaleTitle from '../atoms/titles/ModaleTitle';
-
-import { logIn } from "../../service/userService";
 import FormError from '../atoms/form/FormError';
+
+import { logIn } from "../../service/api/userService";
+import { isValidEmail } from "../../service/global/verifications";
 
 interface LoginModaleProps {
     visible: boolean;
@@ -29,19 +30,34 @@ const LoginModale = ({visible} : LoginModaleProps) => {
     }
 
     const sendForm = () =>{
-        logIn(email, password)
-        .then((data): void => {
-            console.log(data)
-            if (data === "Connected") {
-                document.cookie = `isAuthenticated=true`;
-                setVisibleModale(false)
-            }else{
-                setError(data)
+        if (email === "" && password === "") {
+            setError("Veuillez renseigner tous les champs")
+            setTimeout(() => {
+                setError("");
+            }, 3000);
+            return;
+        }else{
+            if (!isValidEmail(email)) {
+                setError("Veuillez renseigner un email valide")
                 setTimeout(() => {
                     setError("");
-                }, 3000); // 3 seconds timeout
+                }, 3000);
+                return;
+            }else{
+                logIn(email, password)
+                .then((data): void => {
+                    if (data === "Connected") {
+                        document.cookie = `isAuthenticated=true`;
+                        setVisibleModale(false)
+                    }else{
+                        setError(data)
+                        setTimeout(() => {
+                            setError("");
+                        }, 3000);
+                    }
+                })
             }
-        })
+        }
     }
 
     useEffect(() => {

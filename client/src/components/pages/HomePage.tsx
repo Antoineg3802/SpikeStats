@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import LoginModale from "../organisms/LoginModale";
 
 import { User } from "../../data/User";
-import { fetchUsers } from "../../service/userService";
+import { fetchUsers } from "../../service/api/userService";
+import { isAuthenticated } from "../../service/global/verifications";
 
 const HomePage = () => {
     const [users, setUsers] = useState<User[]>([]);
-    let isAuthenticated = document.cookie.split('; ').find(row => row.startsWith('isAuthenticated'))?.split('=')[1] ? true : false;
 
     useEffect(() => {
         fetchUsers()
@@ -15,10 +15,10 @@ const HomePage = () => {
             setUsers(data)
         })
     }, []);
-    
+
     return (
         <div className="homepage">
-            <LoginModale visible={!isAuthenticated}/>
+            <LoginModale visible={!isAuthenticated()}/>
             {users.map((user) => (
                 <div key={user.id}>
                     <p>{user.id}</p>
