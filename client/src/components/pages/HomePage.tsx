@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import LoginModale from "../organisms/LoginModale";
+import { css } from "@emotion/css";
 
 import { User } from "../../data/User";
 import { fetchUsers } from "../../service/api/userService";
@@ -17,19 +18,27 @@ const HomePage = () => {
     }, []);
 
     return (
-        <div className="homepage">
+        <>
             <LoginModale visible={!isAuthenticated()}/>
-            {users.map((user) => (
-                <div key={user.id}>
-                    <p>{user.id}</p>
-                    <p>{user.firstname}</p>
-                    <p>{user.lastname}</p>
-                    <p>{user.mail}</p>
-                    <p>{user.role}</p>
-                </div>
-            ))}
-        </div>
+            <div className={style(!isAuthenticated())}>
+                {users.map((user) => (
+                    <div key={user.id}>
+                        <p>{user.id}</p>
+                        <p>{user.firstname}</p>
+                        <p>{user.lastname}</p>
+                        <p>{user.mail}</p>
+                        <p>{user.role}</p>
+                    </div>
+                ))}
+            </div>
+        </>
     );
 }
+
+const style = (visible: boolean)=>css`
+    ${visible ? "filter: brightness(0.4)": ""};
+    background-color: #fff;
+    overflow: hidden;
+`
 
 export default HomePage;

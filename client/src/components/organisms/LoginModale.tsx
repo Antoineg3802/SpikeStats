@@ -9,6 +9,8 @@ import FormError from '../atoms/form/FormError';
 
 import { logIn } from "../../service/api/userService";
 import { isValidEmail } from "../../service/global/verifications";
+import Separation from '../atoms/Separation';
+import SpanWithLink from '../atoms/SpanWithLink';
 
 interface LoginModaleProps {
     visible: boolean;
@@ -73,6 +75,8 @@ const LoginModale = ({visible} : LoginModaleProps) => {
                 {error && <FormError text={error} />}
                 <SendFormBtn disabled={false} text="Se Connecter" onClick={sendForm} />
             </LogForm>
+            <Separation />
+            <SpanWithLink text="Vous n'avez pas de compte ?" textHref="Créer un compte" href="/create-account" />
         </div>
     );
 };
