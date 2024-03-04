@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS fullstack_db;
 USE fullstack_db;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
