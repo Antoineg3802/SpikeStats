@@ -10,6 +10,7 @@ const SignUpForm = ({ children } : Props) => {
 
 const style = css`
     display: flex;
+    width: 75%;
     flex-direction: column;
 `
 

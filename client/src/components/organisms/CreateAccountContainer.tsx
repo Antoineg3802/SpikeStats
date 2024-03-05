@@ -13,7 +13,6 @@ const style = (position: string)=>css`
     ${position === 'left' ? 'margin-right: 20px;' : ''}
     ${position === 'right' ? 'margin-right: 20px;' : ''}
     width: 50%;
-    height: 100%;
     padding-left: 20px;
 `
 

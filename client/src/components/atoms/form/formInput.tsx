@@ -5,16 +5,19 @@ type Props = {
     type: string;
     placeholder: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    widthPourcentage?: number;
 };
 
-const FormInput = ({type, placeholder, onChange} : Props) => {
-    return <input className={style} type={type} onChange={onChange} placeholder={placeholder}></input>;
+const FormInput = ({type, placeholder, onChange, widthPourcentage} : Props) => {
+    return <input className={style(widthPourcentage)} type={type} onChange={onChange} placeholder={placeholder}></input>;
 };
 
-const style = css`
+const style = (widthPourcentage?: number)=>css`
     font-family: 'Nexa';
+    margin: 0;
+    padding: 0;
     margin-bottom: 20px;
-    width: 50%;
+    width: ${widthPourcentage? widthPourcentage : 50}%;
     font-size: 1rem;
     height: 2rem;
     text-align: center;

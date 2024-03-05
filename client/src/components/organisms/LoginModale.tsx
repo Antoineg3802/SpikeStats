@@ -5,7 +5,7 @@ import FormInput from '../atoms/form/FormInput';
 import SendFormBtn from '../atoms/form/SendFormBtn';
 import LogForm from '../molecules/LogForm';
 import ModaleTitle from '../atoms/titles/ModaleTitle';
-import FormError from '../atoms/form/FormError';
+import FormIndicator from '../atoms/form/FormIndicator';
 
 import { logIn } from "../../service/api/userService";
 import { isValidEmail } from "../../service/global/verifications";
@@ -48,11 +48,11 @@ const LoginModale = ({visible} : LoginModaleProps) => {
             }else{
                 logIn(email, password)
                 .then((data): void => {
-                    if (data === "Connected") {
+                    if (data.success) {
                         document.cookie = `isAuthenticated=true`;
                         setVisibleModale(false)
                     }else{
-                        setError(data)
+                        setError(data.message as string);
                         setTimeout(() => {
                             setError("");
                         }, 3000);
@@ -72,7 +72,7 @@ const LoginModale = ({visible} : LoginModaleProps) => {
             <LogForm>
                 <FormInput type="text" placeholder="Email" onChange={(e) => handlInputEmail(e.target.value)} />
                 <FormInput type="password" placeholder="Mot de passe" onChange={(e) => handlInputPassword(e.target.value)} />
-                {error && <FormError text={error} />}
+                {error && <FormIndicator backgroundColor="#f8d7da" color="red" text={error} />}
                 <SendFormBtn disabled={false} text="Se Connecter" onClick={sendForm} />
             </LogForm>
             <Separation />
