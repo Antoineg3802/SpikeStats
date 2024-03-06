@@ -11,6 +11,8 @@ import reportWebVitals from './reportWebVitals';
 import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
+import Dashboard from './components/pages/Dashboard';
+import { isAuthenticated } from './service/global/verifications';
 
 const router = createBrowserRouter([
 	{
@@ -20,6 +22,10 @@ const router = createBrowserRouter([
 	{
 		path: "/create-account",
 		element: <CreateAccount />,
+	},
+	{
+		path: "/dashbord",
+		element: isAuthenticated() ? <Dashboard /> : <NotFound />
 	},
 	{
 		path: "*",
