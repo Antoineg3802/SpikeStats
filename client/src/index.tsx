@@ -5,14 +5,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // Import global styles
 import './index.css';
 
+// Functions import
 import reportWebVitals from './reportWebVitals';
+import { isAuthenticated } from './service/global/verifications';
 
 // Pages import
 import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
-import { isAuthenticated } from './service/global/verifications';
 
 const router = createBrowserRouter([
 	{
