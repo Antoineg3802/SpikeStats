@@ -23,7 +23,11 @@ const style = (widthPourcentage?: number)=>css`
     text-align: center;
     border-radius: 10px;
     border: 1px solid var(--black);
-    &:focus{
+    transition: 0.1s ease-in-out all;
+    &:hover{
+        &::placeholder{
+            color: var(--orange);
+        }
         border: 1px solid var(--orange);
     }
 `

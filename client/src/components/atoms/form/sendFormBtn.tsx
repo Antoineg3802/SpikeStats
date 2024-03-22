@@ -18,6 +18,7 @@ const style = (disabled: boolean)=>css`
     color: var(--white);
     font-size: 1rem;
     font-weight: 500;
+    transition: 0.1s ease-in-out all;
     &:hover{
         ${disabled ? "": "background-color: var(--white); color: var(--orange);cursor: pointer;"}
     }
