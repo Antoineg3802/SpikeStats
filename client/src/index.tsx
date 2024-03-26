@@ -14,7 +14,17 @@ import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
-import Team from './components/pages/Team';
+// import { theme } from './theme/theme';
+
+
+import { ThemeContext } from '@emotion/react';
+const theme = {
+	colors: {
+	  primary: 'hotpink',
+	  secondary: 'white'
+	}
+  }
+
 
 const router = createBrowserRouter([
 	{
@@ -30,10 +40,6 @@ const router = createBrowserRouter([
 		element: isAuthenticated() ? <Dashboard /> : <NotFound />
 	},
 	{
-		path: "/team",
-		element: isAuthenticated() ? <Team /> : <NotFound />
-	},
-	{
 		path: "*",
 		element: <NotFound />
 	}
@@ -46,7 +52,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+		<ThemeContext.Provider value={theme} >
+			<RouterProvider router={router} />
+		</ThemeContext.Provider>
 	</React.StrictMode>
 );
 

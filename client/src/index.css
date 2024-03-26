@@ -1,21 +1,21 @@
 body {
-  margin: 0;
-  font-family: Nexa;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family: Nexa;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
 }
 
 @font-face {
 	font-family: "Nexa";
 	src: local("Nexa  Light"), local("Nexa--Light"),
-		url("./fonts/Nexa-Light.woff2") format("woff2"),
-		url("./fonts/Nexa-Light.woff") format("woff"),
-		url("./fonts/Nexa-Light.ttf") format("truetype");
+		url("./theme/fonts/Nexa-Light.woff2") format("woff2"),
+		url("./theme/fonts/Nexa-Light.woff") format("woff"),
+		url("./theme/fonts/Nexa-Light.ttf") format("truetype");
 	font-weight: 300;
 	font-style: normal;
 }
@@ -24,8 +24,8 @@ code {
 :root {
 	--white: #fff;
 	--black: #000000;
-	--dark-blue: #0B2647;
-	--orange: #FF7F32;
+	--dark-blue: #0b2647;
+	--orange: #ff7f32;
 	--light-orange: #feb272;
 	--red: #dc3545;
 	--light-red: #f8d7da;
