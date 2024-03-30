@@ -1,10 +1,5 @@
 export const theme = {
-    currentThemeColors: {
-        secondary: "#0B2647",
-        primary: "#FF7F32",
-        background: "#fff",
-    },
-    assets: {
+    colors: {
         white: "#fff",
         black: "#000000",
         darkBlue: "#0B2647",

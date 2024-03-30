@@ -14,17 +14,9 @@ import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
-// import { theme } from './theme/theme';
-
+import { theme } from './theme/theme';
 
 import { ThemeContext } from '@emotion/react';
-const theme = {
-	colors: {
-	  primary: 'hotpink',
-	  secondary: 'white'
-	}
-  }
-
 
 const router = createBrowserRouter([
 	{

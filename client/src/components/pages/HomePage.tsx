@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import LoginModale from "../organisms/LoginModale";
 import { css } from "@emotion/css";
 
 import { User } from "../../data/User";
 import { fetchUsers } from "../../service/api/userService";
-import { isAuthenticated } from "../../service/global/verifications";
+import Navbar from "../organisms/Navbar";
+import HomepageContent from "../organisms/HomepageContent";
+import { ThemeContext } from "@emotion/react";
 
 const HomePage = () => {
     const [users, setUsers] = useState<User[]>([]);
+    const theme : any = useContext(ThemeContext);
 
     useEffect(() => {
         fetchUsers()
@@ -18,27 +20,34 @@ const HomePage = () => {
     }, []);
 
     return (
-        <>
-            <LoginModale visible={!isAuthenticated()}/>
-            <div className={style(!isAuthenticated())}>
-                {users.map((user) => (
-                    <div key={user.id}>
-                        <p>{user.id}</p>
-                        <p>{user.firstname}</p>
-                        <p>{user.lastname}</p>
-                        <p>{user.mail}</p>
-                        <p>{user.role}</p>
-                    </div>
-                ))}
-            </div>
-        </>
+        <div className={style}>
+            <Navbar />
+            <HomepageContent>
+                <h2>HomePage</h2>
+                <ul>
+                    {users.map((user) => (
+                        <li key={user.id}>{user.mail}</li>
+                    ))}
+                </ul>
+            </HomepageContent>
+        </div>
     );
 }
 
-const style = (visible: boolean)=>css`
-    ${visible ? "filter: brightness(0.4)": ""};
-    background-color: #fff;
+const style = css`
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    grid-template-areas: 
+    "navbar content content content content"
+    "navbar content content content content"
+    "navbar content content content content"
+    "navbar content content content content"
+    "navbar content content content content";
     overflow: hidden;
+    height: 100vh;
 `
 
 export default HomePage;
