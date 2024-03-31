@@ -1,11 +1,12 @@
 import { css } from "@emotion/css";
 
 import MainTitle from "../atoms/titles/MainTitle";
-import { isAuthenticated } from "../../service/global/verifications";
+import { isAuthenticated, isDarkMode, setDarkModeCookie } from "../../service/global/verifications";
 import DarkModeBtn from "../atoms/navbar/DarkModeBtn";
 import NavItem from "../atoms/navbar/NavItem";
 import NavGroups from "../molecules/NavGroups";
 import { useTheme } from "../../context/ThemeContext";
+import { useState } from "react";
 
 const Navbar = () => {
     const {theme} = useTheme();
