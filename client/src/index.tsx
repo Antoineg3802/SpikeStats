@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ThemeProvider as DarkThemeProvider } from './context/ThemeContext';
 
 // Import global styles
 import './index.css';
@@ -14,9 +15,6 @@ import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
-import { theme } from './theme/theme';
-
-import { ThemeContext } from '@emotion/react';
 
 const router = createBrowserRouter([
 	{
@@ -44,9 +42,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
 	<React.StrictMode>
-		<ThemeContext.Provider value={theme} >
+		<DarkThemeProvider>
 			<RouterProvider router={router} />
-		</ThemeContext.Provider>
+		</DarkThemeProvider>
 	</React.StrictMode>
 );
 

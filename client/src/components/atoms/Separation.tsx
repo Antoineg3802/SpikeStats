@@ -1,20 +1,12 @@
 import { css } from "@emotion/css";
-import { Theme, ThemeContext } from "@emotion/react"
-import { useContext } from "react";
 
 const Separation = () => {
-    const theme : any = useContext(ThemeContext);
-    // const theme = useTheme()
-    // console.log(theme)
-    // console.log(theme)
-    // return <h1 className={style(theme)}>HELLLLOOOO </h1>
-    return <hr className={style(theme)} />;
+    return <hr className={style} />;
 };
 
-const style = (theme: any) => css`
+const style = css`
     width: 70%;
     margin: 20px auto;
-    /* color: theme.colors.primary; */
 `
 
 export default Separation;

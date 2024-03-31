@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { css } from "@emotion/css";
 
@@ -6,11 +6,9 @@ import { User } from "../../data/User";
 import { fetchUsers } from "../../service/api/userService";
 import Navbar from "../organisms/Navbar";
 import HomepageContent from "../organisms/HomepageContent";
-import { ThemeContext } from "@emotion/react";
 
 const HomePage = () => {
     const [users, setUsers] = useState<User[]>([]);
-    const theme : any = useContext(ThemeContext);
 
     useEffect(() => {
         fetchUsers()

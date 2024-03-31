@@ -1,13 +1,13 @@
 import { css } from '@emotion/css';
-import React, { useContext } from 'react'
-import { ThemeContext } from "@emotion/react";
+import { useTheme } from "../../context/ThemeContext";
+import React from 'react'
 
 interface HomepageContentProps {
     children: React.ReactNode;
 }
 
 const HomepageContent = ({children} : HomepageContentProps)=>{
-    const theme : any = useContext(ThemeContext);
+    const { theme }= useTheme();
     return (
         <div className={style(theme)}>
             {children}
@@ -18,6 +18,7 @@ const HomepageContent = ({children} : HomepageContentProps)=>{
 const style = (theme: any)=>css`
     grid-area: content;
     background-color: ${theme.colors.white};
+    padding: 10px;
 `
 
 export default HomepageContent;

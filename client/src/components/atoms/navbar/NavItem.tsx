@@ -1,6 +1,5 @@
 import { css } from '@emotion/css';
-import { ThemeContext } from '@emotion/react';
-import React, { useContext } from 'react'
+import { useTheme } from "../../../context/ThemeContext";
 
 interface NavItemProps{
     href: string;
@@ -8,7 +7,7 @@ interface NavItemProps{
 }
 
 const NavItem = ({href, text}: NavItemProps)=>{
-    const theme = useContext(ThemeContext)
+    const { theme }= useTheme();
     return (
         <a className={style(theme)} href={href}>{text}</a>
     )

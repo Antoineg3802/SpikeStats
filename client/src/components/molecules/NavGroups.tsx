@@ -1,13 +1,13 @@
 import { css } from '@emotion/css'
-import { ThemeContext } from '@emotion/react'
-import React, { useContext } from 'react'
+import { useTheme } from "../../context/ThemeContext";
+import React from 'react'
 
 interface NavGroupsProps{
     children: React.ReactNode;
 }
 
 const NavGroups = ({children} : NavGroupsProps)=>{
-    const theme = useContext(ThemeContext)
+    const { theme }= useTheme();
     return (
         <div className={style(theme)}>
             {children}

@@ -1,4 +1,4 @@
-export const theme = {
+export const lightTheme = {
     colors: {
         white: "#fff",
         black: "#000000",
@@ -10,9 +10,23 @@ export const theme = {
 } 
 
 export const darkTheme = {
-    currentThemeColors: {
-        primary: "#FF7F32",
-        secondary: "#0B2647",
-        background: "#fff",
-    },
+    colors: {
+        white: "#000",
+        black: "#fff",
+        darkBlue: "#0B2647",
+        lightOrange: "#feb272",
+        red: "#dc3545",
+        lightRed: "#f8d7da",
+    }
+}
+
+export interface Theme {
+    colors: {
+        white: string;
+        black: string;
+        darkBlue: string;
+        lightOrange: string;
+        red: string;
+        lightRed: string;
+    };
 }
