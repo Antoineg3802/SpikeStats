@@ -3,7 +3,16 @@ export function isValidEmail(email: string): boolean {
 }
 
 export function isAuthenticated(): boolean {
-    return document.cookie.split('; ').find(row => row.startsWith('isAuthenticated'))?.split('=')[1] ? true : false;
+    let isAuthenticatedCookie = document.cookie.split('; ').find(row => row.startsWith('isAuthenticated'))?.split('=')[1]
+    if (isAuthenticatedCookie === "true") {
+        return true;
+    }
+    return false;
+}
+
+export function deleteAuthCookie(): void {
+    console.log('deleteAuthCookie')
+    document.cookie = 'isAuthenticated=false';
 }
 
 export function isDarkMode(): boolean {
@@ -11,7 +20,6 @@ export function isDarkMode(): boolean {
 }
 
 export function setDarkModeCookie(isDarkMode: boolean): void {
-    console.log(isDarkMode)
     if(isDarkMode){
         document.cookie = 'theme=dark';
     }else{

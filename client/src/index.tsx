@@ -15,6 +15,7 @@ import HomePage from './components/pages/HomePage';
 import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
+import LogIn from './components/pages/LogIn';
 
 const router = createBrowserRouter([
 	{
@@ -30,9 +31,13 @@ const router = createBrowserRouter([
 		element: isAuthenticated() ? <Dashboard /> : <NotFound />
 	},
 	{
+		path: "/login",
+		element: <LogIn />
+	},
+	{
 		path: "*",
 		element: <NotFound />
-	}
+	},
 ]);
 
 

@@ -15,6 +15,8 @@ const style = (theme: Theme) => css`
 	padding	: 5px;
 	transition: all 0.2s;
 	border-radius: 5px;
+	font-family: "inherit";
+	font-size: 1.2rem;
 
 	&:hover{
 		border-color: ${theme.colors.lightOrange};

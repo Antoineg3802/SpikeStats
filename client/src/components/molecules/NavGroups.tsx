@@ -1,5 +1,4 @@
 import { css } from '@emotion/css'
-import { useTheme } from "../../context/ThemeContext";
 import React from 'react'
 
 interface NavGroupsProps{
@@ -7,15 +6,14 @@ interface NavGroupsProps{
 }
 
 const NavGroups = ({children} : NavGroupsProps)=>{
-    const { theme }= useTheme();
     return (
-        <div className={style(theme)}>
+        <div className={style}>
             {children}
         </div>
     )
 }
 
-const style = (theme: any)=>css`
+const style = css`
     display: flex;
     flex-direction: column;
     align-items: baseline;
@@ -23,6 +21,7 @@ const style = (theme: any)=>css`
     padding: 0 20px;
     font-size: 1.2rem;
     font-weight: 500;
+    gap: 5px;
 `
 
 export default NavGroups

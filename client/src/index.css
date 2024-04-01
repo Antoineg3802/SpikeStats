@@ -19,14 +19,3 @@ code {
 	font-weight: 300;
 	font-style: normal;
 }
-
-/* Color vars */
-:root {
-	--white: #fff;
-	--black: #000000;
-	--dark-blue: #0b2647;
-	--orange: #ff7f32;
-	--light-orange: #feb272;
-	--red: #dc3545;
-	--light-red: #f8d7da;
-}

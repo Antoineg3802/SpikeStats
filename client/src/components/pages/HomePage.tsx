@@ -46,6 +46,7 @@ const style = css`
     "navbar content content content content";
     overflow: hidden;
     height: 100vh;
+    font-family: "Nexa"
 `
 
 export default HomePage;

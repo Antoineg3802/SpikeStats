@@ -7,7 +7,8 @@ export const lightTheme = {
         orange: "#ff7f32",
         red: "#dc3545",
         lightRed: "#f8d7da",
-    }
+    },
+    fontFamily: "Nexa"
 } 
 
 export const darkTheme = {
@@ -19,7 +20,8 @@ export const darkTheme = {
         orange: "#ff7f32",
         red: "#dc3545",
         lightRed: "#f8d7da",
-    }
+    },
+    fontFamily: "Nexa"
 }
 
 export interface Theme {
@@ -31,5 +33,6 @@ export interface Theme {
         orange: string,
         red: string;
         lightRed: string;
-    };
+    },
+    fontFamily: string
 }

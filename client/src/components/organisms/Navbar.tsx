@@ -1,32 +1,42 @@
 import { css } from "@emotion/css";
 
 import MainTitle from "../atoms/titles/MainTitle";
-import { isAuthenticated, isDarkMode, setDarkModeCookie } from "../../service/global/verifications";
+import { isAuthenticated, deleteAuthCookie } from "../../service/global/verifications";
 import DarkModeBtn from "../atoms/navbar/DarkModeBtn";
 import NavItem from "../atoms/navbar/NavItem";
 import NavGroups from "../molecules/NavGroups";
 import { useTheme } from "../../context/ThemeContext";
+import LogoutBtn from "../atoms/navbar/LogoutBtn";
 import { useState } from "react";
 
 const Navbar = () => {
+    const [isConnected, setIsConnected] = useState(isAuthenticated());
     const {theme} = useTheme();
+    let url = window.location.href;
+    let slug = url.split("/")[3];
+
+    function handleLogoutBtnClick(){
+        setIsConnected(false);
+        deleteAuthCookie();
+    }
 
     return (
         <div className={style(theme)}>
             <MainTitle text="SpikeStats" />
             <NavGroups>
-                <NavItem href="" text='Home' />
-                <NavItem href="" text='About' />
-                <NavItem href="" text='Contact' />
+                <NavItem href="/" text='Home' isSelected={slug === '' ? true : false} />
+                <NavItem href="/pricing" text='Pricing' isSelected={slug === 'pricing' ? true : false} />
+                <NavItem href="/dashboard" text='Dashboard' isSelected={slug === 'dashboard' ? true : false}/>
+                {isConnected ? (
+                    <>
+                        <NavItem href="/profile" text="Profil" isSelected={false} />
+                        <LogoutBtn onClick={handleLogoutBtnClick} text="Se déconnecter"/>
+                    </>
+                ) : (
+                    <NavItem href="/login" text="Se connecter" isSelected={false} />
+                )}
                 <DarkModeBtn />
             </NavGroups>
-            <div>
-                {isAuthenticated() ? (
-                    <button onClick={() => {localStorage.clear(); window.location.reload()}}>Logout</button>
-                ) : (
-                    <button onClick={() => {window.location.href = "/profile"}}>Profile</button>
-                )}
-            </div>
         </div>
     )
 }
