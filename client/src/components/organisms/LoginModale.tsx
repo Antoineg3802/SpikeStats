@@ -11,6 +11,8 @@ import { logIn } from "../../service/api/userService";
 import { isValidEmail } from "../../service/global/verifications";
 import Separation from '../atoms/Separation';
 import SpanWithLink from '../atoms/SpanWithLink';
+import { useTheme } from '../../context/ThemeContext';
+import { Theme } from '../../theme/theme';
 
 interface LoginModaleProps {
     visible: boolean;
@@ -18,6 +20,7 @@ interface LoginModaleProps {
 
 const LoginModale = ({visible} : LoginModaleProps) => {
 
+    const { theme } = useTheme();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [visibleModale, setVisibleModale] = useState<boolean>(visible);
@@ -67,7 +70,7 @@ const LoginModale = ({visible} : LoginModaleProps) => {
     }, [visible]);
 
     return (
-        <div className={style(visibleModale)}>
+        <div className={style(theme, visibleModale)}>
             <ModaleTitle title="Se Connecter" />
             <LogForm>
                 <FormInput type="text" placeholder="Email" onChange={(e) => handlInputEmail(e.target.value)} />
@@ -81,9 +84,9 @@ const LoginModale = ({visible} : LoginModaleProps) => {
     );
 };
 
-const style = (visible: boolean) => css`
+const style = (theme : Theme, visible: boolean) => css`
     position: fixed;
-    border: 1px solid var(--black);
+    border: 1px solid ${theme.colors.black};
     padding: 20px;
     width: 50%;
     left: 25%;
@@ -91,7 +94,7 @@ const style = (visible: boolean) => css`
     transform: translateY(-50%);
     z-index: 2;
     border-radius: 10px;
-    background-color: var(--white);
+    background-color: ${theme.colors.white};
     display: ${visible ? "block" : "none"};
 `
 

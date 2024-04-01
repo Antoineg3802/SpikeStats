@@ -4,6 +4,7 @@ export const lightTheme = {
         black: "#000000",
         darkBlue: "#0B2647",
         lightOrange: "#feb272",
+        orange: "#ff7f32",
         red: "#dc3545",
         lightRed: "#f8d7da",
     }
@@ -15,6 +16,7 @@ export const darkTheme = {
         black: "#fff",
         darkBlue: "#0B2647",
         lightOrange: "#feb272",
+        orange: "#ff7f32",
         red: "#dc3545",
         lightRed: "#f8d7da",
     }
@@ -26,6 +28,7 @@ export interface Theme {
         black: string;
         darkBlue: string;
         lightOrange: string;
+        orange: string,
         red: string;
         lightRed: string;
     };

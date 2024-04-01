@@ -1,4 +1,6 @@
 import { css } from "@emotion/css";
+import { useTheme } from "../../context/ThemeContext";
+import { Theme } from "../../theme/theme";
 
 interface SpanProps {
     text: string;
@@ -7,7 +9,8 @@ interface SpanProps {
 };
 
 const SpanWithLink = ({text, textHref, href} : SpanProps) => {
-    return <span className={style.span}>{text} <a className={style.a} href={href}>{textHref}</a></span>;
+    const { theme } = useTheme();
+    return <span className={style.span}>{text} <a className={style.a(theme)} href={href}>{textHref}</a></span>;
 };
 
 const style = {
@@ -16,8 +19,8 @@ const style = {
         text-align: center;
         width: 100%;
     `,
-    a: css`
-        color: var(--orange);
+    a:(theme: Theme)=>css`
+        color: ${theme.colors.orange};
         text-decoration: none;
         &:hover{
             text-decoration: underline;

@@ -1,4 +1,6 @@
 import { css } from "@emotion/css";
+import { useTheme } from "../../context/ThemeContext";
+import { Theme } from "../../theme/theme";
 
 interface Props {
     children: React.ReactNode;
@@ -6,10 +8,11 @@ interface Props {
 };
 
 const CreateAccountContainer = ({children, position} : Props) => {
-    return <div className={style(position)}>{children}</div>;
+    const { theme } = useTheme();
+    return <div className={style(theme, position)}>{children}</div>;
 };
 
-const style = (position: string)=>css`
+const style = (theme: Theme ,position: string)=>css`
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -22,7 +25,7 @@ const style = (position: string)=>css`
 
     // Left position (presentation)
     ${position === 'left' ? 'margin-right: 20px;' : ''}
-    ${position === 'left' ? 'background-color: var(--light-orange);' : ''}
+    ${position === 'left' ? 'background-color: '+ theme.colors.lightOrange +';' : ''}
     ${position === 'left' ? 'border-radius: 0 20px 20px 0;' : ''}
 `
 
