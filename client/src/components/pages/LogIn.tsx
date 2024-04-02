@@ -60,11 +60,11 @@ const LogIn = () => {
         <div className={style}>
             <CreateAccountContainer position="left">
                 <MainTitle text="Bienvenue sur SpikeStats" />
-                <SecondaryTitle text="Se connecter" />
             </CreateAccountContainer>
             <CreateAccountContainer position="right">
                 <LoginFormContainer>
                     <LogForm>
+                        <SecondaryTitle text="Se connecter" />
                         <FormInput type="text" placeholder="Email" onChange={(e) => handlInputEmail(e.target.value)} />
                         <FormInput type="password" placeholder="Mot de passe" onChange={(e) => handlInputPassword(e.target.value)} />
                         {error && <FormIndicator backgroundColor="#f8d7da" color="red" text={error} />}

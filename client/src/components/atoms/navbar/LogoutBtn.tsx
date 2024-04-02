@@ -22,7 +22,7 @@ const style = (theme: any)=>css`
     transition: all 0.2s;
     border: 1px solid ${theme.colors.white};
     border-radius: 5px;
-    font-family: "inherit";
+    font-family: inherit;
 	font-size: 1.2rem;
 
     &:hover{
