@@ -18,7 +18,7 @@ const HomepageContent = ({children} : HomepageContentProps)=>{
 const style = (theme: any)=>css`
     grid-area: content;
     background-color: ${theme.colors.white};
-    padding: 10px;
+    padding: 20px;
 `
 
 export default HomepageContent;
