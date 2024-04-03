@@ -9,16 +9,20 @@ Template d'API Rest pour NodeJS
 - NPM : >9.7.2
 
 ### Process d'installation
+- Clonez le repository
 - Aller dans le dossier ``fullstack-typescript-project`` du projet.
-- Executer la commande `npm i` afin d'installer les dependances. 
-- Executer la commande `cd client && npm run build` afin de compiler le client.
-- Créez un fichier .env à partir du fichier .env.exemple en modifiant les variables selon vos besoins.
+#### Processus Backend : 
 - Executez la commande `docker compose up` afin de créer un container contenant la BDD et le panel d'administration PHPMYADMIN.
-- Deux commandes sont à disposition : 
+- Créez un fichier .env à partir du fichier .env.local en modifiant les variables selon vos besoins.
+- Executer la commande `npm i` afin d'installer les dependances.
+
+#### Processus Frontend
+- Executer la commande `cd client` pour se rendre dans le côté frontEnd du server.
+- Executer la commande `npm run build` afin de compiler le client (utilisé pour l'appli en mode production).
+- Commandes à votre disposition (**executables seulement depuis la racine du projet**) : 
     - `npm start` : lance l'application en mode production
     - `npm run dev` : lance l'application en mode developpement (Back et Front)
     - `npm run dev-server` : lance le back de l'application
     - `npm run dev-client` : lance le front de l'application
-    - `npm run test` : execute les tests unitaires coté seveurs
 
 ### Vous voilà prêt !
