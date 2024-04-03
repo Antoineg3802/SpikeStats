@@ -1,4 +1,4 @@
-# SpikeStats
+# SpikeStats 🏐
 Application de gestion de statistiques de Volley (matchs). Cet outils permet de créer des matchs et de les editer en direct en notant les fautes et les points marqués par le/la joueur/joueuse. Chaque joueur/jouses possédant un compte manager peux créer une équipe et inviter des participants via un code d'invitation. Chaque joueur peux voir ses statistiques, le manager, lui, peux voir les statistiques globales de son équipe et individuellement de ses joueurs/joueuse. 
 
 Le systeme à terme accueillera un système de souscription (abonnement afin de pouvoir utiliser l'application) sur une durée d'une saison
@@ -32,4 +32,4 @@ Le systeme à terme accueillera un système de souscription (abonnement afin de 
     - `npm run dev-server` : lance le back de l'application
     - `npm run dev-client` : lance le front de l'application
 
-### Vous voilà prêt !
+### Vous voilà prêt ! 🎊
