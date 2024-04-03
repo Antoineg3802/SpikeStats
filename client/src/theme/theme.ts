@@ -13,11 +13,11 @@ export const lightTheme = {
 
 export const darkTheme = {
     colors: {
-        white: "#161b22",
+        white: "#111214",
         black: "#fff",
         darkBlue: "#0B2647",
-        lightOrange: "#feb272",
-        orange: "#ff7f32",
+        lightOrange: "#ff7f32",
+        orange: "#feb272",
         red: "#dc3545",
         lightRed: "#f8d7da",
     },
