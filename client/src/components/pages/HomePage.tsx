@@ -40,7 +40,7 @@ const HomePage = () => {
                 <ThirdTitle text="Commencez avec SpikeStats !" />
                 <ContentText>Prêt à transformer votre jeu ? Rejoignez la révolution SpikeStats aujourd'hui !</ContentText>
                 <ThirdTitle text="Contactez-nous :" />
-                <ContentText>Pour en savoir plus sur SpikeStats et comment il peut bénéficier à votre équipe, contactez-nous à <ContentLink href="mailto:antoineg3802@gmail.com" text="antoineg3802@gmail.com" /></ContentText>.
+                <ContentText>Pour en savoir plus sur SpikeStats et comment il peut bénéficier à votre équipe, contactez-nous à <ContentLink href="mailto:antoineg3802@gmail.com" text="antoineg3802@gmail.com" />.</ContentText>
                 <ContentText>Vous etes interressé ? Rendez-vous sur la page <ContentLink text="pricing" href="/pricing" /></ContentText>
             </HomepageContent>
         </div>
