@@ -527,6 +527,19 @@ function pushPoints(setId, type_id, player_id, team_points, oponent_points){
     })
 }
 
+// function deleteMatch(){
+//     return new Promise((resolve, reject) => {
+//         SQLRequest('DELETE FROM `matches` WHERE id = ' + matchId)
+//             .then((query) => {
+//                 if (query.affectedRows == 0) {
+//                     resolve(false)
+//                 } else {
+//                     resolve(true)
+//                 }
+//             })
+//     })
+// }
+
 module.exports = {
     getAllUsers,
     getOneUser,
@@ -545,5 +558,6 @@ module.exports = {
     postMatch,
     addSet,
     pushFaults,
-    pushPoints
+    pushPoints,
+    // deleteMatch
 }
