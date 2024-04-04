@@ -11,7 +11,6 @@ export function isAuthenticated(): boolean {
 }
 
 export function deleteAuthCookie(): void {
-    console.log('deleteAuthCookie')
     document.cookie = 'isAuthenticated=false';
 }
 

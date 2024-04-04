@@ -345,10 +345,26 @@ function getMatch(id, includeSets = true){
                 } else {
                     if (includeSets){
                         getSetsByMatch(id)
-                        .then((users) => {
-                            if(users.length > 0){
-                                rows[0].users = users;
-                                resolve(rows[0]);
+                        .then((sets) => {
+                            if(sets.length > 0){
+                                let finalRow = rows[0];
+                                finalRow.sets = sets;
+                                sets.forEach((set, index) => {
+                                    Promise.all([
+                                        getPointsBySet(set.id),
+                                        getFaultsBySet(set.id),
+                                        getPointsBySet(set.id, true),
+                                        getFaultsBySet(set.id, true)
+                                    ])
+                                    .then((results)=>{
+                                        finalRow.sets[index].points = {};
+                                        finalRow.sets[index].points.teamPoints = results[0];
+                                        finalRow.sets[index].points.teamFaults = results[1];
+                                        finalRow.sets[index].points.oponentPoints = results[2];
+                                        finalRow.sets[index].points.oponentFaults = results[3];
+                                        resolve(finalRow)
+                                    })
+                                });
                             }else{
                                 resolve({
                                     error: true,
@@ -372,6 +388,40 @@ function getSetsByMatch(matchId){
         SQLRequest('SELECT * FROM `sets` WHERE match_id = ' + matchId)
             .then((rows) => {
                 resolve(rows)
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
+function getPointsBySet(setId, opponent = false){
+    return new Promise((resolve, reject) => {
+        let requestString;
+        if (opponent){
+            requestString = 'SELECT id,set_id,point_type_id,team_points, oponent_points FROM `points` WHERE set_id = ' + setId + ' AND player_id IS NULL'
+        }else{
+            requestString = 'SELECT id,set_id,point_type_id,team_points, oponent_points FROM `points` WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+        }
+        SQLRequest(requestString)
+            .then((rows) => {
+                resolve(rows);
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
+function getFaultsBySet(setId, opponent = false){
+    return new Promise((resolve, reject) => {
+        let requestString;
+        if (opponent){
+            requestString = 'SELECT id,set_id,fault_type_id,team_points, oponent_points FROM `faults` WHERE set_id = ' + setId + ' AND player_id IS NULL'
+        }else{
+            requestString = 'SELECT id,set_id,fault_type_id,team_points, oponent_points FROM `faults` WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+        }
+        SQLRequest(requestString)
+            .then((rows) => {
+                resolve(rows);
             }).catch((err) => {
                 reject(err)
             })
@@ -559,5 +609,7 @@ module.exports = {
     addSet,
     pushFaults,
     pushPoints,
+    getPointsBySet,
+    getFaultsBySet,
     // deleteMatch
 }
