@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 
 import MainTitle from "../atoms/titles/MainTitle";
 import { isAuthenticated, deleteAuthCookie } from "../../service/global/verifications";
-import DarkModeBtn from "../atoms/navbar/DarkModeBtn";
+import DarkModeBtn from "../molecules/DarkModeBtn";
 import NavItem from "../atoms/navbar/NavItem";
 import NavGroups from "../molecules/NavGroups";
 import { useTheme } from "../../context/ThemeContext";
