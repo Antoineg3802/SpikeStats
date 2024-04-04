@@ -13,6 +13,8 @@ import FormSingleLine from "../molecules/FormSingleLine";
 import { signUpPlayer, signUpCoach } from "../../service/api/userService";
 import { isValidEmail } from "../../service/global/verifications";
 import FormIndicator from "../atoms/form/FormIndicator";
+import { useTheme } from "../../context/ThemeContext";
+import { Theme } from "../../theme/theme";
 
 const CreateAccount = () => {
     const [firstname, setFirstname] = useState<string>("");
@@ -21,6 +23,7 @@ const CreateAccount = () => {
     const [password, setPassword] = useState<string>("");
     const [passwordConfirmed, setPasswordConfirmed] = useState<string>("");
     const [userType, setUserType] = useState<string>("");
+    const { theme } = useTheme();
 
     const [error, setError] = useState<string>("");
     const [confirmed, setconfirmed] = useState<string>("");
@@ -105,7 +108,7 @@ const CreateAccount = () => {
     }
 
     return (
-        <div className={style}>
+        <div className={style(theme)}>
             <CreateAccountContainer position="left">
                 <MainTitle text="Bienvenue sur SpikeStats" />
             </CreateAccountContainer>
@@ -132,12 +135,13 @@ const CreateAccount = () => {
         </div>
     );
 };
-const style = css`
+const style = (theme: Theme)=>css`
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
     height: 100vh;
+    background-color: ${theme.colors.white};
 `
 
 export default CreateAccount;

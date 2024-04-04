@@ -10,11 +10,12 @@ interface SpanProps {
 
 const SpanWithLink = ({text, textHref, href} : SpanProps) => {
     const { theme } = useTheme();
-    return <span className={style.span}>{text} <a className={style.a(theme)} href={href}>{textHref}</a></span>;
+    return <span className={style.span(theme)}>{text} <a className={style.a(theme)} href={href}>{textHref}</a></span>;
 };
 
 const style = {
-    span: css`
+    span:(theme: Theme)=>css`
+        color: ${theme.colors.black};
         display: inline-block;
         text-align: center;
         width: 100%;

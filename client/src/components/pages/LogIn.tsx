@@ -12,11 +12,14 @@ import SendFormBtn from "../atoms/form/SendFormBtn";
 import Separation from "../atoms/Separation";
 import SpanWithLink from "../atoms/SpanWithLink";
 import { css } from "@emotion/css";
+import { useTheme } from "../../context/ThemeContext";
+import { Theme } from "../../theme/theme";
 
 const LogIn = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
+    const { theme } = useTheme();
 
     const handlInputEmail = (email: string) =>{
         setEmail(email)
@@ -57,7 +60,7 @@ const LogIn = () => {
         }
     }
 	return (
-        <div className={style}>
+        <div className={style(theme)}>
             <CreateAccountContainer position="left">
                 <MainTitle text="Bienvenue sur SpikeStats" />
             </CreateAccountContainer>
@@ -78,12 +81,13 @@ const LogIn = () => {
     );
 };
 
-const style = css`
+const style =(theme: Theme)=>css`
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
     height: 100vh;
+    background-color: ${theme.colors.white};
 `
 
 export default LogIn;
