@@ -28,10 +28,7 @@ const Navbar = () => {
                 <NavItem href="/pricing" text='Pricing' isSelected={slug === 'pricing' ? true : false} />
                 <NavItem href="/dashboard" text='Dashboard' isSelected={slug === 'dashboard' ? true : false}/>
                 {isConnected ? (
-                    <>
-                        <NavItem href="/profile" text="Profil" isSelected={false} />
-                        <LogoutBtn onClick={handleLogoutBtnClick} text="Se déconnecter"/>
-                    </>
+                    <LogoutBtn onClick={handleLogoutBtnClick} text="Se déconnecter"/>
                 ) : (
                     <NavItem href="/login" text="Se connecter" isSelected={false} />
                 )}

@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 
 import SecondaryTitle from "../atoms/titles/SecondaryTitle";
 import ThirdTitle from "../atoms/titles/ThirdTitle";
-import HomepageContent from "../organisms/HomepageContent";
+import Content from "../organisms/Content";
 import Navbar from "../organisms/Navbar";
 import ContentList from "../molecules/ContentList";
 import ContentLink from "../atoms/content/ContentLink";
@@ -12,7 +12,7 @@ const HomePage = () => {
     return (
         <div className={style}>
             <Navbar />
-            <HomepageContent>
+            <Content>
                 <SecondaryTitle text="Bienvenue sur SpikeStats" />
                 <ContentText>L'analyse de performance révolutionnaire pour le volley.</ContentText>
 
@@ -42,7 +42,7 @@ const HomePage = () => {
                 <ThirdTitle text="Contactez-nous :" />
                 <ContentText>Pour en savoir plus sur SpikeStats et comment il peut bénéficier à votre équipe, contactez-nous à <ContentLink href="mailto:antoineg3802@gmail.com" text="antoineg3802@gmail.com" />.</ContentText>
                 <ContentText>Vous etes interressé ? Rendez-vous sur la page <ContentLink text="pricing" href="/pricing" /></ContentText>
-            </HomepageContent>
+            </Content>
         </div>
     );
 }

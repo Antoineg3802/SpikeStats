@@ -16,6 +16,7 @@ import NotFound from './components/pages/NotFound';
 import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
 import LogIn from './components/pages/LogIn';
+import Pricing from './components/pages/Pricing';
 
 const router = createBrowserRouter([
 	{
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
 	{
 		path: "/login",
 		element: <LogIn />
+	},
+	{
+		path: "/pricing",
+		element: <Pricing />
 	},
 	{
 		path: "*",

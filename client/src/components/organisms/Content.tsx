@@ -2,11 +2,11 @@ import { css } from '@emotion/css';
 import { useTheme } from "../../context/ThemeContext";
 import React from 'react'
 
-interface HomepageContentProps {
+interface ContentProps {
     children: React.ReactNode;
 }
 
-const HomepageContent = ({children} : HomepageContentProps)=>{
+const Content = ({children} : ContentProps)=>{
     const { theme }= useTheme();
     return (
         <div className={style(theme)}>
@@ -21,4 +21,4 @@ const style = (theme: any)=>css`
     padding: 20px;
 `
 
-export default HomepageContent;
+export default Content;
