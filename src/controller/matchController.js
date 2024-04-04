@@ -69,7 +69,6 @@ function addSet(matchId, body, token){
                     mysqlController.getMatch(matchId, false)
                     .then((match) => {
                         if (match.error){
-                            console.log(match)
                             resolve({
                                 error: true,
                                 status: 404,
@@ -78,17 +77,36 @@ function addSet(matchId, body, token){
                         }else{
                             let startdateTime = functionController.inputDateToSQLDate(body.startTime)
                             let endDateTime = functionController.inputDateToSQLDate(body.endTime)
-                            // mysqlController.addSet(matchId, body.setNumber, startdateTime, endDateTime, body.teams.currentTeam.points, body.teams.opponentTeam.points)
-                                // .then((set) => {
-                                //     if (set.error){
-                                //         resolve(set)
-                                //     }else{
-                                        pushFaults(1, body.teams.currentTeam.foolsDetail)
-                                        pushFaults(1, body.teams.opponentTeam.foolsDetail, true)
-                                        pushPoints(1, body.teams.currentTeam.pointsDetail)
-                                        pushPoints(1, body.teams.opponentTeam.pointsDetail, true)
-                                //     }
-                                // })
+                            let isWinner = body.teams.currentTeam.points > body.teams.opponentTeam.points ? true : false
+                            mysqlController.addSet(matchId, body.setNumber, startdateTime, endDateTime, body.teams.currentTeam.points, body.teams.opponentTeam.points, isWinner)
+                                .then((set) => {
+                                    if (set.error){
+                                        resolve({
+                                            error: true,
+                                            status: set.status,
+                                            message: set.message
+                                        })
+                                    }else{
+                                        Promise.all([
+                                            pushFaults(set.id, body.teams.currentTeam.faultsDetail),
+                                            pushFaults(set.id, body.teams.opponentTeam.faultsDetail, true),
+                                            pushPoints(set.id, body.teams.currentTeam.pointsDetail),
+                                            pushPoints(set.id, body.teams.opponentTeam.pointsDetail, true)
+                                        ]).then(() => {
+                                            resolve({
+                                                error: false,
+                                                status: 201,
+                                                message: "Set added successfully"
+                                            })
+                                        }).catch((error) => {
+                                            resolve({
+                                                error: true,
+                                                status: 500,
+                                                message: error.message
+                                            })
+                                        });
+                                    }
+                                })
                         }
                     })
                 }else{
@@ -112,8 +130,8 @@ function addSet(matchId, body, token){
 function pushFaults(setId, faults, isOponent = false){
     return new Promise((resolve) => {
         faults.forEach(fault => {
-            console.log(fault)
-            mysqlController.pushFaults(setId, fault.point, fault.player, isOponent)
+            let player = isOponent ? null : fault.playerId;
+            mysqlController.pushFaults(setId, fault.typeId, player, fault.teamPoints, fault.oponentPoints)
                 .then((response) => {
                     resolve(response)
                 })
@@ -121,10 +139,11 @@ function pushFaults(setId, faults, isOponent = false){
     })
 }
 
-function pushPoints(setId, faults, isOponent = false){
+function pushPoints(setId, points, isOponent = false){
     return new Promise((resolve) => {
-        faults.forEach(fault => {
-            mysqlController.pushPoints(setId, fault.point, fault.player, isOponent)
+        points.forEach(point => {
+            let player = isOponent ? null : point.playerId;
+            mysqlController.pushPoints(setId, point.typeId, player, point.teamPoints, point.oponentPoints)
                 .then((response) => {
                     resolve(response)
                 })

@@ -403,15 +403,16 @@ function postMatch(teamId, opponent, date, location){
     })
 }
 
-function addSet(matchId, numberSet, startSet, endSet, teamScore, opponentScore){
+function addSet(matchId, numberSet, startSet, endSet, teamScore, opponentScore, winner){
     return new Promise((resolve)=>{
         verifySet(matchId, numberSet)
         .then((isSetValid) => {
             if (isSetValid){
-                SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "')")
+                SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`, `winner`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "," + winner + ")")
                 .then((request) => {
                     if (request.affectedRows) {
                         resolve({
+                            id : request.insertId,
                             matchId : matchId,
                             numberSet : numberSet,
                             startSet : startSet,
@@ -451,12 +452,55 @@ function verifySet(matchId, numberSet){
     });
 }
 
-function postFool(setId, player_id, type_id){
-    
+// setId, fault.type, player, fault.teamPoints, fault.oponentPoints
+function pushFaults(setId, type_id, player_id, team_points, oponent_points){
+    return new Promise((resolve) => {
+        let requestString;
+        if (player_id == null){
+            requestString = 'INSERT INTO `faults` (`set_id`, `fault_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
+        }else{
+            requestString = 'INSERT INTO `faults` (`set_id`, `player_id`, `fault_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + player_id + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
+        }
+        SQLRequest(requestString)
+            .then((request) => {
+                if (request.affectedRows) {
+                    resolve({
+                        error: false
+                    })
+                } else {
+                    resolve({
+                        error: true,
+                        status: 500,
+                        message: 'Internal server error'
+                    })
+                }
+            })
+    })
 }
 
-function postPoint(setId, player_id, type_id){
-    
+function pushPoints(setId, type_id, player_id, team_points, oponent_points){
+    return new Promise((resolve) => {
+        let requestString;
+        if (player_id == null){
+            requestString = 'INSERT INTO `points` (`set_id`, `point_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
+        }else{
+            requestString = 'INSERT INTO `points` (`set_id`, `player_id`, `point_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + player_id + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
+        }
+        SQLRequest(requestString)
+            .then((request) => {
+                if (request.affectedRows) {
+                    resolve({
+                        error: false
+                    })
+                } else {
+                    resolve({
+                        error: true,
+                        status: 500,
+                        message: 'Internal server error'
+                    })
+                }
+            })
+    })
 }
 
 module.exports = {
@@ -476,6 +520,6 @@ module.exports = {
     getMatch,
     postMatch,
     addSet,
-    postFool,
-    postPoint
+    pushFaults,
+    pushPoints
 }

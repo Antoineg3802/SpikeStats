@@ -55,7 +55,7 @@ function doBodyOk(body){
 }
 
 function verifyTeamProperties(team){
-    if (team.points && team.foolsDetail && team.pointsDetail){
+    if (team.points && team.faultsDetail && team.pointsDetail){
         return true
     }
     return false

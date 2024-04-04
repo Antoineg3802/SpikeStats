@@ -7,144 +7,144 @@
             "points": 25,
             "faultsDetail": [
                 {
-                    "joueurId": "joueur6",
+                    "playerId": 3,
                     "typeId": 1,
-                    "pointEquipe": 16,
-                    "pointAdversaire": 15
+                    "teamPoints": 16,
+                    "oponentPoints": 15
                 },
                 {
-                    "joueurId": "joueur4",
+                    "playerId": 4,
                     "typeId": 2,
-                    "pointEquipe": 18,
-                    "pointAdversaire": 12
+                    "teamPoints": 18,
+                    "oponentPoints": 12
                 },
                 {
-                    "joueurId": "joueur9",
+                    "playerId": 3,
                     "typeId": 4,
-                    "pointEquipe": 12,
-                    "pointAdversaire": 3
+                    "teamPoints": 12,
+                    "oponentPoints": 3
                 },
                 {
-                    "joueurId": "joueur9",
+                    "playerId": 3,
                     "typeId": 2,
-                    "pointEquipe": 5,
-                    "pointAdversaire": 5
+                    "teamPoints": 5,
+                    "oponentPoints": 5
                 },
                 {
-                    "joueurId": "joueur2",
+                    "playerId": 4,
                     "typeId": 3,
-                    "pointEquipe": 17,
-                    "pointAdversaire": 1
+                    "teamPoints": 17,
+                    "oponentPoints": 1
                 },
                 {
-                    "joueurId": "joueur4",
+                    "playerId": 4,
                     "typeId": 3,
-                    "pointEquipe": 18,
-                    "pointAdversaire": 9
+                    "teamPoints": 18,
+                    "oponentPoints": 9
                 },
                 {
-                    "joueurId": "joueur2",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 3,
-                    "pointAdversaire": 9
+                    "teamPoints": 3,
+                    "oponentPoints": 9
                 },
                 {
-                    "joueurId": "joueur8",
+                    "playerId": 3,
                     "typeId": 1,
-                    "pointEquipe": 8,
-                    "pointAdversaire": 6
+                    "teamPoints": 8,
+                    "oponentPoints": 6
                 },
                 {
-                    "joueurId": "joueur4",
+                    "playerId": 4,
                     "typeId": 2,
-                    "pointEquipe": 13,
-                    "pointAdversaire": 17
+                    "teamPoints": 13,
+                    "oponentPoints": 17
                 }
             ],
             "pointsDetail": [
                 {
-                    "joueurId": "joueur6",
-                    "typeId": 10,
-                    "pointEquipe": 13,
-                    "pointAdversaire": 9
+                    "playerId": 3,
+                    "typeId": 1,
+                    "teamPoints": 13,
+                    "oponentPoints": 9
                 },
                 {
-                    "joueurId": "joueur5",
+                    "playerId": 4,
                     "typeId": 4,
-                    "pointEquipe": 5,
-                    "pointAdversaire": 24
+                    "teamPoints": 5,
+                    "oponentPoints": 24
                 },
                 {
-                    "joueurId": "joueur8",
+                    "playerId": 3,
                     "typeId": 1,
-                    "pointEquipe": 14,
-                    "pointAdversaire": 16
+                    "teamPoints": 14,
+                    "oponentPoints": 16
                 },
                 {
-                    "joueurId": "joueur1",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 4,
-                    "pointAdversaire": 10
+                    "teamPoints": 4,
+                    "oponentPoints": 10
                 },
                 {
-                    "joueurId": "joueur6",
-                    "typeId": 8,
-                    "pointEquipe": 9,
-                    "pointAdversaire": 8
+                    "playerId": 3,
+                    "typeId": 4,
+                    "teamPoints": 9,
+                    "oponentPoints": 8
                 },
                 {
-                    "joueurId": "joueur3",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 7,
-                    "pointAdversaire": 6
+                    "teamPoints": 7,
+                    "oponentPoints": 6
                 },
                 {
-                    "joueurId": "joueur6",
+                    "playerId": 3,
                     "typeId": 3,
-                    "pointEquipe": 21,
-                    "pointAdversaire": 2
+                    "teamPoints": 21,
+                    "oponentPoints": 2
                 },
                 {
-                    "joueurId": "joueur9",
-                    "typeId": 7,
-                    "pointEquipe": 25,
-                    "pointAdversaire": 22
+                    "playerId": 3,
+                    "typeId": 3,
+                    "teamPoints": 25,
+                    "oponentPoints": 22
                 },
                 {
-                    "joueurId": "joueur1",
-                    "typeId": 9,
-                    "pointEquipe": 3,
-                    "pointAdversaire": 18
+                    "playerId": 4,
+                    "typeId": 2,
+                    "teamPoints": 3,
+                    "oponentPoints": 18
                 },
                 {
-                    "joueurId": "joueur10",
-                    "typeId": 6,
-                    "pointEquipe": 2,
-                    "pointAdversaire": 18
+                    "playerId": 3,
+                    "typeId": 1,
+                    "teamPoints": 2,
+                    "oponentPoints": 18
                 },
                 {
-                    "joueurId": "joueur1",
-                    "typeId": 9,
-                    "pointEquipe": 18,
-                    "pointAdversaire": 23
+                    "playerId": 4,
+                    "typeId": 4,
+                    "teamPoints": 18,
+                    "oponentPoints": 23
                 },
                 {
-                    "joueurId": "joueur4",
-                    "typeId": 8,
-                    "pointEquipe": 1,
-                    "pointAdversaire": 25
-                },
-                {
-                    "joueurId": "joueur9",
-                    "typeId": 8,
-                    "pointEquipe": 5,
-                    "pointAdversaire": 21
-                },
-                {
-                    "joueurId": "joueur8",
+                    "playerId": 4,
                     "typeId": 5,
-                    "pointEquipe": 24,
-                    "pointAdversaire": 7
+                    "teamPoints": 1,
+                    "oponentPoints": 25
+                },
+                {
+                    "playerId": 3,
+                    "typeId": 5,
+                    "teamPoints": 5,
+                    "oponentPoints": 21
+                },
+                {
+                    "playerId": 3,
+                    "typeId": 5,
+                    "teamPoints": 24,
+                    "oponentPoints": 7
                 }
             ]
         },
@@ -152,156 +152,156 @@
             "points": 23,
             "faultsDetail": [
                 {
-                    "joueurId": "joueur1",
+                    "playerId": 4,
                     "typeId": 4,
-                    "pointEquipe": 21,
-                    "pointAdversaire": 15
+                    "teamPoints": 21,
+                    "oponentPoints": 15
                 },
                 {
-                    "joueurId": "joueur1",
+                    "playerId": 4,
                     "typeId": 3,
-                    "pointEquipe": 19,
-                    "pointAdversaire": 11
+                    "teamPoints": 19,
+                    "oponentPoints": 11
                 },
                 {
-                    "joueurId": "joueur2",
+                    "playerId": 4,
                     "typeId": 2,
-                    "pointEquipe": 13,
-                    "pointAdversaire": 24
+                    "teamPoints": 13,
+                    "oponentPoints": 24
                 },
                 {
-                    "joueurId": "joueur6",
+                    "playerId": 3,
                     "typeId": 2,
-                    "pointEquipe": 18,
-                    "pointAdversaire": 21
+                    "teamPoints": 18,
+                    "oponentPoints": 21
                 },
                 {
-                    "joueurId": "joueur4",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 24,
-                    "pointAdversaire": 3
+                    "teamPoints": 24,
+                    "oponentPoints": 3
                 },
                 {
-                    "joueurId": "joueur4",
+                    "playerId": 4,
                     "typeId": 3,
-                    "pointEquipe": 12,
-                    "pointAdversaire": 2
+                    "teamPoints": 12,
+                    "oponentPoints": 2
                 },
                 {
-                    "joueurId": "joueur1",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 18,
-                    "pointAdversaire": 10
+                    "teamPoints": 18,
+                    "oponentPoints": 10
                 },
                 {
-                    "joueurId": "joueur1",
+                    "playerId": 4,
                     "typeId": 4,
-                    "pointEquipe": 9,
-                    "pointAdversaire": 16
+                    "teamPoints": 9,
+                    "oponentPoints": 16
                 },
                 {
-                    "joueurId": "joueur3",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 1,
-                    "pointAdversaire": 16
+                    "teamPoints": 1,
+                    "oponentPoints": 16
                 },
                 {
-                    "joueurId": "joueur6",
+                    "playerId": 3,
                     "typeId": 1,
-                    "pointEquipe": 25,
-                    "pointAdversaire": 21
+                    "teamPoints": 25,
+                    "oponentPoints": 21
                 },
                 {
-                    "joueurId": "joueur2",
+                    "playerId": 4,
                     "typeId": 4,
-                    "pointEquipe": 25,
-                    "pointAdversaire": 7
+                    "teamPoints": 25,
+                    "oponentPoints": 7
                 }
             ],
             "pointsDetail": [
                 {
-                    "joueurId": "joueur6",
+                    "playerId": 3,
                     "typeId": 5,
-                    "pointEquipe": 6,
-                    "pointAdversaire": 14
+                    "teamPoints": 6,
+                    "oponentPoints": 14
                 },
                 {
-                    "joueurId": "joueur3",
-                    "typeId": 9,
-                    "pointEquipe": 4,
-                    "pointAdversaire": 5
-                },
-                {
-                    "joueurId": "joueur10",
-                    "typeId": 10,
-                    "pointEquipe": 10,
-                    "pointAdversaire": 23
-                },
-                {
-                    "joueurId": "joueur1",
-                    "typeId": 3,
-                    "pointEquipe": 21,
-                    "pointAdversaire": 15
-                },
-                {
-                    "joueurId": "joueur3",
-                    "typeId": 3,
-                    "pointEquipe": 10,
-                    "pointAdversaire": 8
-                },
-                {
-                    "joueurId": "joueur3",
-                    "typeId": 1,
-                    "pointEquipe": 8,
-                    "pointAdversaire": 7
-                },
-                {
-                    "joueurId": "joueur8",
+                    "playerId": 4,
                     "typeId": 4,
-                    "pointEquipe": 16,
-                    "pointAdversaire": 10
+                    "teamPoints": 4,
+                    "oponentPoints": 5
                 },
                 {
-                    "joueurId": "joueur4",
+                    "playerId": 3,
+                    "typeId": 2,
+                    "teamPoints": 10,
+                    "oponentPoints": 23
+                },
+                {
+                    "playerId": 4,
+                    "typeId": 1,
+                    "teamPoints": 21,
+                    "oponentPoints": 15
+                },
+                {
+                    "playerId": 4,
                     "typeId": 3,
-                    "pointEquipe": 21,
-                    "pointAdversaire": 8
+                    "teamPoints": 10,
+                    "oponentPoints": 8
                 },
                 {
-                    "joueurId": "joueur1",
+                    "playerId": 4,
+                    "typeId": 5,
+                    "teamPoints": 8,
+                    "oponentPoints": 7
+                },
+                {
+                    "playerId": 3,
                     "typeId": 1,
-                    "pointEquipe": 5,
-                    "pointAdversaire": 13
+                    "teamPoints": 16,
+                    "oponentPoints": 10
                 },
                 {
-                    "joueurId": "joueur7",
+                    "playerId": 4,
+                    "typeId": 3,
+                    "teamPoints": 21,
+                    "oponentPoints": 8
+                },
+                {
+                    "playerId": 4,
+                    "typeId": 1,
+                    "teamPoints": 5,
+                    "oponentPoints": 13
+                },
+                {
+                    "playerId": 3,
                     "typeId": 4,
-                    "pointEquipe": 1,
-                    "pointAdversaire": 2
+                    "teamPoints": 1,
+                    "oponentPoints": 2
                 },
                 {
-                    "joueurId": "joueur2",
+                    "playerId": 4,
                     "typeId": 1,
-                    "pointEquipe": 10,
-                    "pointAdversaire": 20
+                    "teamPoints": 10,
+                    "oponentPoints": 20
                 },
                 {
-                    "joueurId": "joueur1",
-                    "typeId": 10,
-                    "pointEquipe": 17,
-                    "pointAdversaire": 14
+                    "playerId": 4,
+                    "typeId": 5,
+                    "teamPoints": 17,
+                    "oponentPoints": 14
                 },
                 {
-                    "joueurId": "joueur2",
-                    "typeId": 8,
-                    "pointEquipe": 3,
-                    "pointAdversaire": 15
+                    "playerId": 4,
+                    "typeId": 4,
+                    "teamPoints": 3,
+                    "oponentPoints": 15
                 },
                 {
-                    "joueurId": "joueur4",
-                    "typeId": 7,
-                    "pointEquipe": 20,
-                    "pointAdversaire": 8
+                    "playerId": 4,
+                    "typeId": 5,
+                    "teamPoints": 20,
+                    "oponentPoints": 8
                 }
             ]
         }

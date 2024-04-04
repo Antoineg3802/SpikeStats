@@ -57,10 +57,17 @@ router.get("/one/:id", (req, res) => {
 
 router.post("/", (req, res) => {
     matchController.postMatch(req.body, req.cookies.access_token).then((response) => {
-        res.status(201).send({
-            success: true,
-            message: response
-        });
+		if (response.error) {
+			res.status(response.status).send({
+				success: false,
+				message: response.message
+			});
+		}else{
+			res.status(201).send({
+				success: true,
+				message: response
+			});
+		}
     });
 });
 

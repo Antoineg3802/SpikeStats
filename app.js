@@ -43,7 +43,7 @@ app.listen(port, function () {
 	if (process.env.npm_lifecycle_event !== "start") {
 		console.log("API started on : http://localhost:" + port + "/api/");
 	} else {
-		console.log("API started on : http://localhost:" + port);
+		console.log("SpikeStats started on : http://localhost:" + port);
 	}
 });
 
