@@ -408,26 +408,37 @@ function addSet(matchId, numberSet, startSet, endSet, teamScore, opponentScore, 
         verifySet(matchId, numberSet)
         .then((isSetValid) => {
             if (isSetValid){
-                SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`, `winner`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "," + winner + ")")
-                .then((request) => {
-                    if (request.affectedRows) {
-                        resolve({
-                            id : request.insertId,
-                            matchId : matchId,
-                            numberSet : numberSet,
-                            startSet : startSet,
-                            endSet : endSet,
-                            teamScore : teamScore,
-                            opponentScore : opponentScore
-                        })
-                    } else {
-                        resolve({
-                            error: true,
-                            status: 500,
-                            message: 'Internal server error'
-                        })
-                    }
-                })
+                isEndedMatch(matchId)
+                    .then((isMatchEnded) => {
+                        if (isMatchEnded){
+                            resolve({
+                                error: true,
+                                status: 400,
+                                message: 'Match already ended'
+                            })
+                        }else{
+                            SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`, `winner`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "," + winner + ")")
+                            .then((request) => {
+                                if (request.affectedRows) {
+                                    resolve({
+                                        id : request.insertId,
+                                        matchId : matchId,
+                                        numberSet : numberSet,
+                                        startSet : startSet,
+                                        endSet : endSet,
+                                        teamScore : teamScore,
+                                        opponentScore : opponentScore
+                                    })
+                                } else {
+                                    resolve({
+                                        error: true,
+                                        status: 500,
+                                        message: 'Internal server error'
+                                    })
+                                }
+                            })
+                        }
+                    })
             }else{
                 resolve({
                     error: true,
@@ -447,6 +458,19 @@ function verifySet(matchId, numberSet){
                     resolve(true);
                 } else {
                     resolve(false);
+                }
+            })
+    });
+}
+
+function isEndedMatch(matchId){
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT match_id, COUNT(CASE WHEN winner = 1 THEN 1 END) AS team_wins, COUNT(CASE WHEN winner = 0 THEN 1 END) AS opponent_wins FROM sets WHERE match_id = ' + matchId + ' GROUP BY match_id HAVING team_wins >= 3 OR opponent_wins >= 3;')
+            .then((query) => {
+                if (query.length == 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
                 }
             })
     });

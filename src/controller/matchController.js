@@ -68,7 +68,7 @@ function addSet(matchId, body, token){
                 if (functionController.doBodyOk(body)){
                     mysqlController.getMatch(matchId, false)
                     .then((match) => {
-                        if (match.error){
+                        if (!match){
                             resolve({
                                 error: true,
                                 status: 404,

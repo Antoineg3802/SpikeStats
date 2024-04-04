@@ -47,11 +47,13 @@ function randomString(lenght){
 // Verify set validity
 function doBodyOk(body){
     if (body.setNumber && body.startTime && body.endTime && body.teams && body.teams.currentTeam && body.teams.opponentTeam){
-        if (verifyTeamProperties(body.teams.currentTeam) && verifyTeamProperties(body.teams.opponentTeam)){
-            return true
+        if (body.teams.currentTeam.pointsDetail.length + body.teams.opponentTeam.faultsDetail.length === body.teams.currentTeam.points && body.teams.opponentTeam.pointsDetail.length + body.teams.currentTeam.faultsDetail.length === body.teams.opponentTeam.points){
+            if (verifyTeamProperties(body.teams.currentTeam) && verifyTeamProperties(body.teams.opponentTeam)){
+                return true
+            }
         }
-        return false
     }
+    return false
 }
 
 function verifyTeamProperties(team){
