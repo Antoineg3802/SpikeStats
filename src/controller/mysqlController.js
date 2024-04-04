@@ -345,26 +345,28 @@ function getMatch(id, includeSets = true){
                 } else {
                     if (includeSets){
                         getSetsByMatch(id)
-                        .then((sets) => {
+                        .then(async (sets) => {
                             if(sets.length > 0){
                                 let finalRow = rows[0];
                                 finalRow.sets = sets;
-                                sets.forEach((set, index) => {
-                                    Promise.all([
+                                for (const [index, set] of sets.entries()) { // Utiliser for...of pour pouvoir utiliser await à l'intérieur
+                                    const results = await Promise.all([
                                         getPointsBySet(set.id),
                                         getFaultsBySet(set.id),
                                         getPointsBySet(set.id, true),
                                         getFaultsBySet(set.id, true)
-                                    ])
-                                    .then((results)=>{
-                                        finalRow.sets[index].points = {};
-                                        finalRow.sets[index].points.teamPoints = results[0];
-                                        finalRow.sets[index].points.teamFaults = results[1];
-                                        finalRow.sets[index].points.oponentPoints = results[2];
-                                        finalRow.sets[index].points.oponentFaults = results[3];
-                                        resolve(finalRow)
-                                    })
-                                });
+                                    ]);
+
+                                    // Assigner les résultats une fois que toutes les promesses sont résolues
+                                    finalRow.sets[index].points = {
+                                        teamPoints: results[0],
+                                        teamFaults: results[1],
+                                        opponentPoints: results[2],
+                                        opponentFaults: results[3],
+                                    };
+                                }
+
+                                resolve(finalRow)
                             }else{
                                 resolve({
                                     error: true,
@@ -398,9 +400,9 @@ function getPointsBySet(setId, opponent = false){
     return new Promise((resolve, reject) => {
         let requestString;
         if (opponent){
-            requestString = 'SELECT id,set_id,point_type_id,team_points, oponent_points FROM `points` WHERE set_id = ' + setId + ' AND player_id IS NULL'
+            requestString = 'SELECT pt.name, team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id IS NULL'
         }else{
-            requestString = 'SELECT id,set_id,point_type_id,team_points, oponent_points FROM `points` WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+            requestString = 'SELECT pt.name,team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
         }
         SQLRequest(requestString)
             .then((rows) => {
@@ -415,9 +417,9 @@ function getFaultsBySet(setId, opponent = false){
     return new Promise((resolve, reject) => {
         let requestString;
         if (opponent){
-            requestString = 'SELECT id,set_id,fault_type_id,team_points, oponent_points FROM `faults` WHERE set_id = ' + setId + ' AND player_id IS NULL'
+            requestString = 'SELECT ft.name,team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id IS NULL'
         }else{
-            requestString = 'SELECT id,set_id,fault_type_id,team_points, oponent_points FROM `faults` WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+            requestString = 'SELECT ft.name, team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
         }
         SQLRequest(requestString)
             .then((rows) => {
