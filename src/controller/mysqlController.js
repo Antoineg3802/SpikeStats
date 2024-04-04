@@ -336,7 +336,7 @@ function getAllMatches(){
     })
 }
 
-function getMatch(id, includeSets = true){
+function getMatch(id, includeSets = true, userId = null){
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT * FROM `matches` WHERE id = ' + id)
             .then((rows) => {
@@ -350,20 +350,32 @@ function getMatch(id, includeSets = true){
                                 let finalRow = rows[0];
                                 finalRow.sets = sets;
                                 for (const [index, set] of sets.entries()) { // Utiliser for...of pour pouvoir utiliser await à l'intérieur
-                                    const results = await Promise.all([
-                                        getPointsBySet(set.id),
-                                        getFaultsBySet(set.id),
-                                        getPointsBySet(set.id, true),
-                                        getFaultsBySet(set.id, true)
-                                    ]);
+                                    let results 
+                                    if (userId == null){
+                                        results = await Promise.all([
+                                            getPointsBySet(set.id),
+                                            getFaultsBySet(set.id),
+                                            getPointsBySet(set.id, true),
+                                            getFaultsBySet(set.id, true)
+                                        ]);
 
-                                    // Assigner les résultats une fois que toutes les promesses sont résolues
-                                    finalRow.sets[index].points = {
-                                        teamPoints: results[0],
-                                        teamFaults: results[1],
-                                        opponentPoints: results[2],
-                                        opponentFaults: results[3],
-                                    };
+                                        finalRow.sets[index].points = {
+                                            teamPoints: results[0],
+                                            teamFaults: results[1],
+                                            opponentPoints: results[2],
+                                            opponentFaults: results[3],
+                                        };
+                                    }else{
+                                        results = await Promise.all([
+                                            getPointsBySet(set.id, false, userId),
+                                            getFaultsBySet(set.id, false, userId)
+                                        ]);
+
+                                        finalRow.sets[index].points = {
+                                            teamPoints: results[0],
+                                            teamFaults: results[1]
+                                        };
+                                    }
                                 }
 
                                 resolve(finalRow)
@@ -396,13 +408,17 @@ function getSetsByMatch(matchId){
     })
 }
 
-function getPointsBySet(setId, opponent = false){
+function getPointsBySet(setId, opponent = false, userId = null){
     return new Promise((resolve, reject) => {
         let requestString;
         if (opponent){
             requestString = 'SELECT pt.name, team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id IS NULL'
         }else{
-            requestString = 'SELECT pt.name,team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+            if(userId != null){
+                requestString = 'SELECT pt.name, team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id = ' + userId
+            }else{
+                requestString = 'SELECT pt.name,team_points, oponent_points, CONCAT(u.firstname, " ", u.lastname) AS player FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id INNER JOIN `users` u ON u.id = points.player_id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+            }
         }
         SQLRequest(requestString)
             .then((rows) => {
@@ -413,13 +429,17 @@ function getPointsBySet(setId, opponent = false){
     })
 }
 
-function getFaultsBySet(setId, opponent = false){
+function getFaultsBySet(setId, opponent = false, userId = null){
     return new Promise((resolve, reject) => {
         let requestString;
         if (opponent){
             requestString = 'SELECT ft.name,team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id IS NULL'
         }else{
-            requestString = 'SELECT ft.name, team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+            if(userId != null){
+                requestString = 'SELECT ft.name, team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id = ' + userId
+            }else{
+                requestString = 'SELECT ft.name, team_points, oponent_points, CONCAT(u.firstname, " ", u.lastname) AS player FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id INNER JOIN `users` u ON u.id = faults.player_id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
+            }
         }
         SQLRequest(requestString)
             .then((rows) => {

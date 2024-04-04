@@ -39,8 +39,8 @@ router.get("/one/:id", (req, res) => {
 			data: cachedData,
 		});
 	} else {
-		matchController.getMatch(req.params.id).then((match) => {
-            if (!match){
+		matchController.getMatch(req.cookies.access_token, req.params.id).then((match) => {
+            if (match.error){
                 res.status(404).send({
                     success: false,
                     message: "Match not found"

@@ -10,12 +10,28 @@ function getAllMatches() {
     })
 }
 
-function getMatch(id) {
+function getMatch(token, id) {
+    let decodedToken = functionController.decodeToken(token)
     return new Promise((resolve) => {
-        mysqlController.getMatch(id)
-            .then((match) => {
-                resolve(match)
+        if (decodedToken){
+            if (decodedToken.role=== "player"){
+                mysqlController.getMatch(id, true, decodedToken.user_id)
+                    .then((match) => {
+                        resolve(match)
+                    })
+            }else{
+                mysqlController.getMatch(id, true)
+                    .then((match) => {
+                        resolve(match)
+                    })
+            }
+        }else{
+            resolve({
+                error: true,
+                status: 401,
+                message: "Invalid JWT token"
             })
+        }
     })
 }
 
@@ -181,6 +197,6 @@ module.exports = {
     getAllMatches,
     getMatch,
     postMatch,
-    addSet,
+    addSet
     // deleteMatch
 }
