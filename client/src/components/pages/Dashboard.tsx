@@ -24,7 +24,6 @@ import MatchContainer from "../organisms/MatchContainer";
 import Separation from "../atoms/Separation";
 import ThirdTitle from "../atoms/titles/ThirdTitle";
 import SingleMatchCard from "../molecules/SingleMatchCard";
-import { match } from "assert";
 
 const Dashboard = ()=>{
     const { theme } = useTheme();
@@ -91,29 +90,33 @@ const Dashboard = ()=>{
                         
                         )}
                         {matches && (
-                            <MatchContainer>
+                            <>
                                 <SecondaryTitle text={"Matchs"} />
                                 {!matches.passed ? (
                                     <ThirdTitle text="Aucun match joué" />
                                 ) : (
                                     <>
                                         <ThirdTitle text="Matchs passés :" />
-                                        <div>{matches.passed[0].date}</div>
+                                        <MatchContainer>
+                                            {matches.passed.map(match => (
+                                                <SingleMatchCard key={match.id} match={match} isPassed={true} />
+                                            ))}
+                                        </MatchContainer>
                                     </>
                                 )}
-                                {!matches.incoming ? (
-                                    <ThirdTitle text="Aucun match prévu" />
-                                ) : (
-                                    <>
-                                        <ThirdTitle text="Matchs prévus :" />
-                                        {matches.incoming.map(match => (
-                                            <SingleMatchCard key={match.id} match={match} />
-                                        ))}
-                                    </>
-                                )}
-                                
-                                
-                            </MatchContainer>
+                                    {!matches.incoming ? (
+                                        <ThirdTitle text="Aucun match prévu" />
+                                    ) : (
+                                        <>
+                                            <ThirdTitle text="Matchs prévus :" />
+                                            <MatchContainer>
+                                                {matches.incoming.map(match => (
+                                                    <SingleMatchCard key={match.id} match={match} />
+                                                ))}
+                                            </MatchContainer>
+                                        </>
+                                    )}
+                            </>
                         )}
                     </>
                 )}

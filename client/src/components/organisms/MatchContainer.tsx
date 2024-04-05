@@ -8,12 +8,14 @@ interface MatchContainerProps {
 }
 
 export default function MatchContainer({ children }: MatchContainerProps) {
-    const { theme } = useTheme();
     return (
-        <div className={style(theme)}>{children}</div>
+        <div className={style}>{children}</div>
     )
 }
 
-const style = (theme: Theme) => css`
+const style = css`
     margin: 20px auto;
+    display : flex;
+    gap: 20px;
+    position: relative;
 `
