@@ -325,14 +325,22 @@ function getTeamUsers(teamId) {
     });
 }
 
-function getAllMatches(){
+function getAllMatches(userId){
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `matches`')
-            .then((rows) => {
-                resolve(rows)
+        const currentDate = new Date();
+        SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.date < "' + currentDate.toISOString() + '" ORDER BY date DESC')
+            .then((pastMatches) => {
+                SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.date >= "' + currentDate.toISOString() + '" ORDER BY date ASC')
+                .then((incomingMatches) => {
+                    resolve({passed : pastMatches, incoming : incomingMatches});
+                }).catch((err) => {
+                    reject(err);
+                });
             }).catch((err) => {
-                reject(err)
-            })
+                reject(err);
+            });
+
+        
     })
 }
 
@@ -603,7 +611,7 @@ function getMyTeams(userId){
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT teams.id, teams.name, teams.description FROM `teams_users` INNER JOIN `teams` ON teams_users.team_id = teams.id WHERE user_id = ' + userId)
             .then((rows) => {
-                SQLRequest('SELECT users.id, CONCAT(users.firstname, " ",users.firstname) AS name, roles.level AS role FROM `teams_users` INNER JOIN users ON users.id = teams_users.user_id INNER JOIN roles ON roles.id = users.role_id WHERE teams_users.team_id = ' + rows[0].id)
+                SQLRequest('SELECT users.id, CONCAT(users.firstname, " ",users.firstname) AS name, roles.level AS role FROM `teams_users` INNER JOIN users ON users.id = teams_users.user_id INNER JOIN roles ON roles.id = users.role_id WHERE teams_users.team_id = ' + rows[0].id + ' ORDER BY roles.level ASC')
                 .then((users) => {
                     rows[0].members = users;
                     resolve(rows[0])

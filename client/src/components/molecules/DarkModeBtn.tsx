@@ -50,7 +50,7 @@ const style = {
 		border-radius: 50%;
 		padding: 2.5px;
 		&:hover{
-			background-color: ${theme.colors.orange};
+			background-color: ${theme.colors.lightOrange};
 		}
 	`
 

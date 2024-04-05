@@ -1,12 +1,21 @@
 const mysqlController = require("./mysqlController");
 const functionController = require("./functionController");
 
-function getAllMatches() {
+function getAllMatches(token) {
+    let decodedToken = functionController.decodeToken(token)
     return new Promise((resolve) => {
-        mysqlController.getAllMatches()
-            .then((matches) => {
-                resolve(matches)
+        if(decodedToken){
+            mysqlController.getAllMatches(decodedToken.user_id)
+                .then((matches) => {
+                    resolve(matches)
+                })
+        }else{
+            resolve({
+                error: true,
+                status: 401,
+                message: "Invalid JWT token"
             })
+        }
     })
 }
 

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { getMyTeam } from "../../service/api/teamService";
 import { Team } from "../../data/Team";
 import { isAuthenticated } from "../../service/global/verifications";
+import { AllMatches } from "../../data/Match";
+import { getMyMatches } from "../../service/api/matchService";
 
 // import components
 import SeeMembersBtn from "../atoms/team/SeeMembersBtn";
@@ -15,10 +17,19 @@ import BackgroundContentBlur from "../atoms/content/BackgroundContentBlur";
 import Content from "../organisms/Content";
 import NotConnected from "../molecules/NotConnected";
 import Navbar from "../organisms/Navbar";
+import ContentList from "../molecules/ContentList";
+import ContentText from "../atoms/content/ContentText";
+import TeamInfoContainer from "../molecules/TeamInfoContainer";
+import MatchContainer from "../organisms/MatchContainer";
+import Separation from "../atoms/Separation";
+import ThirdTitle from "../atoms/titles/ThirdTitle";
+import SingleMatchCard from "../molecules/SingleMatchCard";
+import { match } from "assert";
 
 const Dashboard = ()=>{
     const { theme } = useTheme();
     const [team, setTeam] = useState<Team>();
+    const [matches, setMatches] = useState<AllMatches>();
     const [error, setError] = useState<string>();
     const [isMemberListOpen, setIsMemberListOpen] = useState<boolean>(false);
 
@@ -34,6 +45,17 @@ const Dashboard = ()=>{
                 setError("Une erreur est survenue")
             }
         })
+
+        getMyMatches()
+        .then((data) => {
+            if ('success' in data && data.success) {
+                setError(data.message);
+            } else if (!('success' in data)) {
+                setMatches(data);
+            }else{
+                setError("Une erreur est survenue")
+            }
+        })
     }, []);
 
     function handleClick(){
@@ -43,7 +65,6 @@ const Dashboard = ()=>{
     return (
         <div className={style(theme).toString()}>
             <Navbar />
-
             <Content>
                 {!isAuthenticated() ? (
                     <>
@@ -56,20 +77,43 @@ const Dashboard = ()=>{
                         {team && (
                             <>
                                 <SecondaryTitle text={"Equipe " + team.name} />
-                                <div>
-                                    <p>{team.members.length} membre{team.members.length > 1 ? 's': ""}</p>
-                                    <div>
+                                <ContentText>{team.description} ({team.members.length} membre{team.members.length > 1 ? 's': ""})</ContentText>
+                                <TeamInfoContainer>
+                                    <ContentList isDisplayed={isMemberListOpen}>
                                         {team.members.map((member) => (
-                                            <div key={member.id}>
-                                                <span>{member.name} </span>
-                                                <span>{member.role}</span>
-                                            </div>
+                                            <li key={member.id}>{member.name} ({member.role})</li>
                                         ))}
-                                    </div>
+                                    </ContentList>
                                     <SeeMembersBtn onClick={handleClick}>{isMemberListOpen ? 'Masquer' : 'Voir'} les membres {'>'}</SeeMembersBtn>
-                                </div>
+                                </TeamInfoContainer>
+                                <Separation />
                             </>
                         
+                        )}
+                        {matches && (
+                            <MatchContainer>
+                                <SecondaryTitle text={"Matchs"} />
+                                {!matches.passed ? (
+                                    <ThirdTitle text="Aucun match joué" />
+                                ) : (
+                                    <>
+                                        <ThirdTitle text="Matchs passés :" />
+                                        <div>{matches.passed[0].date}</div>
+                                    </>
+                                )}
+                                {!matches.incoming ? (
+                                    <ThirdTitle text="Aucun match prévu" />
+                                ) : (
+                                    <>
+                                        <ThirdTitle text="Matchs prévus :" />
+                                        {matches.incoming.map(match => (
+                                            <SingleMatchCard key={match.id} match={match} />
+                                        ))}
+                                    </>
+                                )}
+                                
+                                
+                            </MatchContainer>
                         )}
                     </>
                 )}

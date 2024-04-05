@@ -4,17 +4,19 @@ import { Theme } from "../../theme/theme";
 
 interface ContentListProps{
     children: React.ReactNode;
+    isDisplayed?: boolean;
 }
 
-const ContentList = ({children}: ContentListProps)=>{
+const ContentList = ({children, isDisplayed}: ContentListProps)=>{
     const {theme} = useTheme();
     return (
-        <ul className={style(theme)}>{children}</ul>
+        <ul className={style(theme, isDisplayed)}>{children}</ul>
     )
 }
 
-const style = (theme: Theme)=>css`
-    color: ${theme.colors.black}
+const style = (theme: Theme, isDisplayed? : boolean)=>css`
+    color: ${theme.colors.black};
+    ${isDisplayed ? "" : "display: none;"}
 `
 
 export default ContentList;

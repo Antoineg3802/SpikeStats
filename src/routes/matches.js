@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 		});
 	} else {
 		matchController
-			.getAllMatches()
+			.getAllMatches(req.cookies.access_token)
 			.then((matches) => {
 				res.status(200).send({
 					success: true,
