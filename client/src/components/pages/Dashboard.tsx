@@ -6,15 +6,15 @@ import { useEffect, useState } from "react";
 // import services and dataModels
 import { getMyTeam } from "../../service/api/teamService";
 import { Team } from "../../data/Team";
+import { isAuthenticated } from "../../service/global/verifications";
 
 // import components
-import Navbar from "../organisms/Navbar";
-import SecondaryTitle from "../atoms/titles/SecondaryTitle";
-import Content from "../organisms/Content";
-import { isAuthenticated } from "../../service/global/verifications";
-import NotConnected from "../molecules/NotConnected";
-import BackgroundContentBlur from "../atoms/content/BackgroundContentBlur";
 import SeeMembersBtn from "../atoms/team/SeeMembersBtn";
+import SecondaryTitle from "../atoms/titles/SecondaryTitle";
+import BackgroundContentBlur from "../atoms/content/BackgroundContentBlur";
+import Content from "../organisms/Content";
+import NotConnected from "../molecules/NotConnected";
+import Navbar from "../organisms/Navbar";
 
 const Dashboard = ()=>{
     const { theme } = useTheme();
