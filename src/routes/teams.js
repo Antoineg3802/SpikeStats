@@ -108,8 +108,22 @@ router.delete('/:id', (req, res) => {
     // }
 });
 
-router.get('/linked', (req, res) => {
-    // res.json(teams.filter((team) => team.members.includes(req.user.id)));
+router.get('/mine', (req, res) => {
+    teamController.getMyTeams(req.cookies.access_token)
+        .then((response) => {
+            console.log(response)
+            if (response.error){
+                res.status(response.status).send({
+                    success: false,
+                    message: response.message
+                })
+            }else{
+                res.status(200).send({
+                    success: true,
+                    data: response
+                })
+            }
+        })
 });
 
 router.post('/join', (req, res) => {
@@ -127,7 +141,6 @@ router.post('/join', (req, res) => {
                 })
             }
         })
-    // res.json(teams.filter((team) => team.members.includes(req.user.id)));
 });
 
 module.exports = router;

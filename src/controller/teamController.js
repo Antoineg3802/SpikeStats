@@ -117,9 +117,32 @@ function joinTeam(invitationCode, token){
     })
 }
 
+function getMyTeams(token){
+    return new Promise((resolve, reject) => {
+        let decodedToken = functionController.decodeToken(token)
+        if (decodedToken){
+            mysqlController.getMyTeams(decodedToken.user_id)
+                .then((response) => {
+                    if (response.error){
+                        resolve(response)
+                    }else{
+                        resolve(response)
+                    }
+                })
+        }else{
+            resolve({
+                error: true,
+                status: 401,
+                message: "Invalid JWT token"
+            })
+        }
+    })
+}
+
 module.exports = {
     getAllTeams,
     getTeam,
     postTeam,
-    joinTeam
+    joinTeam,
+    getMyTeams
 }

@@ -599,6 +599,17 @@ function pushPoints(setId, type_id, player_id, team_points, oponent_points){
     })
 }
 
+function getMyTeams(userId){
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT teams.id, teams.name, teams.description FROM `teams_users` INNER JOIN `teams` ON teams_users.team_id = teams.id WHERE user_id = ' + userId)
+            .then((rows) => {
+                resolve(rows[0])
+            }).catch((err) => {
+                reject(err)
+            })
+    })
+}
+
 // function deleteMatch(){
 //     return new Promise((resolve, reject) => {
 //         SQLRequest('DELETE FROM `matches` WHERE id = ' + matchId)
@@ -633,5 +644,6 @@ module.exports = {
     pushPoints,
     getPointsBySet,
     getFaultsBySet,
+    getMyTeams
     // deleteMatch
 }
