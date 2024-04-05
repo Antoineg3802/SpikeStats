@@ -16,6 +16,7 @@ import CreateAccount from './components/pages/CreateAccount';
 import Dashboard from './components/pages/Dashboard';
 import LogIn from './components/pages/LogIn';
 import Pricing from './components/pages/Pricing';
+import Match from './components/pages/Match';
 
 const router = createBrowserRouter([
 	{
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
 	{
 		path: "/pricing",
 		element: <Pricing />
+	},
+	{
+		path: "/matches/:id",
+		element: <Match />
 	},
 	{
 		path: "*",

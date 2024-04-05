@@ -95,7 +95,7 @@ function doUserExistInDbById(userId) {
 
 function updateUser(userId, body) {
     // Utilisation de la fonction dans la fonction `updateUser`
-    return new Promise(async (resolve) => {
+    return new Promise(async(resolve) => {
         if (await doUserExistInDbById(userId)) {
             if (areKeysAllowed(body)) {
                 const updateFields = Object.keys(body).map(key => `${key}='${body[key]}'`).join(', ');
@@ -132,7 +132,7 @@ function areKeysAllowed(body) {
 }
 
 function deleteUser(userId) {
-    return new Promise(async (resolve) => {
+    return new Promise(async(resolve) => {
         if (await doUserExistInDbById(userId)) {
             SQLRequest('DELETE FROM `users` WHERE id = ' + userId)
                 .then((query) => {
@@ -181,9 +181,9 @@ function postTeam(name, description, ownerId) {
                                         resolve({
                                             error: false,
                                             data: {
-                                                name : name,
-                                                description : description,
-                                                owner : user[0]
+                                                name: name,
+                                                description: description,
+                                                owner: user[0]
                                             }
                                         })
                                     } else {
@@ -243,32 +243,32 @@ function getTeamByInvitationCode(invitationCode) {
 function joinTeam(teamId, userId) {
     return new Promise((resolve, reject) => {
         verifyUserInTeam(teamId, userId)
-        .then((isUserInTeam) => {
-            if (isUserInTeam) {
-                resolve({
-                    error: true,
-                    status: 409,
-                    message: "User already in team"
-                })
-            } else {
-                SQLRequest('INSERT INTO `teams_users` (`team_id`, `user_id`) VALUES (' + teamId + ',' + userId + ')')
-                    .then((request) => {
-                        if (request.affectedRows) {
-                            resolve({
-                                error: false
-                            })
-                        } else {
-                            resolve({
-                                error: true,
-                                status: 500,
-                                message: 'Internal server error'
-                            })
-                        }
-                    }).catch((err) => {
-                        reject(err)
+            .then((isUserInTeam) => {
+                if (isUserInTeam) {
+                    resolve({
+                        error: true,
+                        status: 409,
+                        message: "User already in team"
                     })
-            }
-        })
+                } else {
+                    SQLRequest('INSERT INTO `teams_users` (`team_id`, `user_id`) VALUES (' + teamId + ',' + userId + ')')
+                        .then((request) => {
+                            if (request.affectedRows) {
+                                resolve({
+                                    error: false
+                                })
+                            } else {
+                                resolve({
+                                    error: true,
+                                    status: 500,
+                                    message: 'Internal server error'
+                                })
+                            }
+                        }).catch((err) => {
+                            reject(err)
+                        })
+                }
+            })
     })
 }
 
@@ -325,77 +325,85 @@ function getTeamUsers(teamId) {
     });
 }
 
-function getAllMatches(userId){
+function getAllMatches(userId) {
     return new Promise((resolve, reject) => {
         const currentDate = new Date();
         SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.date < "' + currentDate.toISOString() + '" ORDER BY date DESC')
             .then((pastMatches) => {
                 SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.date >= "' + currentDate.toISOString() + '" ORDER BY date ASC')
-                .then((incomingMatches) => {
-                    resolve({passed : pastMatches, incoming : incomingMatches});
-                }).catch((err) => {
-                    reject(err);
-                });
+                    .then((incomingMatches) => {
+                        resolve({ passed: pastMatches, incoming: incomingMatches });
+                    }).catch((err) => {
+                        reject(err);
+                    });
             }).catch((err) => {
                 reject(err);
             });
-
-        
     })
 }
 
-function getMatch(id, includeSets = true, userId = null){
+function getMatch(id, includeSets = true, userId = null, role = 'admin') {
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT * FROM `matches` WHERE id = ' + id)
             .then((rows) => {
                 if (rows.length == 0) {
                     resolve(false);
                 } else {
-                    if (includeSets){
-                        getSetsByMatch(id)
-                        .then(async (sets) => {
-                            if(sets.length > 0){
-                                let finalRow = rows[0];
-                                finalRow.sets = sets;
-                                for (const [index, set] of sets.entries()) { // Utiliser for...of pour pouvoir utiliser await à l'intérieur
-                                    let results 
-                                    if (userId == null){
-                                        results = await Promise.all([
-                                            getPointsBySet(set.id),
-                                            getFaultsBySet(set.id),
-                                            getPointsBySet(set.id, true),
-                                            getFaultsBySet(set.id, true)
-                                        ]);
+                    if (includeSets) {
+                        isUserInMatch(id, userId).then((isUserInMatch) => {
+                            if (isUserInMatch) {
+                                getSetsByMatch(id)
+                                    .then(async(sets) => {
+                                        if (sets.length > 0) {
+                                            let finalRow = rows[0];
+                                            finalRow.sets = sets;
+                                            for (const [index, set] of sets.entries()) { // Utiliser for...of pour pouvoir utiliser await à l'intérieur
+                                                let results
+                                                if (role == 'admin' || role == 'coach') {
+                                                    results = await Promise.all([
+                                                        getPointsBySet(set.id),
+                                                        getFaultsBySet(set.id),
+                                                        getPointsBySet(set.id, true),
+                                                        getFaultsBySet(set.id, true)
+                                                    ]);
 
-                                        finalRow.sets[index].points = {
-                                            teamPoints: results[0],
-                                            teamFaults: results[1],
-                                            opponentPoints: results[2],
-                                            opponentFaults: results[3],
-                                        };
-                                    }else{
-                                        results = await Promise.all([
-                                            getPointsBySet(set.id, false, userId),
-                                            getFaultsBySet(set.id, false, userId)
-                                        ]);
+                                                    finalRow.sets[index].points = {
+                                                        teamPoints: results[0],
+                                                        teamFaults: results[1],
+                                                        opponentPoints: results[2],
+                                                        opponentFaults: results[3],
+                                                    };
+                                                } else {
+                                                    results = await Promise.all([
+                                                        getPointsBySet(set.id, false, userId),
+                                                        getFaultsBySet(set.id, false, userId)
+                                                    ]);
 
-                                        finalRow.sets[index].points = {
-                                            teamPoints: results[0],
-                                            teamFaults: results[1]
-                                        };
-                                    }
-                                }
+                                                    finalRow.sets[index].points = {
+                                                        teamPoints: results[0],
+                                                        teamFaults: results[1]
+                                                    };
+                                                }
+                                            }
 
-                                resolve(finalRow)
-                            }else{
+                                            resolve(finalRow)
+                                        } else {
+                                            resolve({
+                                                error: true,
+                                                status: 404,
+                                                message: "No sets found for this match"
+                                            })
+                                        }
+                                    })
+                            } else {
                                 resolve({
                                     error: true,
-                                    status: 404,
-                                    message: "No sets found for this match"
+                                    status: 403,
+                                    message: "User not in match"
                                 })
                             }
                         })
-                    }else{
+                    } else {
                         resolve(rows[0])
                     }
                 }
@@ -405,7 +413,7 @@ function getMatch(id, includeSets = true, userId = null){
     })
 }
 
-function getSetsByMatch(matchId){
+function getSetsByMatch(matchId) {
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT * FROM `sets` WHERE match_id = ' + matchId)
             .then((rows) => {
@@ -416,15 +424,15 @@ function getSetsByMatch(matchId){
     })
 }
 
-function getPointsBySet(setId, opponent = false, userId = null){
+function getPointsBySet(setId, opponent = false, userId = null) {
     return new Promise((resolve, reject) => {
         let requestString;
-        if (opponent){
+        if (opponent) {
             requestString = 'SELECT pt.name, team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id IS NULL'
-        }else{
-            if(userId != null){
+        } else {
+            if (userId != null) {
                 requestString = 'SELECT pt.name, team_points, oponent_points FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id WHERE set_id = ' + setId + ' AND player_id = ' + userId
-            }else{
+            } else {
                 requestString = 'SELECT pt.name,team_points, oponent_points, CONCAT(u.firstname, " ", u.lastname) AS player FROM `points` INNER JOIN `point_type` pt ON points.point_type_id = pt.id INNER JOIN `users` u ON u.id = points.player_id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
             }
         }
@@ -437,15 +445,15 @@ function getPointsBySet(setId, opponent = false, userId = null){
     })
 }
 
-function getFaultsBySet(setId, opponent = false, userId = null){
+function getFaultsBySet(setId, opponent = false, userId = null) {
     return new Promise((resolve, reject) => {
         let requestString;
-        if (opponent){
+        if (opponent) {
             requestString = 'SELECT ft.name,team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id IS NULL'
-        }else{
-            if(userId != null){
+        } else {
+            if (userId != null) {
                 requestString = 'SELECT ft.name, team_points, oponent_points FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id WHERE set_id = ' + setId + ' AND player_id = ' + userId
-            }else{
+            } else {
                 requestString = 'SELECT ft.name, team_points, oponent_points, CONCAT(u.firstname, " ", u.lastname) AS player FROM `faults` INNER JOIN `fault_type` ft ON faults.fault_type_id = ft.id INNER JOIN `users` u ON u.id = faults.player_id WHERE set_id = ' + setId + ' AND player_id IS NOT NULL'
             }
         }
@@ -458,17 +466,17 @@ function getFaultsBySet(setId, opponent = false, userId = null){
     })
 }
 
-function postMatch(teamId, opponent, date, location){
+function postMatch(teamId, opponent, date, location) {
     return new Promise((resolve, reject) => {
         SQLRequest('INSERT INTO `matches` (`team_id`, `opponent`, `date`, `location`) VALUES ("' + teamId + '","' + opponent + '","' + date + '","' + location + '")')
             .then((request) => {
                 if (request.affectedRows) {
                     resolve({
-                        id : request.insertId,
-                        teamId : teamId,
-                        opponent : opponent,
-                        date : date,
-                        location : location
+                        id: request.insertId,
+                        teamId: teamId,
+                        opponent: opponent,
+                        date: date,
+                        location: location
                     })
                 } else {
                     resolve({
@@ -483,54 +491,54 @@ function postMatch(teamId, opponent, date, location){
     })
 }
 
-function addSet(matchId, numberSet, startSet, endSet, teamScore, opponentScore, winner){
-    return new Promise((resolve)=>{
+function addSet(matchId, numberSet, startSet, endSet, teamScore, opponentScore, winner) {
+    return new Promise((resolve) => {
         verifySet(matchId, numberSet)
-        .then((isSetValid) => {
-            if (isSetValid){
-                isEndedMatch(matchId)
-                    .then((isMatchEnded) => {
-                        if (isMatchEnded){
-                            resolve({
-                                error: true,
-                                status: 400,
-                                message: 'Match already ended'
-                            })
-                        }else{
-                            SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`, `winner`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "," + winner + ")")
-                            .then((request) => {
-                                if (request.affectedRows) {
-                                    resolve({
-                                        id : request.insertId,
-                                        matchId : matchId,
-                                        numberSet : numberSet,
-                                        startSet : startSet,
-                                        endSet : endSet,
-                                        teamScore : teamScore,
-                                        opponentScore : opponentScore
+            .then((isSetValid) => {
+                if (isSetValid) {
+                    isEndedMatch(matchId)
+                        .then((isMatchEnded) => {
+                            if (isMatchEnded) {
+                                resolve({
+                                    error: true,
+                                    status: 400,
+                                    message: 'Match already ended'
+                                })
+                            } else {
+                                SQLRequest("INSERT INTO `sets` (`match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`, `winner`) VALUES (" + matchId + "," + numberSet + ",'" + startSet + "','" + endSet + "'," + teamScore + "," + opponentScore + "," + winner + ")")
+                                    .then((request) => {
+                                        if (request.affectedRows) {
+                                            resolve({
+                                                id: request.insertId,
+                                                matchId: matchId,
+                                                numberSet: numberSet,
+                                                startSet: startSet,
+                                                endSet: endSet,
+                                                teamScore: teamScore,
+                                                opponentScore: opponentScore
+                                            })
+                                        } else {
+                                            resolve({
+                                                error: true,
+                                                status: 500,
+                                                message: 'Internal server error'
+                                            })
+                                        }
                                     })
-                                } else {
-                                    resolve({
-                                        error: true,
-                                        status: 500,
-                                        message: 'Internal server error'
-                                    })
-                                }
-                            })
-                        }
+                            }
+                        })
+                } else {
+                    resolve({
+                        error: true,
+                        status: 400,
+                        message: 'Set already exist'
                     })
-            }else{
-                resolve({
-                    error: true,
-                    status: 400,
-                    message: 'Set already exist'
-                })
-            }
-        })
+                }
+            })
     })
 }
 
-function verifySet(matchId, numberSet){
+function verifySet(matchId, numberSet) {
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT * FROM `sets` WHERE match_id = ' + matchId + ' AND number_set = ' + numberSet)
             .then((query) => {
@@ -543,7 +551,7 @@ function verifySet(matchId, numberSet){
     });
 }
 
-function isEndedMatch(matchId){
+function isEndedMatch(matchId) {
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT match_id, COUNT(CASE WHEN winner = 1 THEN 1 END) AS team_wins, COUNT(CASE WHEN winner = 0 THEN 1 END) AS opponent_wins FROM sets WHERE match_id = ' + matchId + ' GROUP BY match_id HAVING team_wins >= 3 OR opponent_wins >= 3;')
             .then((query) => {
@@ -557,12 +565,12 @@ function isEndedMatch(matchId){
 }
 
 // setId, fault.type, player, fault.teamPoints, fault.oponentPoints
-function pushFaults(setId, type_id, player_id, team_points, oponent_points){
+function pushFaults(setId, type_id, player_id, team_points, oponent_points) {
     return new Promise((resolve) => {
         let requestString;
-        if (player_id == null){
+        if (player_id == null) {
             requestString = 'INSERT INTO `faults` (`set_id`, `fault_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
-        }else{
+        } else {
             requestString = 'INSERT INTO `faults` (`set_id`, `player_id`, `fault_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + player_id + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
         }
         SQLRequest(requestString)
@@ -582,12 +590,12 @@ function pushFaults(setId, type_id, player_id, team_points, oponent_points){
     })
 }
 
-function pushPoints(setId, type_id, player_id, team_points, oponent_points){
+function pushPoints(setId, type_id, player_id, team_points, oponent_points) {
     return new Promise((resolve) => {
         let requestString;
-        if (player_id == null){
+        if (player_id == null) {
             requestString = 'INSERT INTO `points` (`set_id`, `point_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
-        }else{
+        } else {
             requestString = 'INSERT INTO `points` (`set_id`, `player_id`, `point_type_id`, `team_points`, `oponent_points`) VALUES (' + setId + ',' + player_id + ',' + type_id + ',' + team_points + ',' + oponent_points + ')';
         }
         SQLRequest(requestString)
@@ -607,17 +615,30 @@ function pushPoints(setId, type_id, player_id, team_points, oponent_points){
     })
 }
 
-function getMyTeams(userId){
+function getMyTeams(userId) {
     return new Promise((resolve, reject) => {
         SQLRequest('SELECT teams.id, teams.name, teams.description FROM `teams_users` INNER JOIN `teams` ON teams_users.team_id = teams.id WHERE user_id = ' + userId)
             .then((rows) => {
                 SQLRequest('SELECT users.id, CONCAT(users.firstname, " ",users.firstname) AS name, roles.level AS role FROM `teams_users` INNER JOIN users ON users.id = teams_users.user_id INNER JOIN roles ON roles.id = users.role_id WHERE teams_users.team_id = ' + rows[0].id + ' ORDER BY roles.level ASC')
-                .then((users) => {
-                    rows[0].members = users;
-                    resolve(rows[0])
-                })
+                    .then((users) => {
+                        rows[0].members = users;
+                        resolve(rows[0])
+                    })
             }).catch((err) => {
                 reject(err)
+            })
+    })
+}
+
+function isUserInMatch(matchId, userId) {
+    return new Promise((resolve, reject) => {
+        SQLRequest('SELECT * FROM `matches` INNER JOIN `teams_users` ON matches.team_id = teams_users.team_id WHERE matches.id = ' + matchId + ' AND user_id = ' + userId)
+            .then((query) => {
+                if (query.length == 0 || userId == null) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
             })
     })
 }
