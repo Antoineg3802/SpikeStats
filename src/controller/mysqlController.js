@@ -605,7 +605,7 @@ function getMyTeams(userId){
             .then((rows) => {
                 SQLRequest('SELECT CONCAT(users.firstname, " ",users.firstname) AS name, roles.level AS role FROM `teams_users` INNER JOIN users ON users.id = teams_users.user_id INNER JOIN roles ON roles.id = users.role_id WHERE teams_users.team_id = ' + rows[0].id)
                 .then((users) => {
-                    rows[0].users = users;
+                    rows[0].members = users;
                     resolve(rows)
                 })
             }).catch((err) => {

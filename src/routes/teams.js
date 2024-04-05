@@ -109,9 +109,17 @@ router.delete('/:id', (req, res) => {
 });
 
 router.get('/mine', (req, res) => {
+    const cacheKey = req.originalUrl || req.url;
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+        res.status(200).send({
+            success: true,
+            data: cachedData
+        });
+        return;
+    }
     teamController.getMyTeams(req.cookies.access_token)
         .then((response) => {
-            console.log(response)
             if (response.error){
                 res.status(response.status).send({
                     success: false,
