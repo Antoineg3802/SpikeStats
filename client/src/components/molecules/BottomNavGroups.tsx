@@ -1,11 +1,11 @@
 import { css } from '@emotion/css'
 import React from 'react'
 
-interface NavGroupsProps{
+interface BottomNavGroupsProps{
     children: React.ReactNode;
 }
 
-const NavGroups = ({children} : NavGroupsProps)=>{
+const BottomNavGroups = ({children} : BottomNavGroupsProps)=>{
     return (
         <div className={style}>
             {children}
@@ -14,13 +14,15 @@ const NavGroups = ({children} : NavGroupsProps)=>{
 }
 
 const style = css`
+    position: absolute;
+    bottom: 10px;
     display: flex;
     flex-direction: column;
     align-items: baseline;
     padding: 0 20px;
     font-size: 1.2rem;
     font-weight: 500;
-    gap: 5px;
+    gap: 15px;
 `
 
-export default NavGroups
+export default BottomNavGroups

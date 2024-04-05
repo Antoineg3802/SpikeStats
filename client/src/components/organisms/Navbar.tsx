@@ -8,6 +8,7 @@ import NavGroups from "../molecules/NavGroups";
 import { useTheme } from "../../context/ThemeContext";
 import LogoutBtn from "../atoms/navbar/LogoutBtn";
 import { useState } from "react";
+import BottomNavGroups from "../molecules/BottomNavGroups";
 
 const Navbar = () => {
     const [isConnected, setIsConnected] = useState(isAuthenticated());
@@ -18,6 +19,7 @@ const Navbar = () => {
     function handleLogoutBtnClick(){
         setIsConnected(false);
         deleteAuthCookie();
+        window.location.href = '/';
     }
 
     return (
@@ -27,13 +29,15 @@ const Navbar = () => {
                 <NavItem href="/" text='Home' isSelected={slug === '' ? true : false} />
                 <NavItem href="/pricing" text='Pricing' isSelected={slug === 'pricing' ? true : false} />
                 <NavItem href="/dashboard" text='Dashboard' isSelected={slug === 'dashboard' ? true : false}/>
+            </NavGroups>
+            <BottomNavGroups>
+                <DarkModeBtn />
                 {isConnected ? (
                     <LogoutBtn onClick={handleLogoutBtnClick} text="Se déconnecter"/>
                 ) : (
                     <NavItem href="/login" text="Se connecter" isSelected={false} />
                 )}
-                <DarkModeBtn />
-            </NavGroups>
+            </BottomNavGroups>
         </div>
     )
 }
@@ -42,6 +46,7 @@ const style = (theme: any) => css`
     grid-area: navbar;
     background-color: ${theme.colors.lightOrange};
     padding: 10px;
+    position: relative;
 `
 
 export default Navbar;

@@ -22,6 +22,7 @@ const style = (theme : Theme, disabled: boolean)=>css`
     font-size: 1rem;
     font-weight: 500;
     transition: 0.1s ease-in-out all;
+    font-family: inherit;
     &:hover{
         ${disabled ? "": "background-color: "+ theme.colors.white +"; color: "+ theme.colors.orange +";cursor: pointer;"}
     }

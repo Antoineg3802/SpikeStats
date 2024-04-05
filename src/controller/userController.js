@@ -82,6 +82,7 @@ function registerUser(firstname, lastname, mail, password, roleId = 2) {
 					.then((res) => {
 						if (!res.error) {
 							resolve({
+								id: res.userId,
 								firstname: firstname,
 								lastname: lastname,
 								mail: mail,

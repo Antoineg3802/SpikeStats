@@ -1,19 +1,23 @@
+import { css } from "@emotion/css";
+import { useTheme } from "../../context/ThemeContext";
+import { Theme } from "../../theme/theme";
 import { useState } from "react";
-import MainTitle from "../atoms/titles/MainTitle";
-import CreateAccountContainer from "../organisms/CreateAccountContainer";
-import { isValidEmail } from "../../service/global/verifications";
+
+// import services
 import { logIn } from "../../service/api/userService";
-import SecondaryTitle from "../atoms/titles/SecondaryTitle";
-import LoginFormContainer from "../organisms/LoginFormContainer";
-import LogForm from "../molecules/LogForm";
+import { isValidEmail } from "../../service/global/verifications";
+
+// import components
 import FormInput from "../atoms/form/FormInput";
 import FormIndicator from "../atoms/form/FormIndicator";
 import SendFormBtn from "../atoms/form/SendFormBtn";
 import Separation from "../atoms/Separation";
 import SpanWithLink from "../atoms/SpanWithLink";
-import { css } from "@emotion/css";
-import { useTheme } from "../../context/ThemeContext";
-import { Theme } from "../../theme/theme";
+import MainTitle from "../atoms/titles/MainTitle";
+import SecondaryTitle from "../atoms/titles/SecondaryTitle";
+import LogForm from "../molecules/LogForm";
+import LoginFormContainer from "../organisms/LoginFormContainer";
+import CreateAccountContainer from "../organisms/CreateAccountContainer";
 
 const LogIn = () => {
     const [email, setEmail] = useState<string>("");
@@ -48,7 +52,14 @@ const LogIn = () => {
                 .then((data): void => {
                     if (data.success) {
                         document.cookie = `isAuthenticated=true`;
-                        window.location.href = "/";
+                        // chheck params in url to redirect
+                        const url = new URL(window.location.href);
+                        const redirect = url.searchParams.get("redirect");
+                        if(redirect) {
+                            window.location.href = redirect
+                        }else{
+                            window.location.href = "/";
+                        }
                     }else{
                         setError(data.message as string);
                         setTimeout(() => {

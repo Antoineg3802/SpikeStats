@@ -8,7 +8,6 @@ import './index.css';
 
 // Functions import
 import reportWebVitals from './reportWebVitals';
-import { isAuthenticated } from './service/global/verifications';
 
 // Pages import
 import HomePage from './components/pages/HomePage';
@@ -29,7 +28,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/dashboard",
-		element: isAuthenticated() ? <Dashboard /> : <NotFound />
+		element: <Dashboard />,
 	},
 	{
 		path: "/login",

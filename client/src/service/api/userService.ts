@@ -1,24 +1,10 @@
 import { User } from '../../data/User';
 import CustomHttpError from '../../data/http/CustomHTTPError';
-import CustomHttpResponse from '../../data/http/CustomHTTPResponse';
+import {CustomHTTPResponse} from '../../data/http/CustomHTTPResponse';
 
 const baseUrl = '/api';
 
-export const fetchUsers = (): Promise<User[]> => {
-    return new Promise((resolve, reject) => {
-        fetch(`${baseUrl}/users`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                resolve(data.data as User[])
-            }else{
-                reject(data as Error)
-            }
-        })
-    })
-};
-
-export const logIn = (email: string, password: string): Promise<CustomHttpResponse | CustomHttpError> => {
+export const logIn = (email: string, password: string): Promise<CustomHTTPResponse | CustomHttpError> => {
     return new Promise((resolve) => {
         fetch(`${baseUrl}/users/login`,
             {
@@ -39,7 +25,7 @@ export const logIn = (email: string, password: string): Promise<CustomHttpRespon
             })
             .then(data => {
                 if (data.status === 200) {
-                    resolve(data as CustomHttpResponse)
+                    resolve(data as CustomHTTPResponse)
                 }else{
                     switch(data.status){
                         case 404:
@@ -65,7 +51,7 @@ export const logIn = (email: string, password: string): Promise<CustomHttpRespon
     })
 };
 
-export const signUpPlayer = (firstname: string, lastname: string, email: string, password: string): Promise<CustomHttpResponse | CustomHttpError> => {
+export const signUpPlayer = (firstname: string, lastname: string, email: string, password: string): Promise<CustomHTTPResponse | CustomHttpError> => {
     return new Promise((resolve) => {
         fetch(`${baseUrl}/users/register/player`,
             {
@@ -88,7 +74,7 @@ export const signUpPlayer = (firstname: string, lastname: string, email: string,
             })
             .then(data => {
                 if (data.status === 201) {
-                    resolve(data as CustomHttpResponse)
+                    resolve(data as CustomHTTPResponse)
                 }else{
                     switch(data.status){
                         case 409:
@@ -108,7 +94,7 @@ export const signUpPlayer = (firstname: string, lastname: string, email: string,
     })
 };
 
-export function signUpCoach(firstname: string, lastname: string, email: string, password: string): Promise<CustomHttpResponse | CustomHttpError> {
+export function signUpCoach(firstname: string, lastname: string, email: string, password: string): Promise<CustomHTTPResponse | CustomHttpError> {
     return new Promise((resolve) => {
         fetch(`${baseUrl}/users/register/manager`,
             {

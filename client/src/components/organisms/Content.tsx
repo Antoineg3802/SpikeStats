@@ -1,6 +1,7 @@
 import { css } from '@emotion/css';
 import { useTheme } from "../../context/ThemeContext";
 import React from 'react'
+import { Theme } from '../../theme/theme';
 
 interface ContentProps {
     children: React.ReactNode;
@@ -15,7 +16,8 @@ const Content = ({children} : ContentProps)=>{
     )
 }
 
-const style = (theme: any)=>css`
+const style = (theme: Theme)=>css`
+    position: relative;
     grid-area: content;
     background-color: ${theme.colors.white};
     padding: 20px;

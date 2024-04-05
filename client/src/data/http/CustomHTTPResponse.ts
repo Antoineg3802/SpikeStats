@@ -1,4 +1,4 @@
-export default interface CustomHTTPResponse {
+export interface CustomHTTPResponse {
     success: boolean;
     data: any[];
     message?: string;

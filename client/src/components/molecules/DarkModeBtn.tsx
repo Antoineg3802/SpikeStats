@@ -16,9 +16,15 @@ export const DarkModeBtn = () => {
 
 	return (
 		<div className={style.container(theme)} onClick={handleClick}>
-			<div className={style.btnIcon(theme, darkMode)}>{!darkMode ? <IoMdSunny color={theme.colors.black} /> : <IoMdMoon color={theme.colors.black} />}</div>
+			<div className={style.btnIcon(theme, darkMode)}>
+				{!darkMode ? (
+					<IoMdSunny color={theme.colors.black} />
+				) : (
+					<IoMdMoon color={theme.colors.black} />
+				)}
+			</div>
 		</div>
-	)
+	);
 };
 
 const style = {
@@ -26,9 +32,10 @@ const style = {
 		display: block;
 		position: relative;
 		width: 50px;
-		height: 25px;
-		border-radius: 12.5px;
+		height: 30px;
+		border-radius: 15px;
 		background-color: ${theme.colors.white};
+		user-select: none;
 		&:hover{
 			cursor: pointer;
 		}
@@ -37,9 +44,14 @@ const style = {
 		display: block;
 		position: absolute;
 		height: 20px;
-		left: ${isDarkMode ? '27.5px;' : '2.5px;'};
+		left: ${isDarkMode ? '22.5px;' : '2.5px;'};
 		top: 2.5px;
 		transition: all 0.3s;
+		border-radius: 50%;
+		padding: 2.5px;
+		&:hover{
+			background-color: ${theme.colors.orange};
+		}
 	`
 
 }
