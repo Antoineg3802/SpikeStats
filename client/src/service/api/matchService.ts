@@ -37,7 +37,6 @@ export const getMyMatches = (): Promise<AllMatches | CustomHTTPError> => {
                             } as CustomHTTPError);
                             break;
                         default:
-                            console.log(data.status)
                             resolve({
                                 success: false, 
                                 message:"Une erreur est survenue"
@@ -50,7 +49,6 @@ export const getMyMatches = (): Promise<AllMatches | CustomHTTPError> => {
 
 export const getMatch = (id : number): Promise<MatchDetails | CustomHTTPError> =>{
     return new Promise((resolve) => {
-        console.log(`${baseUrl}/matches/one/` + id.toString())
         fetch(`${baseUrl}/matches/one/` + id.toString(),
             {
                 method: 'GET',
@@ -66,7 +64,6 @@ export const getMatch = (id : number): Promise<MatchDetails | CustomHTTPError> =
                 return data;
             })
             .then((data): void => {
-                console.log(data)
                 if (data.status === 200) {
                     resolve(data.data as MatchDetails)
                 }else{
@@ -91,7 +88,6 @@ export const getMatch = (id : number): Promise<MatchDetails | CustomHTTPError> =
                             } as CustomHTTPError);
                             break;
                         default:
-                            console.log(data.status)
                             resolve({
                                 success: false, 
                                 message:"Une erreur est survenue"

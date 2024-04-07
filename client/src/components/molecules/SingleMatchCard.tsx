@@ -28,7 +28,7 @@ export default function SingleMatchCard({ match, isPassed }: SingleMatchCardProp
 
     function handleClick() {
         if (isPassed) {
-            window.location.href = `/match/${match.id}`;
+            window.location.href = `/matches/${match.id}`;
         }
     }
 

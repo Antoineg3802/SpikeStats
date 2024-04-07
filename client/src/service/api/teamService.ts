@@ -37,7 +37,6 @@ export const getMyTeam = (): Promise<Team | CustomHTTPError> => {
                             } as CustomHTTPError);
                             break;
                         default:
-                            console.log(data.status)
                             resolve({
                                 success: false, 
                                 message:"Une erreur est survenue"
