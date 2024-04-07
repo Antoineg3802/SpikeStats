@@ -29,6 +29,8 @@ export default function SingleMatchCard({ match, isPassed }: SingleMatchCardProp
     function handleClick() {
         if (isPassed) {
             window.location.href = `/matches/${match.id}`;
+        }else{
+            window.location.href = `/play/${match.id}`;
         }
     }
 
@@ -49,7 +51,7 @@ const style = (theme: Theme, isPassed?: boolean) => css`
     border-radius: 10px;
     overflow: hidden;
     &:after{
-        content: "${isPassed ? 'Voir le détail du match' : 'Match pas encore joué'}";
+        content: "${isPassed ? 'Voir le détail du match' : 'Jouer le match'}";
         position: absolute;
         text-align: center;
         top: 100%;

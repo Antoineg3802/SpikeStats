@@ -22,7 +22,7 @@ const HomePage = () => {
                 </ContentText>
 
                 <SecondaryTitle text="Caractéristiques Principales : " />
-                <ContentList>
+                <ContentList isDisplayed={true}>
                     <li><strong>Analyse de Performance en Temps Réel :</strong> Suivez chaque point, chaque faute, et chaque succès avec précision au fil du match.</li>
                     <li><strong>Statistiques Détailées par Joueur :</strong> Découvrez les points forts et les axes d'amélioration pour chaque membre de l'équipe.</li>
                     <li><strong>Visualisations Impactantes :</strong> Comprenez les tendances et les patterns grâce à des graphiques et des visualisations claires.</li>

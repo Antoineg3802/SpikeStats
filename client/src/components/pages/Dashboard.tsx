@@ -62,7 +62,7 @@ const Dashboard = ()=>{
     }
 
     return (
-        <div className={style(theme).toString()}>
+        <div className={style(theme)}>
             <Navbar />
             <Content>
                 {!isAuthenticated() ? (
@@ -94,9 +94,10 @@ const Dashboard = ()=>{
                                 <SecondaryTitle text={"Matchs"} />
                                 {!matches.passed ? (
                                     <ThirdTitle text="Aucun match joué" />
-                                ) : (
-                                    <>
+                                    ) : (
+                                        <>
                                         <ThirdTitle text="Matchs passés :" />
+                                        {matches.passed.length === 0 && <ContentText>Aucun match prévu</ContentText>}
                                         <MatchContainer>
                                             {matches.passed.map(match => (
                                                 <SingleMatchCard key={match.id} match={match} isPassed={true} />
@@ -104,18 +105,19 @@ const Dashboard = ()=>{
                                         </MatchContainer>
                                     </>
                                 )}
-                                    {!matches.incoming ? (
-                                        <ThirdTitle text="Aucun match prévu" />
-                                    ) : (
-                                        <>
-                                            <ThirdTitle text="Matchs prévus :" />
-                                            <MatchContainer>
-                                                {matches.incoming.map(match => (
-                                                    <SingleMatchCard key={match.id} match={match} />
-                                                ))}
-                                            </MatchContainer>
-                                        </>
-                                    )}
+                                {!matches.incoming ? (
+                                    <ThirdTitle text="Aucun match prévu" />
+                                ) : (
+                                    <>
+                                        <ThirdTitle text="Matchs prévus :" />
+                                        {matches.incoming.length === 0 && <ContentText>Aucun match prévu</ContentText>}
+                                        <MatchContainer>
+                                            {matches.incoming.map(match => (
+                                                <SingleMatchCard key={match.id} match={match} />
+                                            ))}
+                                        </MatchContainer>
+                                    </>
+                                )}
                             </>
                         )}
                     </>

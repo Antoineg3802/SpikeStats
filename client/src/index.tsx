@@ -17,6 +17,7 @@ import Dashboard from './components/pages/Dashboard';
 import LogIn from './components/pages/LogIn';
 import Pricing from './components/pages/Pricing';
 import Match from './components/pages/Match';
+import PlayMatch from './components/pages/PlayMatch';
 
 const router = createBrowserRouter([
 	{
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
 		path: "*",
 		element: <NotFound />
 	},
+	{
+		path: "/play/:id",
+		element: <PlayMatch />
+	
+	}
 ]);
 
 
