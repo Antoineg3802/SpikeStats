@@ -152,31 +152,31 @@ function addSet(matchId, body, token) {
     })
 }
 
-// function deleteMatch(matchId, token){
-//     let decodedToken = functionController.decodeToken(token)
-//     return new Promise((resolve) => {
-//         if(decodedToken){
-//             if (decodedToken.role=== "player"){
-//                 resolve({
-//                     error: true,
-//                     status: 403,
-//                     message: "User must be a coach to delete a match"
-//                 })
-//             }else{
-//                 mysqlController.deleteMatch(matchId)
-//                     .then((response) => {
-//                         resolve(response)
-//                     })
-//             }
-//         }else{
-//             resolve({
-//                 error: true,
-//                 status: 401,
-//                 message: "Invalid JWT token"
-//             })
-//         }
-//     })
-// }
+function deleteMatch(matchId, token) {
+    let decodedToken = functionController.decodeToken(token)
+    return new Promise((resolve) => {
+        if (decodedToken) {
+            if (decodedToken.role === "player") {
+                resolve({
+                    error: true,
+                    status: 403,
+                    message: "User must be a coach to delete a match"
+                })
+            } else {
+                mysqlController.deleteMatch(matchId)
+                    .then((response) => {
+                        resolve(response)
+                    })
+            }
+        } else {
+            resolve({
+                error: true,
+                status: 401,
+                message: "Invalid JWT token"
+            })
+        }
+    })
+}
 
 function pushFaults(setId, faults, isOponent = false) {
     return new Promise((resolve) => {

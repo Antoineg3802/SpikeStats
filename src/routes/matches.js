@@ -87,20 +87,20 @@ router.post("/:matchId/set", (req, res) => {
     });
 })
 
-// router.delete("/:matchId", (req, res) => {
-// 	matchController.deleteMatch(req.params.matchId, req.cookies.access_token).then((response) => {
-// 		if (response.error) {
-// 			res.status(response.status).send({
-// 				success: false,
-// 				message: response.message
-// 			});
-// 		}else{
-// 			res.status(200).send({
-// 				success: true,
-// 				message: 'Match deleted'
-// 			});
-// 		}
-// 	});
-// })
+router.delete("/:matchId", (req, res) => {
+    matchController.deleteMatch(req.params.matchId, req.cookies.access_token).then((response) => {
+        if (response.error) {
+            res.status(response.status).send({
+                success: false,
+                message: response.message
+            });
+        } else {
+            res.status(200).send({
+                success: true,
+                message: 'Match deleted'
+            });
+        }
+    });
+})
 
 module.exports = router;
