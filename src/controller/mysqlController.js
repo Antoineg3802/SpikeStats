@@ -3,7 +3,7 @@ const { randomString } = require('./functionController');
 
 function getAllUsers() {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id')
+        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE users.active = 1')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -14,7 +14,7 @@ function getAllUsers() {
 
 function getOneUser(id) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, roles.level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE users.id = ' + id)
+        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.mail, roles.level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE users.id = ' + id + 'AND users.active = 1')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -25,7 +25,7 @@ function getOneUser(id) {
 
 function verifyAccount(email) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.password, users.mail, roles.level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE `mail` = "' + email + '"')
+        SQLRequest('SELECT users.id, users.firstname, users.lastname, users.password, users.mail, roles.level as role FROM `users` INNER JOIN `roles` ON users.role_id = roles.id WHERE `mail` = "' + email + '" AND users.active = 1')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -69,7 +69,7 @@ function registerUser(firstname, lastname, mail, password, roleId = 2) {
 
 function doUserExistInDb(email) {
     return new Promise((resolve) => {
-        SQLRequest('SELECT * FROM `users` WHERE mail = "' + email + '"')
+        SQLRequest('SELECT * FROM `users` WHERE mail = "' + email + '" AND active = 1')
             .then((query) => {
                 if (query.length == 0) {
                     resolve(false)
@@ -82,7 +82,7 @@ function doUserExistInDb(email) {
 
 function doUserExistInDbById(userId) {
     return new Promise((resolve) => {
-        SQLRequest('SELECT * FROM `users` WHERE id = "' + userId + '"')
+        SQLRequest('SELECT * FROM `users` WHERE id = "' + userId + '" AND active = 1')
             .then((query) => {
                 if (query.length == 0) {
                     resolve(false)
@@ -153,7 +153,7 @@ function deleteUser(userId) {
 
 function getAllTeams() {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `teams`')
+        SQLRequest('SELECT * FROM `teams` WHERE active = 1')
             .then((rows) => {
                 resolve(rows)
             }).catch((err) => {
@@ -210,7 +210,7 @@ function getInvitationCode() {
 }
 
 function checkCode(code, resolve, reject) {
-    SQLRequest('SELECT * FROM `teams` WHERE invitation_code = "' + code + '"')
+    SQLRequest('SELECT * FROM `teams` WHERE invitation_code = "' + code + '" AND active = 1')
         .then((query) => {
             if (query.length == 0) {
                 resolve(code);
@@ -226,7 +226,7 @@ function checkCode(code, resolve, reject) {
 
 function getTeamByInvitationCode(invitationCode) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `teams` WHERE invitation_code = "' + invitationCode + '"')
+        SQLRequest('SELECT * FROM `teams` WHERE invitation_code = "' + invitationCode + '" AND active = 1')
             .then((query) => {
                 if (query.length == 0) {
                     resolve(false);
@@ -274,7 +274,7 @@ function joinTeam(teamId, userId) {
 
 function verifyUserInTeam(teamId, userId) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `teams_users` WHERE team_id = ' + teamId + ' AND user_id = ' + userId)
+        SQLRequest('SELECT * FROM `teams_users` WHERE team_id = ' + teamId + ' AND user_id = ' + userId + ' AND active = 1')
             .then((query) => {
                 if (query.length == 0) {
                     resolve(false);
@@ -290,7 +290,7 @@ function verifyUserInTeam(teamId, userId) {
 
 function getTeam(teamId) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `teams` WHERE id = ' + teamId)
+        SQLRequest('SELECT * FROM `teams` WHERE id = ' + teamId + ' AND active = 1')
             .then((query) => {
                 if (query.length == 0) {
                     resolve(false);
@@ -311,7 +311,7 @@ function getTeam(teamId) {
 
 function getTeamUsers(teamId) {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT users.id, firstname, lastname, mail, roles.level FROM `teams_users` INNER JOIN `users` ON teams_users.user_id = users.id INNER JOIN `roles` ON users.role_id = roles.id WHERE team_id = ' + teamId)
+        SQLRequest('SELECT users.id, firstname, lastname, mail, roles.level FROM `teams_users` INNER JOIN `users` ON teams_users.user_id = users.id INNER JOIN `roles` ON users.role_id = roles.id WHERE team_id = ' + teamId + ' AND users.active = 1')
             .then((query) => {
                 if (query.length == 0) {
                     resolve(false);
@@ -328,9 +328,9 @@ function getTeamUsers(teamId) {
 function getAllMatches(userId) {
     return new Promise((resolve, reject) => {
         const currentDate = new Date();
-        SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.date < "' + currentDate.toISOString() + '" ORDER BY date DESC')
+        SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.active = 1 AND matches.date < "' + currentDate.toISOString() + '" ORDER BY date DESC')
             .then((pastMatches) => {
-                SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.date >= "' + currentDate.toISOString() + '" ORDER BY date ASC')
+                SQLRequest('SELECT matches.id, matches.date, matches.opponent, matches.location FROM `matches` INNER JOIN `teams` ON matches.team_id = teams.id INNER JOIN `teams_users` ON teams_users.team_id = teams.id WHERE teams_users.user_id = ' + userId + ' AND matches.active = 1 AND matches.date >= "' + currentDate.toISOString() + '" ORDER BY date ASC')
                     .then((incomingMatches) => {
                         resolve({ passed: pastMatches, incoming: incomingMatches });
                     }).catch((err) => {
@@ -344,7 +344,7 @@ function getAllMatches(userId) {
 
 function getMatch(id, includeSets = true, userId = null, role = 'admin') {
     return new Promise((resolve, reject) => {
-        SQLRequest('SELECT * FROM `matches` WHERE id = ' + id)
+        SQLRequest('SELECT * FROM `matches` WHERE id = ' + id + ' AND active = 1')
             .then((rows) => {
                 if (rows.length == 0) {
                     resolve(false);
