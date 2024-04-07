@@ -134,7 +134,7 @@ function areKeysAllowed(body) {
 function deleteUser(userId) {
     return new Promise(async(resolve) => {
         if (await doUserExistInDbById(userId)) {
-            SQLRequest('DELETE FROM `users` WHERE id = ' + userId)
+            SQLRequest('UPDATE `users` SET active = 0 WHERE id = ' + userId)
                 .then((query) => {
                     if (query.affectedRows == 0) {
                         resolve(false)
@@ -643,18 +643,18 @@ function isUserInMatch(matchId, userId) {
     })
 }
 
-// function deleteMatch(){
-//     return new Promise((resolve, reject) => {
-//         SQLRequest('DELETE FROM `matches` WHERE id = ' + matchId)
-//             .then((query) => {
-//                 if (query.affectedRows == 0) {
-//                     resolve(false)
-//                 } else {
-//                     resolve(true)
-//                 }
-//             })
-//     })
-// }
+function deleteMatch() {
+    return new Promise((resolve, reject) => {
+        SQLRequest('UPDATE `matches` SET active = 0 WHERE id = ' + matchId)
+            .then((query) => {
+                if (query.affectedRows == 0) {
+                    resolve(false)
+                } else {
+                    resolve(true)
+                }
+            })
+    })
+}
 
 module.exports = {
     getAllUsers,
@@ -677,6 +677,6 @@ module.exports = {
     pushPoints,
     getPointsBySet,
     getFaultsBySet,
-    getMyTeams
-    // deleteMatch
+    getMyTeams,
+    deleteMatch
 }
