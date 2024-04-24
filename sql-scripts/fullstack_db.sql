@@ -122,12 +122,8 @@ CREATE TABLE `matches` (
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `matches`
---
-
 INSERT INTO `matches` (`id`, `date`, `team_id`, `opponent`, `location`, `active`) VALUES
-(3, '2024-04-04 06:01:01', 4, 'Vball', "T\'occupe", 1),
+(3, '2024-04-04 06:01:01', 4, 'Vball', "T'occupe", 1),
 (4, '2024-05-20 08:27:21', 4, 'Villefranche', 'Villefranche (Palais des sports)', 1),
 (5, '2024-06-20 08:27:21', 4, 'Villefranche', 'Villefranche (Palais des sports)', 1);
 
@@ -140,9 +136,6 @@ CREATE TABLE `points` (
   `oponent_points` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `points`
---
 
 INSERT INTO `points` (`id`, `set_id`, `player_id`, `point_type_id`, `team_points`, `oponent_points`) VALUES
 (119, 34, 3, 1, 13, 9),
@@ -258,53 +251,27 @@ INSERT INTO `points` (`id`, `set_id`, `player_id`, `point_type_id`, `team_points
 (229, 37, NULL, 4, 3, 15),
 (230, 37, NULL, 5, 20, 8);
 
--- --------------------------------------------------------
-
---
--- Structure de la table `point_type`
---
-
 CREATE TABLE `point_type` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `point_type`
---
-
 INSERT INTO `point_type` (`id`, `name`) VALUES
 (1, 'Attaque'),
 (2, 'Bloc'),
 (3, 'Service ace'),
-(4, 'Faute de l\'adversaire'),
+(4, "Faute de l'adversaire"),
 (5, 'Block Out');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `roles`
---
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
   `level` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `roles`
---
-
 INSERT INTO `roles` (`id`, `level`) VALUES
 (1, 'admin'),
 (2, 'player'),
 (3, 'coach');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `sets`
---
 
 CREATE TABLE `sets` (
   `id` int(20) NOT NULL,
@@ -317,21 +284,11 @@ CREATE TABLE `sets` (
   `winner` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `sets`
---
-
 INSERT INTO `sets` (`id`, `match_id`, `number_set`, `start_set`, `end_set`, `team_score`, `opponent_score`, `winner`) VALUES
 (34, 3, 1, '2024-02-21 14:00:00', '2024-02-21 14:45:00', 25, 23, 1),
 (35, 3, 2, '2024-02-21 14:00:00', '2024-02-21 14:45:00', 25, 27, 1),
 (36, 3, 3, '2024-02-21 14:00:00', '2024-02-21 14:45:00', 25, 23, 0),
 (37, 3, 4, '2024-02-21 14:00:00', '2024-02-21 14:45:00', 25, 23, 1);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `teams`
---
 
 CREATE TABLE `teams` (
   `id` int(11) NOT NULL,
@@ -342,38 +299,18 @@ CREATE TABLE `teams` (
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table `teams`
---
-
 INSERT INTO `teams` (`id`, `name`, `description`, `owner_id`, `invitation_code`, `active`) VALUES
 (4, 'Team 1', 'Team1 de Volleyball', 2, 'VR6YA4QU33', 1);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `teams_users`
---
 
 CREATE TABLE `teams_users` (
   `user_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `teams_users`
---
-
 INSERT INTO `teams_users` (`user_id`, `team_id`) VALUES
 (2, 4),
 (3, 4),
 (4, 4);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `users`
---
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
@@ -385,10 +322,6 @@ CREATE TABLE `users` (
   `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `users`
---
-
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `mail`, `role_id`, `active`) VALUES
 (1, 'Antoine', 'Guerin', '$2b$10$XBZwNgezncURTtumhDyB4enNVxRg.Kg.B.6B4c0kEQM3dxGj9kH.2', 'antoineg3802@gmail.com', 1, 1),
 (2, 'ta', 'ta', '$2b$10$isxlRBpoAXyxL1QAZfqmL.l.CHyZcQVf4Qg63mJS5YIATOpqPLFaG', 'tata@gmail.com', 3, 1),
@@ -396,222 +329,116 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `password`, `mail`, `role_id
 (4, 'to', 'to', '$2b$10$K78DLf8NgGCYSCBWFwW9ROfbOiXozEgd64YA9WKFi/dJiUR5I9M4u', 'toto@gmail.com', 2, 1),
 (5, 'te', 'te', '$2b$10$0E.1Y.8v24G.J6T2CzoBcuOoT.qPgrDbIQm7eDmlpB45TzVFlDyLu', 'tete@gmail.com', 2, 1);
 
--- --------------------------------------------------------
-
---
--- Structure de la table `users_matches`
---
-
 CREATE TABLE `users_matches` (
   `user_id` int(11) NOT NULL,
   `match_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `faults`
---
 ALTER TABLE `faults`
   ADD PRIMARY KEY (`id`),
   ADD KEY `player_id` (`player_id`),
   ADD KEY `fault_type_id` (`fault_type_id`),
   ADD KEY `faults_ibfk_1` (`set_id`);
 
---
--- Index pour la table `fault_type`
---
 ALTER TABLE `fault_type`
   ADD PRIMARY KEY (`id`);
 
---
--- Index pour la table `matches`
---
 ALTER TABLE `matches`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`) USING BTREE,
   ADD KEY `team_id` (`team_id`);
 
---
--- Index pour la table `points`
---
 ALTER TABLE `points`
   ADD PRIMARY KEY (`id`),
   ADD KEY `player_id` (`player_id`),
   ADD KEY `point_type_id` (`point_type_id`),
   ADD KEY `fk_point_set` (`set_id`);
 
---
--- Index pour la table `point_type`
---
 ALTER TABLE `point_type`
   ADD PRIMARY KEY (`id`);
 
---
--- Index pour la table `roles`
---
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`);
 
---
--- Index pour la table `sets`
---
 ALTER TABLE `sets`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`),
   ADD KEY `fk_set_match` (`match_id`);
 
---
--- Index pour la table `teams`
---
 ALTER TABLE `teams`
   ADD PRIMARY KEY (`id`),
   ADD KEY `owner_id` (`owner_id`);
 
---
--- Index pour la table `teams_users`
---
 ALTER TABLE `teams_users`
   ADD PRIMARY KEY (`user_id`,`team_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `team_id` (`team_id`);
 
---
--- Index pour la table `users`
---
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `role_id` (`role_id`);
 
---
--- Index pour la table `users_matches`
---
 ALTER TABLE `users_matches`
   ADD KEY `user_id` (`user_id`),
   ADD KEY `match_id` (`match_id`);
 
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `faults`
---
 ALTER TABLE `faults`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=210;
 
---
--- AUTO_INCREMENT pour la table `fault_type`
---
 ALTER TABLE `fault_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
---
--- AUTO_INCREMENT pour la table `matches`
---
 ALTER TABLE `matches`
   MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
---
--- AUTO_INCREMENT pour la table `points`
---
 ALTER TABLE `points`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=231;
 
---
--- AUTO_INCREMENT pour la table `point_type`
---
 ALTER TABLE `point_type`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
---
--- AUTO_INCREMENT pour la table `roles`
---
 ALTER TABLE `roles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
---
--- AUTO_INCREMENT pour la table `sets`
---
 ALTER TABLE `sets`
   MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
---
--- AUTO_INCREMENT pour la table `teams`
---
 ALTER TABLE `teams`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
---
--- AUTO_INCREMENT pour la table `users`
---
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
---
--- Contraintes pour les tables déchargées
---
-
---
--- Contraintes pour la table `faults`
---
 ALTER TABLE `faults`
   ADD CONSTRAINT `faults_ibfk_1` FOREIGN KEY (`set_id`) REFERENCES `sets` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `faults_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `fk_fault_set` FOREIGN KEY (`set_id`) REFERENCES `sets` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_fault_type` FOREIGN KEY (`fault_type_id`) REFERENCES `fault_type` (`id`) ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `matches`
---
 ALTER TABLE `matches`
   ADD CONSTRAINT `matches_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`);
 
---
--- Contraintes pour la table `points`
---
 ALTER TABLE `points`
   ADD CONSTRAINT `fk_point_set` FOREIGN KEY (`set_id`) REFERENCES `sets` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `points_ibfk_1` FOREIGN KEY (`set_id`) REFERENCES `sets` (`id`),
   ADD CONSTRAINT `points_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `points_ibfk_3` FOREIGN KEY (`point_type_id`) REFERENCES `point_type` (`id`) ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `sets`
---
 ALTER TABLE `sets`
   ADD CONSTRAINT `fk_set_match` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `sets_ibfk_1` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`);
 
---
--- Contraintes pour la table `teams`
---
 ALTER TABLE `teams`
   ADD CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `teams_users`
---
 ALTER TABLE `teams_users`
   ADD CONSTRAINT `teams_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `teams_users_ibfk_2` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `users`
---
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Contraintes pour la table `users_matches`
---
 ALTER TABLE `users_matches`
   ADD CONSTRAINT `users_matches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `users_matches_ibfk_2` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
