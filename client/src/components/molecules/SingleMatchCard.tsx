@@ -58,7 +58,6 @@ const style = (theme: Theme, isPassed?: boolean) => css`
         left: 0;
         right: 0;
         bottom: 0;
-        border-radius: 5px;
         padding-top: 50%;
         color: ${theme.colors.white};
         background-color: ${theme.colors.orange};
