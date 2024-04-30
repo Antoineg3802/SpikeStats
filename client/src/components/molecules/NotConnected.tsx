@@ -17,7 +17,7 @@ const NotConnected = ()=>{
         <div className={style(theme)}>
             <SecondaryTitle text="Vous n'êtes pas connecté" />
             <ContentText>Connectez-vous pour accéder à votre tableau de bord</ContentText>
-            <SendFormBtn onClick={handleClick} text='Se Connecter' disabled={false} />
+            <button onClick={handleClick} disabled={false}>Se Connecter</button>
         </div>
     )
 }

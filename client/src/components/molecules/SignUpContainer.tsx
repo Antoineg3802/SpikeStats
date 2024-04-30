@@ -1,11 +1,12 @@
 import { css } from "@emotion/css";
 
 interface Props {
+    submitForm: (e: React.FormEvent<HTMLFormElement>) => void;
     children: React.ReactNode;
 };
 
-const SignUpForm = ({ children } : Props) => {
-    return <div className={style}>{children}</div>;
+const SignUpForm = ({ submitForm, children }: Props) => {
+    return <form className={style} onSubmit={(e) => submitForm(e)}>{children}</form>;
 };
 
 const style = css`

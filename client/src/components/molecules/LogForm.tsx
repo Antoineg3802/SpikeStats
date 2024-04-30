@@ -1,11 +1,12 @@
 import { css } from '@emotion/css';
 
 interface LogFormProps {
+    sendForm?: (e:React.FormEvent<HTMLFormElement>) => void;
     children: React.ReactNode;
 }
 
-const LogForm = ({children} : LogFormProps) => {
-    return <div className={style}>{children}</div>;
+const LogForm = ({children, sendForm} : LogFormProps) => {
+    return <form className={style} onSubmit={sendForm}>{children}</form>;
 };
 
 const style = css`

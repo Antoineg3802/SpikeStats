@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { useTheme } from "../../context/ThemeContext";
 import { Theme } from "../../theme/theme";
-import { useState } from "react";
+import React, { useState } from "react";
 
 // import services
 import { logIn } from "../../service/api/userService";
@@ -33,7 +33,8 @@ const LogIn = () => {
         setPassword(password)
     }
 
-    const sendForm = () =>{
+    const sendForm = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         if (email === "" && password === "") {
             setError("Veuillez renseigner tous les champs")
             setTimeout(() => {
@@ -77,12 +78,12 @@ const LogIn = () => {
             </CreateAccountContainer>
             <CreateAccountContainer position="right">
                 <LoginFormContainer>
-                    <LogForm>
+                    <LogForm sendForm={sendForm}>
                         <SecondaryTitle text="Se connecter" />
                         <FormInput type="text" placeholder="Email" onChange={(e) => handlInputEmail(e.target.value)} />
                         <FormInput type="password" placeholder="Mot de passe" onChange={(e) => handlInputPassword(e.target.value)} />
                         {error && <FormIndicator backgroundColor="#f8d7da" color="red" text={error} />}
-                        <SendFormBtn disabled={false} text="Se Connecter" onClick={sendForm} />
+                        <SendFormBtn disabled={false} text="Se Connecter"/>
                     </LogForm>
                     <Separation />
                     <SpanWithLink text="Vous n'avez pas de compte ?" textHref="Créer un compte" href="/create-account" />

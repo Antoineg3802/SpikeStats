@@ -3,14 +3,13 @@ import { useTheme } from '../../../context/ThemeContext';
 import { Theme } from '../../../theme/theme';
 
 interface SendFormProps {
-    onClick: () => void;
     text: string;
     disabled: boolean;
 };
 
-const SendFormBtn = ({onClick, text, disabled} : SendFormProps) => {
+const SendFormBtn = ({text, disabled} : SendFormProps) => {
     const { theme } = useTheme();
-    return <button className={style(theme, disabled)} onClick={onClick} disabled={disabled}>{text}</button>;
+    return <button className={style(theme, disabled)} type="submit" disabled={disabled}>{text}</button>;
 };
 
 const style = (theme : Theme, disabled: boolean)=>css`

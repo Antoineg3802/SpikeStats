@@ -4,7 +4,7 @@ import { css } from "@emotion/css";
 import FormInput from "../atoms/form/FormInput";
 import SendFormBtn from "../atoms/form/SendFormBtn";
 import MainTitle from "../atoms/titles/MainTitle";
-import SignUpContainer from "../molecules/SignUpContainer";
+import SignUpForm from "../molecules/SignUpContainer";
 import SecondaryTitle from "../atoms/titles/SecondaryTitle";
 import FormSelect from "../atoms/form/FormSelect";
 import CreateAccountContainer from "../organisms/CreateAccountContainer";
@@ -52,8 +52,9 @@ const CreateAccount = () => {
         setUserType(type)
     }
 
-    function handleFormSend(firstname: string, lastname: string, email: string, password: string, passwordConfirmed: string, type: string){
-        if (firstname === "" || lastname === "" || email === "" || password === "" || passwordConfirmed === "" || type === "") {
+    function handleFormSend(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault()
+        if (firstname === "" || lastname === "" || email === "" || password === "" || passwordConfirmed === "" || userType === "") {
             setError("Veuillez renseigner tous les champs");
             setTimeout(() => {
                 setError("");
@@ -74,7 +75,7 @@ const CreateAccount = () => {
             }, 3000);
             return;
         }
-        if (type === "player") {
+        if (userType === "player") {
             signUpPlayer(firstname, lastname, email, password)
             .then((data) => {
                 if (data.success){
@@ -89,7 +90,7 @@ const CreateAccount = () => {
                     }, 3000);
                 }
             })
-        }else if (type === "coach") {
+        }else if (userType === "coach") {
             signUpCoach(firstname, lastname, email, password)
             .then((data) => {
                 if (data.success){
@@ -114,7 +115,7 @@ const CreateAccount = () => {
             </CreateAccountContainer>
             <CreateAccountContainer position="right">
                 <SecondaryTitle text="Créez votre compte"/>
-                <SignUpContainer>
+                <SignUpForm submitForm={handleFormSend}>
                     <FormSingleLine gap={5}>
                         <FormInput type="text" widthPourcentage={50} placeholder="Prénom" onChange={(e) => handlInputFirstname(e.target.value)} />
                         <FormInput type="text" widthPourcentage={50} placeholder="Nom" onChange={(e) => handlInputLastname(e.target.value)} />
@@ -127,10 +128,10 @@ const CreateAccount = () => {
                         <option value="coach">Un coach</option>
                         <option value="player">Un joueur</option>
                     </FormSelect>
-                    <SendFormBtn onClick={() => handleFormSend(firstname, lastname, email, password, passwordConfirmed, userType) } text="Créer mon compte" disabled={false} />
+                    <SendFormBtn text="Créer mon compte" disabled={false} />
                     {error && <FormIndicator color="#dc3545" backgroundColor="#f8d7da" text={error} />}
                     {confirmed && <FormIndicator color="#198754" backgroundColor="#a3cfbb" text={confirmed} />}
-                </SignUpContainer>
+                </SignUpForm>
             </CreateAccountContainer>
         </div>
     );
