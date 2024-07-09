@@ -55,6 +55,7 @@ const router = createBrowserRouter([
 	}
 ]);
 
+throw new Error('Utiliser Shadcn')
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
