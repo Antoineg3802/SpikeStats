@@ -1,0 +1,67 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id       String @id @default(uuid())
+    email    String @unique
+    password String
+
+    // Relations
+    userRoles   UserRole[] // Les rôles globaux de l'utilisateur
+    ownedTeams  Team[]       @relation("TeamOwner") // Les équipes dont l'utilisateur est propriétaire
+    teamMembers TeamMember[] // Les équipes auxquelles l'utilisateur appartient
+}
+
+model Account {
+    id   String  @id @default(uuid())
+    name String? @unique
+}
+
+model Role {
+    id    Int    @id @default(autoincrement())
+    name  String @unique
+    level Int
+
+    // Relations
+    userRoles UserRole[] // Les utilisateurs ayant ce rôle
+}
+
+model UserRole {
+    id     String @id @default(uuid())
+    userId String
+    roleId Int
+
+    // Relations
+    user User @relation(fields: [userId], references: [id])
+    role Role @relation(fields: [roleId], references: [id])
+
+    @@unique([userId, roleId])
+}
+
+model Team {
+    id      String @id @default(uuid())
+    name    String
+    ownerId String
+
+    // Relations
+    owner       User         @relation("TeamOwner", fields: [ownerId], references: [id])
+    teamMembers TeamMember[] // Les membres de l'équipe
+}
+
+model TeamMember {
+    id     String @id @default(uuid())
+    teamId String
+    userId String
+
+    // Relations
+    team Team @relation(fields: [teamId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+
+    @@unique([teamId, userId])
+}
