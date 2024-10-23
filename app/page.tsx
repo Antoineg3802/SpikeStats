@@ -16,18 +16,17 @@ export default function Home() {
 				{session != null && session.user &&
 					<>
 						Signed in as {session.user.email} <br />
-						<button onClick={() => signOut()}>Sign out</button>
+						<button className={'bg-lightOrange p-2 rounded hover:bg-black hover:text-lightOrange transition-all duration-300'} onClick={() => signOut()}>Sign out</button>
 					</>
 				}
-	
+
 				{session == null &&
 					<>
 						Not signed in <br />
-						<button onClick={() => signIn()}>Sign in</button>
+						<button className={'bg-lightOrange p-2 rounded hover:bg-black hover:text-lightOrange transition-all duration-300 dark:'} onClick={() => signIn()}>Sign in</button>
 					</>
 				}
 			</div>
 		);
 	}
-
 }
