@@ -1,0 +1,20 @@
+export interface User {
+	id: string;
+	name: string;
+	username: string;
+	email: string;
+	emailVerified: string;
+	image: string | null;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface Session {
+	id: string;
+	sessionToken: string;
+	userId: string;
+	expires: string;
+	createdAt: string;
+	updatedAt: string;
+    user: User;
+}
