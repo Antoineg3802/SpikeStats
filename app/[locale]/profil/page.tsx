@@ -8,9 +8,6 @@ import { useEffect, useRef } from "react"
 export default function Page() {
     const { isPending, isSuccess, isError, execute, data, error } = useServerAction(getUsers)
     const users = data || []
-
-    console.log(isError)
-
     const hasFetchedData = useRef(false);
 
     useEffect(() => {
