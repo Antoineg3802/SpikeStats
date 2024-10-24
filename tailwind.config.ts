@@ -18,6 +18,8 @@ const config: Config = {
 				red: "#dc3545",
 				lightRed: "#f8d7da",
 				transparent: "rgba(0,0,0,0.5)",
+				background: "#ffffff",
+				foreground: "#171717"
 			},
 		},
 	},

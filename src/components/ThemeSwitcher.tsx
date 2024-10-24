@@ -19,8 +19,8 @@ export default function ThemeSwitcher() {
     return (
         <div className="flex w-fit h-fit p-1 rounded-full bg-gray-700 cursor-pointer" onClick={toggleTheme}>
             <div className="h-auto flex h-fit rounded-full m-auto">
-                <IconSun className={`stroke-white ${theme !== "light" ? 'hidden' : ''}`} />
-                <IconMoon className={`stroke-white ${theme === "light" ? 'hidden' : ''}`} />
+                <IconSun className={`stroke-white ${theme === "light" ? 'hidden' : ''}`} />
+                <IconMoon className={`stroke-white ${theme !== "light" ? 'hidden' : ''}`} />
             </div>
         </div>
     );
