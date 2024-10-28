@@ -6,7 +6,7 @@ const config: Config = {
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
-	darkMode: 'selector',
+	darkMode: "selector",
 	theme: {
 		extend: {
 			colors: {
@@ -15,11 +15,10 @@ const config: Config = {
 				darkBlue: "#0B2647",
 				lightOrange: "#feb272",
 				orange: "#ff7f32",
-				red: "#dc3545",
 				lightRed: "#f8d7da",
 				transparent: "rgba(0,0,0,0.5)",
 				background: "#ffffff",
-				foreground: "#171717"
+				foreground: "#171717",
 			},
 		},
 	},

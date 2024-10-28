@@ -1,42 +1,19 @@
-"use client"
-
-import ThemeSwitcher from "@/components/ThemeSwitcher";
+import ThemeSwitcher from "@/components/atoms/ThemeSwitcher";
 import { signIn, signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import { useI18n } from "../../locales/client";
-import LocaleSelector from "@/components/LocaleSelector";
+import LocaleSelector from "@/components/atoms/LocaleSelector";
+import Navbar from "@/components/organisms/Navbar";
+import { auth } from "@/lib/auth/auth";
+import { getI18n } from "../../locales/server";
 
-export default function Home() {
-	const { data: session, status } = useSession();
-	const t = useI18n();
+export default async function Home() {
+	const session = await auth()
+	const t = await getI18n();
 
-	const handleSignOutClick = () => {
-		if (confirm("Voulez vous vraiment vous déconnecter ?")){
-			signOut();
-		}
-	}
-
-	if (status === "loading") {
-		return <p>Chargement...</p>;
-	}else{
-		return (
-			<div>
-				<LocaleSelector/>
-				<ThemeSwitcher />
-				{session != null && session.user &&
-					<>
-						{t('signed', { email: session.user.email })} <br />
-						<button className={'dark:bg-black dark:text-white bg-lightOrange p-2 rounded hover:bg-black hover:text-lightOrange transition-all duration-300'} onClick={() => handleSignOutClick()}>Sign out</button>
-					</>
-				}
-
-				{session == null &&
-					<>
-						{t('notSigned')} <br />
-						<button className={'dark:bg-black dark:text-white bg-lightOrange p-2 rounded hover:bg-black hover:text-lightOrange transition-all duration-300 dark:'} onClick={() => signIn()}>Sign in</button>
-					</>
-				}
-			</div>
-		);
-	}
+	return (
+		<div>
+			<Navbar session={session} />
+			<LocaleSelector />
+			<ThemeSwitcher />
+		</div>
+	);
 }

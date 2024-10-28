@@ -2,6 +2,20 @@ export default {
 	hello: "Hello",
 	"hello.world": "Hello world!",
 	welcome: "Hello {name}!",
-	signed: "Signed in as {email}",
-	notSigned: "Not signed in",
+	auth: {
+		signIn: "Sign in",
+		signOut: "Sign out",
+	},
+	menus:{
+		dashboard: "Dashboard",
+		profile: "Profile",
+		settings: "Settings",
+		darkmode: "Dark mode",
+		language: "Language",
+		about: "About",
+		services: "Services",
+		contact: "Contact",
+		pricing: "Pricing",
+		aboutUs: "About us",
+	}
 } as const;

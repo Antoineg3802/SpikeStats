@@ -1,9 +1,21 @@
-import { sign } from "crypto";
-
 export default {
 	hello: "Bonjour",
 	"hello.world": "Bienvenue au monde!",
 	welcome: "Bienvenue {name}!",
-	signed: "Connecté en tant que {email}",
-	notSigned: "Non connecté",
+	auth: {
+		signIn: "Se connecter",
+		signOut: "Se déconnecter",
+	},
+	menus:{
+		dashboard: "Tableau de bord",
+		profile: "Profil",
+		settings: "Paramètres",
+		darkmode: "Mode sombre",
+		language: "Langue",
+		about: "À propos",
+		services: "Services",
+		contact: "Contact",
+		pricing: "Tarification",
+		aboutUs: "À propos",
+	}
 } as const;

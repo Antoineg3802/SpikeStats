@@ -13,7 +13,7 @@ export default function Page() {
     useEffect(() => {
         if (!hasFetchedData.current && !isPending && !isSuccess) {
             execute();
-            hasFetchedData.current = true; // Marque que la requête a été effectuée
+            hasFetchedData.current = true;
         }
     }, [isPending, isSuccess]);
 
