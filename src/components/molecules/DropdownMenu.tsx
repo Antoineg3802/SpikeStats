@@ -1,8 +1,9 @@
 "use client"
 
 import { IconChevronDown, IconLogout } from "@tabler/icons-react";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useI18n } from "../../../locales/client";
+import Switch from "../atoms/Switch";
 
 interface DropdownMenuProps {
     image: string;
@@ -17,6 +18,18 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
     const handleOpen = () => {
         setIsOpen(!isOpen);
     };
+
+    const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+    useEffect(() => {
+        const root = window.document.documentElement;
+        root.classList.remove(theme === 'dark' ? 'light' : 'dark');
+        root.classList.add(theme);
+    }, [theme]);
+
+    function handleThemeSwitcherClick() {
+        setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+    }
 
     return (
         <div className="relative">
@@ -36,21 +49,28 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
 
             {isOpen && (
                 <div
-                    className="absolute right-0 z-10 mt-2 w-56 rounded-md border border-gray-100 bg-white shadow-lg"
+                    className="absolute right-0 z-10 mt-2 w-56 rounded-md border border-gray-100 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900"
                     role="menu"
                 >
                     <div className="p-2">
-                        {personalMenus.map((menu: {link: string, name: string}) => {
+                        {personalMenus.map((menu: {link: string, name: string}, index) => {
                             return (
                                 <a
+                                    key={index}
                                     href={menu.link}
-                                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                                     role="menuitem"
                                 >
+                                    {/* @ts-ignore */}
                                     {t(`menus.${menu.name}`)}
                                 </a>
                             )
                         })}
+
+                        <div className="select-none text-sm flex items-center gap-4 rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
+                            {t("menus.darkmode")}
+                            <Switch onClick={handleThemeSwitcherClick} />
+                        </div>
 
                         <button
                             type="submit"

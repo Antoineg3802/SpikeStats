@@ -26,12 +26,12 @@ export default async function Navbar({ session }: NavbarProps) {
                         <ul className="flex items-center gap-6 text-sm">
                             {ProfilMenus.mainMenus.map((menu: { link: string, name: string }, index) => {
                                 return (
-                                    <li>
+                                    <li key={index}>
                                         <a
-                                            key={index}
                                             className="text-gray-600 transition hover:text-gray-600/75 dark:text-white dark:hover:text-white/75"
                                             href={menu.link}
                                         >
+                                            {/* @ts-ignore */}
                                             {t(`menus.${menu.name}`)}
                                         </a>
                                     </li>
