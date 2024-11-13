@@ -10,6 +10,8 @@ import { GeistSans } from "geist/font/sans";
 export const metadata: Metadata = {
 	title: "SpikeStats",
 	description: "SpikeStats est un outil de statistiques et de plannification pour les matchs de volley-ball.",
+	title: "SpikeStats",
+	description: "SpikeStats est un outil de statistiques et de plannification pour les matchs de volley-ball.",
 };
 
 export default async function Layout({ children, params }: { children: ReactElement, params: Promise<{ locale: string }> }) {
