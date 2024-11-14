@@ -1,11 +1,20 @@
 "use client"
 
-import { getUsers } from "@/actions/users.action"
-import { IconLoader2 } from "@tabler/icons-react"
-import { useEffect, useRef } from "react"
+import { getCurrentUser } from "@/lib/auth/auth"
+import { useSession } from "next-auth/react"
 
 export default function Page() {
-    return <div>
-        UserProfil (Not implemented)
-    </div>
+    const { data: session } = useSession()
+
+    if (session?.user && session.user.id) {
+        const { user } = session
+
+        return (
+            <div>
+                <h1>{user.name}</h1>
+                <p>{user.email}</p>
+                {user.image && <img height="300" width="300" src={user.image} alt="Profil picture" />}
+            </div>
+        )
+    }
 }
