@@ -37,7 +37,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                 <span className="sr-only">Toggle dashboard menu</span>
 
                 <img
-                    src={image}
+                    src={image ? image : "/img/defaultProfilePicture.png"}
                     width={32}
                     height={32}
                     alt=""

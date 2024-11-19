@@ -20,6 +20,9 @@ const config: Config = {
 				background: "#ffffff",
 				foreground: "#171717",
 			},
+			listStyleImage: {
+				checkmark: 'url("/img/checkmark.svg")',
+			},
 		},
 	},
 	plugins: [],
