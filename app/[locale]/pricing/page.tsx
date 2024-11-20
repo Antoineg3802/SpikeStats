@@ -13,13 +13,6 @@ export default async function Page() {
         expand: ['data.default_price'],
     });
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id: session?.user?.id
-        },
-    })
-    console.log(user)
-
     // order products by price reccuring interval
     products.data = products.data.sort((a: Stripe.Product, b: Stripe.Product) => {
         const default_price_a = a.default_price as Stripe.Price;
@@ -104,13 +97,13 @@ export default async function Page() {
                                                                     quantity: 1,
                                                                 },
                                                             ],
-                                                            metadata: {
-                                                                userPlan: product.name
-                                                            },
                                                             mode: 'subscription',
                                                             success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling?session_id={CHECKOUT_SESSION_ID}`,
                                                             cancel_url: `${process.env.NEXTAUTH_URL}/pricing`,
-                                                            customer: stripeCustomerId
+                                                            customer: stripeCustomerId,
+                                                            metadata: {
+                                                                userPlan: product.metadata.userPlan
+                                                            }
                                                         })
 
                                                         if (sessionStripe.url != null) {

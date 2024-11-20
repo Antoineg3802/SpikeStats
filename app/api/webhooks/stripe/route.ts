@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { stripe } from "@/lib/stripe/stripe";
 import { UserPlan } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -23,52 +22,32 @@ export const POST = async (req: NextRequest) => {
 			);
 		}
 
-		// Lister les produits commandés
-		const lineItems = await stripe.checkout.sessions.listLineItems(
-			session.id
-		);
+		const userPlan = session.metadata?.userPlan as UserPlan;
 
-		// Exemple de traitement des produits commandés
-		const productOrdered = lineItems.data[0];
+		console.log(userPlan);
 
-		const stripeProduct = await stripe.products.retrieve(
-			productOrdered.price?.product as string
-		);
-
-		try {
-			const userPlan = stripeProduct.metadata.userPlan as UserPlan;
-
-			// Récupérer un champ personnalisé depuis les métadonnées
-			// const userPlan = session.metadata?.userPlan as UserPlan;
-
-			if (!userPlan || !(userPlan in UserPlan)) {
-				console.error("Invalid User Plan");
-				return NextResponse.json(
-					{ error: "Invalid User Plan" },
-					{ status: 400 }
-				);
-			}
-
-			// Mettre à jour l'utilisateur dans la base de données
-			await prisma.user.update({
-				where: {
-					id: user.id,
-				},
-				data: {
-					userPlan,
-				},
-			});
-
+		if (!userPlan) {
+			console.error("Plan utilisateur introuvable");
 			return NextResponse.json(
-				{ message: "Utilisateur mis à jour" },
-				{ status: 200 }
-			);
-		} catch (e) {
-			return NextResponse.json(
-				{ message: "Une erreur s'est produite" },
-				{ status: 500 }
+				{ error: "Plan utilisateur introuvable" },
+				{ status: 400 }
 			);
 		}
+
+		// Mettre à jour l'utilisateur dans la base de données
+		await prisma.user.update({
+			where: {
+				id: user.id,
+			},
+			data: {
+				userPlan,
+			},
+		});
+
+		return NextResponse.json(
+			{ message: "Utilisateur mis à jour" },
+			{ status: 200 }
+		);
 	}
 
 	return NextResponse.json(
