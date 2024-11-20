@@ -1,6 +1,8 @@
 import Navbar from '@/components/organisms/Navbar';
 import { auth } from '@/lib/auth/auth';
+import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe/stripe';
+import { redirect } from 'next/navigation';
 import React from 'react';
 import Stripe from 'stripe';
 
@@ -10,6 +12,13 @@ export default async function Page() {
         active: true,
         expand: ['data.default_price'],
     });
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session?.user?.id
+        },
+    })
+    console.log(user)
 
     // order products by price reccuring interval
     products.data = products.data.sort((a: Stripe.Product, b: Stripe.Product) => {
@@ -52,11 +61,67 @@ export default async function Page() {
                                             ))}
                                         </ul>
                                         {session &&
-                                            <a href='/dashboard/biling'
-                                                className="ml-auto mt-auto inline-block bg-lightOrange text-white py-2 px-4 rounded hover:bg-lightOrange/80 hover:shadow-md"
-                                            >
-                                                Choisir ce plan
-                                            </a>
+                                            <form>
+                                                <button className='className="ml-auto mt-auto bg-lightOrange text-white py-2 px-4 rounded hover:bg-lightOrange/80 hover:shadow-md"' formAction={async ()=>{
+                                                    "use server"
+
+                                                    const session = await auth()
+                                                    const user = await prisma.user.findUnique({
+                                                        where: {
+                                                            id : session?.user?.id
+                                                        },
+                                                        select: {
+                                                            stripeCustomerId: true,
+                                                            email: true
+                                                        }
+                                                    })
+
+                                                    let stripeCustomerId = user?.stripeCustomerId
+
+                                                    if(stripeCustomerId == null && session?.user?.email){
+                                                        const customer = await stripe.customers.create({
+                                                            email: session?.user?.email,
+                                                        })
+
+                                                        await prisma.user.update({
+                                                            where: {
+                                                                id: session?.user?.id
+                                                            },
+                                                            data: {
+                                                                stripeCustomerId: customer.id
+                                                            }
+                                                        })
+
+                                                        stripeCustomerId = customer.id
+                                                    }
+
+                                                    if (stripeCustomerId != null){
+                                                        const sessionStripe = await stripe.checkout.sessions.create({
+                                                            payment_method_types: ['card'],
+                                                            line_items: [
+                                                                {
+                                                                    price: price.id,
+                                                                    quantity: 1,
+                                                                },
+                                                            ],
+                                                            metadata: {
+                                                                userPlan: product.name
+                                                            },
+                                                            mode: 'subscription',
+                                                            success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling?session_id={CHECKOUT_SESSION_ID}`,
+                                                            cancel_url: `${process.env.NEXTAUTH_URL}/pricing`,
+                                                            customer: stripeCustomerId
+                                                        })
+
+                                                        if (sessionStripe.url != null) {
+                                                            redirect(sessionStripe.url)
+                                                        }else{
+                                                            throw new Error("Erreur lors de la création de la session de payement")
+                                                        }
+                                                    }
+                                                    throw new Error("Erreur lors de la création de la session de payement")
+                                                }}>Choisir ce plan</button>
+                                            </form>
                                         }
                                         {!session &&
                                             <p className="text-gray-400 mt-4 italic text-center">

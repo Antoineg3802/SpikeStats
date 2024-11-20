@@ -11,7 +11,6 @@ export default async function Home() {
 		<div>
 			<Navbar session={session} />
 			<LocaleSelector />
-			{/* <ThemeSwitcher /> */}
 		</div>
 	);
 }

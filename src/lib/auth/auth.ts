@@ -23,7 +23,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	secret: env.NEXTAUTH_SECRET,
 	callbacks: {
 		async signIn({ user, account, profile }: any) {
-			console.log("createUser callbacks");
 			try {
 				if (!account) {
 					return true;
@@ -66,7 +65,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	},
 	events: {
 		createUser: async (message) => {
-			console.log("createUser events", message);
 			const user = message.user;
 			const  { id , email , name } = user;
 

@@ -28,7 +28,7 @@ export default async function Navbar({ session }: NavbarProps) {
                                 return (
                                     <li key={index}>
                                         <a
-                                            className="text-gray-600 transition hover:text-gray-600/75 dark:text-white dark:hover:text-white/75"
+                                            className="text-gray-600 transition hover:text-lightOrange/75 dark:text-white dark:hover:text-white/75"
                                             href={menu.link}
                                         >
                                             {/* @ts-ignore */}

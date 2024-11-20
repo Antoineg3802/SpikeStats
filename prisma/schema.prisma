@@ -25,23 +25,17 @@ model User {
 
     // Stripe
     stripeCustomerId String?
-    subscription       Subscription?
+    userPlan        UserPlan? @default(FREE)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
-model Subscription {
-    id                   String   @id @default(cuid())
-    userId               String   @unique
-    stripeSubscriptionId String   @unique
-    status               String
-    currentPeriodStart   DateTime
-    currentPeriodEnd     DateTime
-    createdAt            DateTime @default(now())
-    updatedAt            DateTime @updatedAt
-
-    user User @relation(fields: [userId], references: [id])
+enum UserPlan {
+    FREE
+    MONTH
+    BETA
+    PREMIUM
 }
 
 model Account {
