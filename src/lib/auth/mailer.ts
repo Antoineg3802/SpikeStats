@@ -7,26 +7,46 @@ export async function sendVerificationRequest(params: {
 }) {
 	const { identifier, url, provider } = params;
 	const { host } = new URL(url);
-	// NOTE: You are not required to use `nodemailer`, use whatever you want.
 	const transport = createTransport(provider.server);
-	const result = await transport.sendMail({
-		to: identifier,
-		from: provider.from,
-		subject: `Votre lien de connexion vers SpikeStats !`,
-		text: text({ url, host }),
-		html: html({ url, host }),
-	});
-	// const failed = result.rejected.concat(result.pending).filter(Boolean);
-	// if (failed.length) {
-	// 	throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
-	// }
+
+	try {
+		const result = await transport.sendMail({
+			to: identifier,
+			from: provider.from,
+			subject: `Votre lien de connexion vers SpikeStats !`,
+			text: text({ url, host }),
+			html: html({ url, host }),
+		});
+
+		console.log("Résultat de l'envoi de l'email :", result);
+
+		// Vérification des destinataires acceptés
+		if (result.accepted.includes(identifier)) {
+			console.log(`Email envoyé avec succès à ${identifier}`);
+		}
+
+		// Vérification des destinataires rejetés
+		if (result.rejected.length > 0) {
+			console.error(
+				`L'envoi a échoué pour les destinataires suivants : ${result.rejected.join(
+					", "
+				)}`
+			);
+			throw new Error(
+				`Email(s) non envoyé(s) à : ${result.rejected.join(", ")}`
+			);
+		}
+	} catch (error) {
+		console.error("Erreur lors de l'envoi de l'email :", error);
+		throw error; // Vous pouvez personnaliser la gestion de l'erreur ici
+	}
 }
 
 // TODO customize mail template
 function html(params: { url: string; host: string }) {
 	const { url } = params;
 
-	const brandColor = "#499f68";
+	const brandColor = "#feb272";
 	const color = {
 		background: "#f9f9f9",
 		text: "#000",

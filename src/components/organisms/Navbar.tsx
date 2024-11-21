@@ -14,7 +14,7 @@ interface NavbarProps {
 export default async function Navbar({ session }: NavbarProps) {
     const t = await getI18n();
     return (
-        <header className="bg-white dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-900 shadow-sm">
             <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
                 <a className="block text-lightOrange hover:text-darkBlue dark:text-lightOrange" href="/">
                     <span className="sr-only">Home</span>

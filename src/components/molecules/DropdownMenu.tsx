@@ -1,7 +1,7 @@
 "use client"
 
 import { IconChevronDown, IconLogout } from "@tabler/icons-react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "../../../locales/client";
 import Switch from "../atoms/Switch";
 

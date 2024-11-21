@@ -2,6 +2,9 @@ import Navbar from '@/components/organisms/Navbar';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe/stripe';
+import { User } from '@prisma/client';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
+import { Session } from 'next-auth';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import Stripe from 'stripe';
@@ -14,120 +17,164 @@ export default async function Page() {
     });
 
     // order products by price reccuring interval
-    products.data = products.data.sort((a: Stripe.Product, b: Stripe.Product) => {
-        const default_price_a = a.default_price as Stripe.Price;
-        const default_price_b = b.default_price as Stripe.Price;
-        if (default_price_a && default_price_b) {
-            if (default_price_a.recurring?.interval && default_price_b.recurring?.interval && default_price_a.recurring.interval > default_price_b.recurring.interval) {
-                return 1;
-            }
-            if (default_price_a.recurring?.interval && default_price_b.recurring?.interval && default_price_a.recurring.interval < default_price_b.recurring.interval) {
-                return -1;
-            }
-        }
-        return 0;
-    });
+    const intervalOrder: { [key: string]: number } = { month: 1, year: 2 };
 
-    return <div className='h-screen'>
-        <Navbar session={session} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-5/6 w-10/12 mx-auto mt-8">
-            {products.data.map((product) => (
-                <div key={product.id} className="grid grid-rows-2 grid-cols-1 border p-6 rounded-lg shadow-md h-5/6 my-auto">
-                    <div>
-                        <h3 className="text-2xl font-semibold mb-4">{product.name}</h3>
-                        <p className="text-gray-700 mb-6">{product.description}</p>
-                    </div>
-                    {product.default_price != null &&
-                        (() => {
-                            const price = product.default_price as Stripe.Price;
-                            return (
-                                price.unit_amount != null && (
-                                    <div key={price.id} className="flex-col">
-                                        <p className=" font-bold">
-                                            <span className="text-2xl text-lightOrange">{price.unit_amount / 100} {price.currency.toUpperCase() == "EUR" ? "€" : "$"}</span> /{' '}
-                                            {price.recurring?.interval == 'month' ? 'mois' : ''}
-                                            {price.recurring?.interval == 'year' ? 'année' : ''}
-                                        </p>
-                                        <ul className="list-disc list-inside list-image-checkmark my-4">
-                                            {product.marketing_features.map((feature, index) => (
-                                                <li key={index}>{feature.name}</li>
-                                            ))}
-                                        </ul>
-                                        {session &&
-                                            <form>
-                                                <button className='className="ml-auto mt-auto bg-lightOrange text-white py-2 px-4 rounded hover:bg-lightOrange/80 hover:shadow-md"' formAction={async ()=>{
-                                                    "use server"
+    // Fonction pour obtenir la valeur de l'intervalle
+    const getIntervalValue = (product: Stripe.Product): number => {
+        const price = product.default_price as Stripe.Price;
+        const interval = price?.recurring?.interval;
+        return intervalOrder[interval || ''] || 0;
+    };
 
-                                                    const session = await auth()
-                                                    const user = await prisma.user.findUnique({
-                                                        where: {
-                                                            id : session?.user?.id
-                                                        },
-                                                        select: {
-                                                            stripeCustomerId: true,
-                                                            email: true
-                                                        }
-                                                    })
+    // Trier les produits en utilisant les valeurs d'intervalle
+    products.data.sort((a: Stripe.Product, b: Stripe.Product) => getIntervalValue(a) - getIntervalValue(b));
 
-                                                    let stripeCustomerId = user?.stripeCustomerId
 
-                                                    if(stripeCustomerId == null && session?.user?.email){
-                                                        const customer = await stripe.customers.create({
-                                                            email: session?.user?.email,
-                                                        })
+    return (
+        <div className="h-screen flex flex-col">
+            <Navbar session={session} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-5/6 w-10/12 m-auto">
+                {products.data.map((product: Stripe.Product) => {
+                    const price = product.default_price as Stripe.Price | null;
+                    const user = session?.user as User | null;
 
-                                                        await prisma.user.update({
-                                                            where: {
-                                                                id: session?.user?.id
-                                                            },
-                                                            data: {
-                                                                stripeCustomerId: customer.id
-                                                            }
-                                                        })
+                    // Vérifier si le prix est valide
+                    const isPriceValid = price?.unit_amount != null;
 
-                                                        stripeCustomerId = customer.id
-                                                    }
+                    // Déterminer si le formulaire doit être affiché
+                    const showForm =
+                        session &&
+                        user &&
+                        user.userPlan &&
+                        user.userPlan !== product.metadata.userPlan;
 
-                                                    if (stripeCustomerId != null){
-                                                        const sessionStripe = await stripe.checkout.sessions.create({
-                                                            payment_method_types: ['card'],
-                                                            line_items: [
-                                                                {
-                                                                    price: price.id,
-                                                                    quantity: 1,
-                                                                },
-                                                            ],
-                                                            mode: 'subscription',
-                                                            success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling?session_id={CHECKOUT_SESSION_ID}`,
-                                                            cancel_url: `${process.env.NEXTAUTH_URL}/pricing`,
-                                                            customer: stripeCustomerId,
-                                                            metadata: {
-                                                                userPlan: product.metadata.userPlan
-                                                            }
-                                                        })
+                    const showDisableForm = session && user && user.userPlan === product.metadata.userPlan;
 
-                                                        if (sessionStripe.url != null) {
-                                                            redirect(sessionStripe.url)
-                                                        }else{
-                                                            throw new Error("Erreur lors de la création de la session de payement")
-                                                        }
-                                                    }
-                                                    throw new Error("Erreur lors de la création de la session de payement")
-                                                }}>Choisir ce plan</button>
-                                            </form>
-                                        }
-                                        {!session &&
-                                            <p className="text-gray-400 mt-4 italic text-center">
-                                                Vous devez être connecté pour procéder au payement
+                    // Si le prix n'est pas valide, ne rien rendre
+                    if (!isPriceValid) return null;
+
+                    return (
+                        <div
+                            key={product.id}
+                            className="grid grid-rows-2 grid-cols-1 border p-6 rounded-lg shadow-md h-5/6 my-auto"
+                        >
+                            <div>
+                                <h3 className="text-2xl font-semibold mb-4">{product.name}</h3>
+                                <p className="text-gray-700 mb-6">{product.description}</p>
+                            </div>
+                            <div className="flex flex-col">
+                                <p className="font-bold">
+                                    <span className="text-2xl text-lightOrange">
+                                        {price.unit_amount ? price.unit_amount / 100 : ''}{" "}
+                                        {price.currency.toUpperCase() === "EUR" ? "€" : "$"}
+                                    </span>{" "}
+                                    /{" "}
+                                    {price.recurring?.interval === "month"
+                                        ? "mois"
+                                        : price.recurring?.interval === "year"
+                                            ? "année"
+                                            : ""}
+                                </p>
+                                <ul className="list-disc list-inside list-image-checkmark my-4">
+                                    {product.marketing_features.map((feature: any, index: number) => (
+                                        <li key={index}>{feature.name}</li>
+                                    ))}
+                                </ul>
+                                {showDisableForm && (
+                                    <div className='h-full flex flex-col justify-center items-center'>
+                                        <div className='flex justify-center items-center'>
+                                            <IconCircleCheckFilled className='fill-lightOrange' />
+                                            <p className="text-gray-400 ml-2 italic text-center">
+                                                Vous avez déjà ce plan
                                             </p>
-                                        }
+                                        </div>
+                                        <a className='inline-block mx-auto mt-2 text-sm text-lightOrange' href='/dashboard/biling'>Modifier mon abonnement</a>
                                     </div>
-                                )
-                            )
-                        })()
-                    }
-                </div>
-            ))}
+                                )}
+                                {showForm && (
+                                    <form className='h-full flex justify-center items-center'>
+                                        <button
+                                            className="h-fit bg-lightOrange text-white py-2 px-4 rounded hover:bg-lightOrange/80 hover:shadow-md"
+                                            formAction={async () => {
+                                                "use server";
+                                                if (session) {
+                                                    await handleFormAction(price.id, product, session);
+                                                }
+                                            }}
+                                        >
+                                            Choisir ce plan
+                                        </button>
+                                    </form>
+                                )}
+                                {!session && (
+                                    <p className="text-gray-400 mt-4 italic text-center">
+                                        Vous devez être connecté pour procéder au paiement
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
-    </div>
+    );
+
+}
+
+async function handleFormAction(priceId: string, product: Stripe.Product, session: Session | null) {
+    "use server"
+    const user = await prisma.user.findUnique({
+        where: {
+            id: session?.user?.id
+        },
+        select: {
+            stripeCustomerId: true,
+            email: true
+        }
+    })
+
+    let stripeCustomerId = user?.stripeCustomerId
+
+    if (stripeCustomerId == null && session?.user?.email) {
+        const customer = await stripe.customers.create({
+            email: session?.user?.email,
+        })
+
+        await prisma.user.update({
+            where: {
+                id: session?.user?.id
+            },
+            data: {
+                stripeCustomerId: customer.id
+            }
+        })
+
+        stripeCustomerId = customer.id
+    }
+
+    if (stripeCustomerId != null) {
+        const sessionStripe = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price: priceId,
+                    quantity: 1,
+                },
+            ],
+            mode: 'subscription',
+            success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling`,
+            cancel_url: `${process.env.NEXTAUTH_URL}/pricing`,
+            customer: stripeCustomerId,
+            metadata: {
+                userPlan: product.metadata.userPlan
+            }
+        })
+
+        if (sessionStripe.url != null) {
+            redirect(sessionStripe.url)
+        } else {
+            throw new Error("Erreur lors de la création de la session de payement")
+        }
+    }
+    throw new Error("Erreur lors de la création de la session de payement")
 }
