@@ -24,8 +24,6 @@ export const POST = async (req: NextRequest) => {
 
 		const userPlan = session.metadata?.userPlan as UserPlan;
 
-		console.log(userPlan);
-
 		if (!userPlan) {
 			console.error("Plan utilisateur introuvable");
 			return NextResponse.json(

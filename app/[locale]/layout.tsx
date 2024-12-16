@@ -7,6 +7,8 @@ import { NextAuthProvider } from "@/lib/providers/NextAuthProvider";
 import { LocaleProvider } from "@/lib/providers/LocaleProvider";
 import { auth } from "@/lib/auth/auth";
 import { ReactElement } from "react";
+import { QueryClient } from "react-query";
+import Providers from "./providers";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -26,16 +28,14 @@ export const metadata: Metadata = {
 
 export default async function Layout({ children, params }: { children: ReactElement, params: Promise<{ locale: string }> }) {
 	const { locale } = await params
-
 	const session = await auth()
+
 	return (
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen min-w-screen bg-background dark:bg-foreground dark:text-white`}>
-				<NextAuthProvider session={session}>
-					<LocaleProvider locale={locale}>
-						{children}
-					</LocaleProvider>
-				</NextAuthProvider>
+				<Providers locale={locale} session={session}>
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);
