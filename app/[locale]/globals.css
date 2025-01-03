@@ -25,3 +25,18 @@ body {
 		text-wrap: balance;
 	}
 }
+
+@layer components {
+	.loader {
+		/* On applique la largeur et l’aspect-ratio via Tailwind */
+		@apply w-[60px] [aspect-ratio:1.7];
+
+		/* Définition de la variable CSS et du background */
+		--_g: no-repeat radial-gradient(circle closest-side, #feb272 90%, #0000);
+		background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+		background-size: calc(100% / 3) 50%;
+
+		/* Application de l’animation configurée dans tailwind.config.js */
+		@apply animate-l3;
+	}
+}
