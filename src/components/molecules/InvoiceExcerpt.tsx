@@ -13,7 +13,6 @@ export default function InvoiceExcerpt({ invoices }: InvoiceExcerptProps) {
         );
     } else {
         // reverse and get the 2 firsts invoices
-        console.log(invoices);
         invoices = invoices.reverse();
         invoices = invoices.slice(0, 2);
 
