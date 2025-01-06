@@ -5,8 +5,10 @@ import { useSession } from "next-auth/react";
 import { getFullProfil } from "@/lib/action/users/user.action";
 import { useEffect, useState } from "react";
 import { UserFullProfil } from "@/datas/User/user";
-import ProfilSeparator from "@/components/atoms/ProfilSeparator";
 import Loader from "@/components/atoms/Loader";
+import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
+import ProfilLine from "@/components/molecules/ProfilLine";
+import InvoiceExcerpt from "@/components/molecules/InvoiceExcerpt";
 
 export default function Page() {
 	const { data: session } = useSession();
@@ -14,7 +16,6 @@ export default function Page() {
 	const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
 		null
 	);
-	console.log(profil && profil.customer && !profil.customer?.deleted);
 
 	useEffect(() => {
 		getFullProfil().then((response) => {
@@ -35,16 +36,18 @@ export default function Page() {
 						{profil &&
 						profil.customer &&
 						!profil.customer.deleted ? (
-							<div className="w-full">
-								<h1>{session?.user?.name}</h1>
-								<h2>{profil.customer.email}</h2>
-								<ProfilSeparator/>
-								{profil.invoices.map((invoice) => (
-									<div key={invoice.id}>
-										<h3>{invoice.id}</h3>
-										<h4>{invoice.amount_paid}</h4>
-									</div>
-								))}
+							<div className="w-full overflow-auto">
+								<DashboardPageTitle title="Votre profil" />
+								<ProfilLine subtitle="Photo de profil" >
+									<img className="rounded-lg" height={80} width={80} src={session?.user?.image || ""} alt="" />
+								</ProfilLine>
+								<ProfilLine subtitle="Nom" isModifiable>
+									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.name}</p>
+								</ProfilLine>
+								<ProfilLine subtitle="Addresse e-mail" isModifiable>
+									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.email}</p>
+								</ProfilLine>
+								<InvoiceExcerpt invoices={profil.invoices}/>
 							</div>
 						) : (
 							<p>Vous n'etes pas connecté</p>

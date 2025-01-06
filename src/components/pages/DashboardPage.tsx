@@ -10,7 +10,7 @@ export default function DashboardPage({session, children}: DashboardPageProps) {
     return (
         <div className="h-screen w-screen flex overflow-hidden">
             <NavbarDashboard session={session} />
-            <div className="w-5/6">
+            <div className="w-5/6 p-4">
                 {!session ?  (<p>Vous n'etes pas connecté</p>) : (children)}
             </div>
         </div>

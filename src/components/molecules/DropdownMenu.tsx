@@ -33,7 +33,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
 
     return (
         <div className="relative">
-            <div onClick={() => handleOpen()} className="inline-flex items-center overflow-hidden shadow-inner rounded-md border border-gray-300 overflow-hidden p-1 hover:bg-gray-50 hover:text-gray-700 hover:cursor-pointer">
+            <div onClick={() => handleOpen()} className="inline-flex items-center shadow-inner rounded-md border border-gray-300 overflow-hidden p-1 hover:bg-gray-50 hover:text-gray-700 hover:cursor-pointer">
                 <span className="sr-only">Toggle dashboard menu</span>
 
                 <img
