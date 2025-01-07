@@ -8,6 +8,7 @@ export interface User {
 	stripeCustomerId: string | null;
 	createdAt: string;
 	updatedAt: string;
+	userPlan: string | null;
 }
 
 export interface Session {
