@@ -2,6 +2,8 @@
 
 import Loader from "@/components/atoms/Loader";
 import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
+import DashboardSubtitle from "@/components/atoms/Titles/DashboardSubtitle";
+import InvoiceTable from "@/components/organisms/InvoiceTable";
 import DashboardPage from "@/components/pages/DashboardPage";
 import { Session } from "@/datas/session";
 import { UserFullProfil } from "@/datas/User/user";
@@ -46,7 +48,7 @@ export default function Page() {
         };
     }, []);
 
-    console.log(session?.user)
+    console.log(products);
 
     return (
         <DashboardPage session={session}>
@@ -56,37 +58,49 @@ export default function Page() {
                 ) : (
                     (profil && profil.customer && !profil.customer.deleted) ? (
                         <div className="w-full overflow-auto">
-                            <DashboardPageTitle title="Votre abonnement" />
-                            <h2>Facturation et abonnement</h2>
-                            <div className="h-1/2 w-full">
-                                <h3>Abonnement</h3>
-                                <div className="h-full w-full flex gap-3 items-center">
-                                    {products.map((product, index) => (
-                                        <div key={index} className={"w-1/3 h-fit p-4 " + (product.metadata.userPlan === parsedSession?.user?.userPlan ? 'bg-blue' : 'bg-red')}>
-                                            <h4>{product.name}</h4>
-                                            <p>{product.description}</p>
-                                        </div>
-                                    ))}
+                            <DashboardPageTitle title="Facturation et abonnement" />
+                            <div className="w-full mb-4">
+                                <DashboardSubtitle subtitle="Abonnement" />
+                                <div className="h-max w-full flex gap-3 items-stretch">
+                                    {products.map((product, index) => {
+                                        let price = product.default_price as Stripe.Price;
+                                        let priceAmount = price.unit_amount? price.unit_amount/ 100 : "Indisponible";
+                                        return (
+                                            <div key={index} className="w-1/3 p-6 border shadow-md flex flex-col gap-2 justify-between rounded-lg">
+                                                <h4>{product.name}</h4>
+                                                <div>
+                                                    <p><span className="text-lightOrange text-xl font-semibold">{priceAmount}€</span>/{price.recurring?.interval === "month"
+                                                        ? "mois"
+                                                        : price.recurring?.interval === "year"
+                                                            ? "année"
+                                                            : ""}</p>
+                                                    <p>{product.description}</p>
+                                                </div>
+                                                {parsedSession.user.userPlan == product.metadata.userPlan ? (
+                                                    <button className="p-2 rounded-lg border-[1px] border-lightOrange bg-lightOrange text-white hover:text-lightOrange hover:bg-lightOrange/20" onClick={(e) => {
+                                                        let confirmAnulation: boolean = confirm("Voulez-vous vraiment résilier votre abonnement ?");
+                                                        if (confirmAnulation) {
+                                                            // cancelSubscription({subscriptionId: profil.customer}).then((response)=>{
+                                                            console.log('cancel')
+                                                            // })
+                                                        } else {
+                                                            console.log('no cancel')
+                                                        }
+                                                    }}>
+                                                        Annuler mon abonnement
+                                                    </button>
+                                                ) : (
+                                                    <button className="p-2 rounded-lg border-[1px] border-lightOrange bg-lightOrange/20 text-lightOrange hover:text-white hover:bg-lightOrange">
+                                                        S'abonner
+                                                    </button>
+                                                )
+                                                }
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
-                            <div className="h-1/2 w-full">
-                                <h3>Facturation</h3>
-                                <div className="h-full w-full bg-blue-400">
-
-                                </div>
-                            </div>
-                            <button className="p-2 rounded-lg border-[1px] border-red-600 bg-red-200 text-red-600 hover:text-white hover:bg-red-600" onClick={(e) => {
-                                let confirmAnulation: boolean = confirm("Voulez-vous vraiment résilier votre abonnement ?");
-                                if (confirmAnulation) {
-                                    // cancelSubscription({subscriptionId: profil.customer}).then((response)=>{
-                                    console.log('cancel')
-                                    // })
-                                } else {
-                                    console.log('no cancel')
-                                }
-                            }}>
-                                Annuler mon abonnement
-                            </button>
+                            <InvoiceTable invoices={profil.invoices}/>
                         </div>
                     ) : (<p>Vous n'etes pas connecté</p>)
                 )}
