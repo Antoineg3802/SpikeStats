@@ -26,7 +26,6 @@ model User {
     // Stripe
     stripeCustomerId String?
     userPlan        UserPlan? @default(FREE)
-    endPlan         DateTime?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

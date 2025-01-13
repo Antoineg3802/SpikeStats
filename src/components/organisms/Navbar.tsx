@@ -43,7 +43,7 @@ export default async function Navbar({ session }: NavbarProps) {
                     <div className="flex items-center gap-4">
                         <div className="sm:flex sm:gap-4">
                             {session && session.user ? (
-                                <DropdownMenu personalMenus={ProfilMenus.personalMenus} signOut={signOut} image={session.user.image ? session.user.image : "/static/img/defaultProfilePicture.png"} />
+                                <DropdownMenu personalMenus={ProfilMenus.personalMenus} signOut={signOut} image={session.user.image ? session.user.image : "/img/defaultProfilePicture.png"} />
                             ) : (
                                 <SignInButton signIn={signIn} text={t("auth.signIn")} />
                             )}

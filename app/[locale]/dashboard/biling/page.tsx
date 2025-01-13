@@ -7,7 +7,7 @@ import InvoiceTable from "@/components/organisms/InvoiceTable";
 import DashboardPage from "@/components/pages/DashboardPage";
 import { Session } from "@/datas/session";
 import { UserFullProfil } from "@/datas/User/user";
-import { cancelSubscription, getStripeProfil, stripeProductsClient } from "@/lib/action/stripe/stripe.action";
+import { cancelSubscription, updateSubscription, stripeProductsClient } from "@/lib/action/stripe/stripe.action";
 import { getFullProfil } from "@/lib/action/users/user.action";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -81,7 +81,7 @@ export default function Page() {
                                                         let confirmAnulation: boolean = confirm("Voulez-vous vraiment résilier votre abonnement ?");
                                                         if (confirmAnulation) {
                                                             // cancelSubscription({subscriptionId: profil.customer}).then((response)=>{
-                                                            console.log('cancel')
+                                                                console.log('cancel')
                                                             // })
                                                         } else {
                                                             console.log('no cancel')
@@ -90,8 +90,9 @@ export default function Page() {
                                                         Annuler mon abonnement
                                                     </button>
                                                 ) : (
-                                                    <button className="p-2 rounded-lg border-[1px] border-lightOrange bg-lightOrange/20 text-lightOrange hover:text-white hover:bg-lightOrange">
-                                                        S'abonner
+                                                    <button className="p-2 rounded-lg border-[1px] border-lightOrange bg-lightOrange/20 text-lightOrange hover:text-white hover:bg-lightOrange"
+                                                    onClick={(e) => updateSubscription({priceId : price.id, userPlan : product.metadata.userPlan})}>
+                                                        Changer d'abonnement
                                                     </button>
                                                 )
                                                 }

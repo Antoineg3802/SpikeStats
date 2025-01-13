@@ -1,8 +1,10 @@
-"use server"
+"use server";
 
+import Stripe from "stripe";
 import { stripe } from "../../stripe/stripe";
 import { authActionClient } from "../action";
 import { z } from "zod";
+import { redirect } from "next/navigation";
 
 export const stripeProductsClient = authActionClient.action(async () => {
 	const products = await stripe.products.list({
@@ -17,10 +19,11 @@ export const stripeProductsClient = authActionClient.action(async () => {
 	return { products: products.data };
 });
 
-export const getStripeProfil = authActionClient
-.action(async ({ ctx: { user } }) => {
-	return { user };
-})
+export const getStripeProfil = authActionClient.action(
+	async ({ ctx: { user } }) => {
+		return { user };
+	}
+);
 
 export const cancelSubscription = authActionClient
 	.schema(
@@ -51,5 +54,47 @@ export const cancelSubscription = authActionClient
 					message: "Error while cancelling the subscription",
 				};
 			}
+		}
+	});
+
+export const updateSubscription = authActionClient
+	.schema(
+		z.object({
+			priceId: z.string(),
+			userPlan: z.string(),
+		})
+	)
+	.action(async ({ parsedInput: { priceId, userPlan }, ctx: { user } }) => {
+		if (!user) {
+			return { error: true, message: "User not found" };
+		}
+
+		if (!user.stripeCustomerId) {
+			return { error: true, message: "User not found" };
+		}
+
+		const sessionStripe = await stripe.checkout.sessions.create({
+			payment_method_types: ["card"],
+			line_items: [
+				{
+					price: priceId,
+					quantity: 1,
+				},
+			],
+			mode: "subscription",
+			success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling`,
+			cancel_url: `${process.env.NEXTAUTH_URL}/dashboard/biling`,
+			customer: user.stripeCustomerId,
+			metadata: {
+				userPlan,
+			},
+		});
+
+		if (sessionStripe.url != null) {
+			redirect(sessionStripe.url);
+		} else {
+			throw new Error(
+				"Erreur lors de la création de la session de payement"
+			);
 		}
 	});

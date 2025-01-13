@@ -9,6 +9,7 @@ import Loader from "@/components/atoms/Loader";
 import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
 import ProfilLine from "@/components/molecules/ProfilLine";
 import InvoiceExcerpt from "@/components/molecules/InvoiceExcerpt";
+import Image from "next/image";
 
 export default function Page() {
 	const { data: session } = useSession();
@@ -39,7 +40,7 @@ export default function Page() {
 							<div className="w-full overflow-auto">
 								<DashboardPageTitle title="Votre profil" />
 								<ProfilLine subtitle="Photo de profil" >
-									<img className="rounded-lg" height={80} width={80} src={session?.user?.image || ""} alt="" />
+									<Image className="rounded-lg" height={80} width={80} src={session?.user?.image || "/img/defaultProfilePicture.png"} alt="" />
 								</ProfilLine>
 								<ProfilLine subtitle="Nom" isModifiable>
 									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.name}</p>
