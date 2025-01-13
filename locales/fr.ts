@@ -17,5 +17,8 @@ export default {
 		contact: "Contact",
 		pricing: "Tarification",
 		aboutUs: "À propos",
+		biling: 'Facturation',
+		matches: 'Matches',
+		teams: 'Équipes',
 	}
 } as const;

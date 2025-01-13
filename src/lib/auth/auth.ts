@@ -5,6 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/lib/server/server";
 import { sendVerificationRequest } from "@/lib/auth/mailer";
 import Nodemailer from "next-auth/providers/nodemailer";
+import { stripe } from "../stripe/stripe";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	adapter: PrismaAdapter(prisma),
@@ -60,6 +61,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				console.error("Erreur lors de la liaison des comptes :", error);
 				return false;
 			}
+		},
+	},
+	events: {
+		createUser: async (message) => {
+			const user = message.user;
+			const  { id , email , name } = user;
+
+			if (!id || !email ){
+				return;
+			}
+
+			const stripeCustomer = await stripe.customers.create({
+				email,
+				name: name ?? undefined,
+			})
+
+			await prisma?.user.update({
+				where: {
+					id,
+				},
+				data: {
+					stripeCustomerId: stripeCustomer.id,
+				},
+			})
 		},
 	},
 	session: {

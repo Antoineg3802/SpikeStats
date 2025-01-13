@@ -1,20 +1,61 @@
-"use client"
+"use client";
 
-import { getCurrentUser } from "@/lib/auth/auth"
-import { useSession } from "next-auth/react"
+import DashboardPage from "@/components/pages/DashboardPage";
+import { useSession } from "next-auth/react";
+import { getFullProfil } from "@/lib/action/users/user.action";
+import { useEffect, useState } from "react";
+import { UserFullProfil } from "@/datas/User/user";
+import Loader from "@/components/atoms/Loader";
+import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
+import ProfilLine from "@/components/molecules/ProfilLine";
+import InvoiceExcerpt from "@/components/molecules/InvoiceExcerpt";
+import Image from "next/image";
 
 export default function Page() {
-    const { data: session } = useSession()
+	const { data: session } = useSession();
+	const [isLoading, setIsLoading] = useState(true);
+	const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
+		null
+	);
 
-    if (session?.user && session.user.id) {
-        const { user } = session
+	useEffect(() => {
+		getFullProfil().then((response) => {
+			let parsedProfil: UserFullProfil | undefined | null =
+				response?.data;
+			setIsLoading(false);
+			setProfil(parsedProfil);
+		});
+	}, [!profil]);
 
-        return (
-            <div>
-                <h1>{user.name}</h1>
-                <p>{user.email}</p>
-                {user.image && <img height="300" width="300" src={user.image} alt="Profil picture" />}
-            </div>
-        )
-    }
+	return (
+		<DashboardPage session={session}>
+			<div className="h-full w-full flex align-middle">
+				{isLoading ? (
+					<Loader />
+				) : (
+					<>
+						{profil &&
+						profil.customer &&
+						!profil.customer.deleted ? (
+							<div className="w-full overflow-auto">
+								<DashboardPageTitle title="Votre profil" />
+								<ProfilLine subtitle="Photo de profil" >
+									<Image className="rounded-lg" height={80} width={80} src={session?.user?.image || "/img/defaultProfilePicture.png"} alt="" />
+								</ProfilLine>
+								<ProfilLine subtitle="Nom" isModifiable>
+									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.name}</p>
+								</ProfilLine>
+								<ProfilLine subtitle="Addresse e-mail" isModifiable>
+									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.email}</p>
+								</ProfilLine>
+								<InvoiceExcerpt invoices={profil.invoices}/>
+							</div>
+						) : (
+							<p>Vous n'etes pas connecté</p>
+						)}
+					</>
+				)}
+			</div>
+		</DashboardPage>
+	);
 }

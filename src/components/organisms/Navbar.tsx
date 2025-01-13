@@ -14,7 +14,7 @@ interface NavbarProps {
 export default async function Navbar({ session }: NavbarProps) {
     const t = await getI18n();
     return (
-        <header className="bg-white dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-900 shadow-sm">
             <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
                 <a className="block text-lightOrange hover:text-darkBlue dark:text-lightOrange" href="/">
                     <span className="sr-only">Home</span>
@@ -28,7 +28,7 @@ export default async function Navbar({ session }: NavbarProps) {
                                 return (
                                     <li key={index}>
                                         <a
-                                            className="text-gray-600 transition hover:text-gray-600/75 dark:text-white dark:hover:text-white/75"
+                                            className="text-gray-600 transition hover:text-lightOrange/75 dark:text-white dark:hover:text-white/75"
                                             href={menu.link}
                                         >
                                             {/* @ts-ignore */}
@@ -43,7 +43,7 @@ export default async function Navbar({ session }: NavbarProps) {
                     <div className="flex items-center gap-4">
                         <div className="sm:flex sm:gap-4">
                             {session && session.user ? (
-                                <DropdownMenu personalMenus={ProfilMenus.personalMenus} signOut={signOut} image={session.user.image ? session.user.image : "/static/img/defaultProfilePicture.png"} />
+                                <DropdownMenu personalMenus={ProfilMenus.personalMenus} signOut={signOut} image={session.user.image ? session.user.image : "/img/defaultProfilePicture.png"} />
                             ) : (
                                 <SignInButton signIn={signIn} text={t("auth.signIn")} />
                             )}
