@@ -5,8 +5,10 @@ export interface User {
 	email: string;
 	emailVerified: string;
 	image: string | null;
+	stripeCustomerId: string | null;
 	createdAt: string;
 	updatedAt: string;
+	userPlan: string | null;
 }
 
 export interface Session {

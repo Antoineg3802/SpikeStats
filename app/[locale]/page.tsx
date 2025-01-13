@@ -3,6 +3,7 @@ import { signIn, signOut } from "next-auth/react";
 import LocaleSelector from "@/components/atoms/LocaleSelector";
 import Navbar from "@/components/organisms/Navbar";
 import { auth } from "@/lib/auth/auth";
+import Image from "next/image";
 
 export default async function Home() {
 	const session = await auth()
@@ -11,7 +12,7 @@ export default async function Home() {
 		<div>
 			<Navbar session={session} />
 			<LocaleSelector />
-			{/* <ThemeSwitcher /> */}
+			<Image src={"/img/defaultProfilePicture.png"} alt={""} width={32} height={32}/>
 		</div>
 	);
 }

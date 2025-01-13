@@ -3,8 +3,9 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/lib/server/server";
-import {sendVerificationRequest} from "@/lib/auth/mailer";
+import { sendVerificationRequest } from "@/lib/auth/mailer";
 import Nodemailer from "next-auth/providers/nodemailer";
+import { stripe } from "../stripe/stripe";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	adapter: PrismaAdapter(prisma),
@@ -12,7 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		Nodemailer({
 			server: process.env.EMAIL_SERVER,
 			from: process.env.EMAIL_FROM,
-			sendVerificationRequest
+			sendVerificationRequest,
 		}),
 		GoogleProvider({
 			clientId: env.GOOGLE_CLIENT_ID || "",
@@ -23,13 +24,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	callbacks: {
 		async signIn({ user, account, profile }: any) {
 			try {
-                if (!account) {
-                    return true;
+				if (!account) {
+					return true;
 				}
-                
+
 				const existingUser = await prisma.user.findUnique({
-                    where: {
-                        email: user.email as string,
+					where: {
+						email: user.email as string,
 					},
 				});
 
@@ -62,8 +63,48 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 		},
 	},
+	events: {
+		createUser: async (message) => {
+			const user = message.user;
+			const  { id , email , name } = user;
+
+			if (!id || !email ){
+				return;
+			}
+
+			const stripeCustomer = await stripe.customers.create({
+				email,
+				name: name ?? undefined,
+			})
+
+			await prisma?.user.update({
+				where: {
+					id,
+				},
+				data: {
+					stripeCustomerId: stripeCustomer.id,
+				},
+			})
+		},
+	},
 	session: {
 		maxAge: 12 * 60 * 60, // (12 hours)
 		updateAge: 24 * 60 * 60, // Increase Session if active (User making requests)
 	},
-})
+});
+
+export const getCurrentUser = async () => {
+	const session = await auth();
+
+	if (!session) {
+		return null;
+	}
+
+	const user = await prisma.user.findUnique({
+		where: {
+			id: session.user?.id,
+		},
+	});
+
+	return user;
+};
