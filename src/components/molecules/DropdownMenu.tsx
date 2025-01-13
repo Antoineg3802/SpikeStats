@@ -1,14 +1,13 @@
 "use client"
 
 import { IconChevronDown, IconLogout } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useI18n } from "../../../locales/client";
 import Switch from "../atoms/Switch";
-import Image from "next/image";
 
 interface DropdownMenuProps {
     image: string;
-    personalMenus: { name: string, link: string }[];
+    personalMenus: {name: string, link: string}[];
     signOut: () => void;
 }
 
@@ -32,32 +31,19 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
         setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
     }
 
-    console.log(image)
-
     return (
         <div className="relative">
-            <div onClick={() => handleOpen()} className="inline-flex items-center shadow-inner rounded-md border border-gray-300 overflow-hidden p-1 hover:bg-gray-50 hover:text-gray-700 hover:cursor-pointer">
+            <div onClick={() => handleOpen()} className="inline-flex items-center overflow-hidden shadow-inner rounded-md border border-gray-300 overflow-hidden p-1 hover:bg-gray-50 hover:text-gray-700 hover:cursor-pointer">
                 <span className="sr-only">Toggle dashboard menu</span>
 
-                {image ? (
-                    <Image
-                        src={image}
-                        width={32}
-                        height={32}
-                        alt=""
-                        className="object-cover rounded-full"
-                        quality={100}
-                    />
-                ) : (
-                    <Image
-                        src={"/img/defaultProfilePicture.png"}
-                        width={32}
-                        height={32}
-                        alt=""
-                        className="object-cover rounded-full"
-                        quality={100}
-                    />
-                )}
+                <img
+                    src={image}
+                    width={32}
+                    height={32}
+                    alt=""
+                    className="object-cover rounded-full"
+                />
+
                 <IconChevronDown width={18} height={18} className={isOpen ? "rotate-180" : "rotate-0" + 'transition-all duration-200 ease-in-out'} />
             </div>
 
@@ -67,7 +53,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                     role="menu"
                 >
                     <div className="p-2">
-                        {personalMenus.map((menu: { link: string, name: string }, index) => {
+                        {personalMenus.map((menu: {link: string, name: string}, index) => {
                             return (
                                 <a
                                     key={index}
@@ -81,7 +67,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                             )
                         })}
 
-                        <div className="select-none flex items-center gap-4 rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
+                        <div className="select-none text-sm flex items-center gap-4 rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
                             {t("menus.darkmode")}
                             <Switch onClick={handleThemeSwitcherClick} />
                         </div>

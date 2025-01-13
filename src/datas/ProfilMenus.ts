@@ -1,5 +1,3 @@
-import { Icon, IconUsers , IconLayoutDashboard, IconUser, IconFileDollar, IconSettings, IconBallVolleyball } from '@tabler/icons-react';
-
 const ProfilMenus: ProfilMenus = {
 	mainMenus: [
 		{
@@ -14,7 +12,7 @@ const ProfilMenus: ProfilMenus = {
 			name: "pricing",
 			link: "/pricing",
 		},
-		{
+        {
 			name: "about",
 			link: "/more",
 		},
@@ -24,7 +22,7 @@ const ProfilMenus: ProfilMenus = {
 			name: "dashboard",
 			link: "/dashboard",
 		},
-		{
+        {
 			name: "settings",
 			link: "settings",
 		},
@@ -34,45 +32,6 @@ const ProfilMenus: ProfilMenus = {
 		},
 	],
 };
-
-export const DashboardMenus: DashboardMenus[] = [
-	{
-		name: "dashboard",
-		link: "/dashboard",
-		icon: IconLayoutDashboard,
-	},
-	{
-		name: "profile",
-		link: "/dashboard/profil",
-		icon: IconUser
-	},
-	{
-		name: "biling",
-		link: "/dashboard/biling",
-		icon: IconFileDollar
-	},
-	{
-		name: "settings",
-		link: "/dashboard/settings",
-		icon: IconSettings
-	},
-	{
-		name: "matches",
-		link: "/dashboard/matches",
-		icon: IconBallVolleyball
-	},
-	{
-		name: "teams",
-		link: "/dashboard/teams",
-		icon: IconUsers
-	}
-]
-
-interface DashboardMenus {
-	name: string;
-	link: string;
-	icon: Icon;
-}
 
 interface ProfilMenus {
 	mainMenus: {
