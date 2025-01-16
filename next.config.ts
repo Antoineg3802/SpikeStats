@@ -1,4 +1,7 @@
-const nextConfig = {
+import { NextConfig } from 'next';
+import nextPwa from 'next-pwa';
+
+const nextConfig : NextConfig = {
 	images: {
 		remotePatterns: [
 			{
@@ -12,4 +15,10 @@ const nextConfig = {
 	},
 };
 
-export default nextConfig;
+const withPWA = nextPwa({
+	dest: "public", // dossier où stocker le SW
+	register: true, // enregistre le service worker automatiquement
+	skipWaiting: true, // force la maj instantanée du service worker
+});
+
+export default withPWA(nextConfig);
