@@ -32,8 +32,6 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
         setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
     }
 
-    console.log(image)
-
     return (
         <div className="relative">
             <div onClick={() => handleOpen()} className="inline-flex items-center shadow-inner rounded-md border border-gray-300 overflow-hidden p-1 hover:bg-gray-50 hover:text-gray-700 hover:cursor-pointer">

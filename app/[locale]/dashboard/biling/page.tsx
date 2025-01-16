@@ -48,8 +48,6 @@ export default function Page() {
         };
     }, []);
 
-    console.log(products);
-
     return (
         <DashboardPage session={session}>
             <div className="h-full w-full flex align-middle">
