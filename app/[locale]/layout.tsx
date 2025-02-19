@@ -4,7 +4,7 @@ import "./globals.css";
 import { auth } from "@/lib/auth/auth";
 import { ReactElement } from "react";
 import { QueryClient } from "react-query";
-import Providers from "./providers";
+import Providers from "../../src/components/organisms/providers";
 import { GeistSans } from "geist/font/sans";
 
 export const metadata: Metadata = {
@@ -23,7 +23,6 @@ export default async function Layout({ children, params }: { children: ReactElem
 			<link rel="shortcut icon" href="/favicon.ico" />
 			<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 			<meta name="apple-mobile-web-app-title" content="SpikeStats" />
-			<link rel="manifest" href="/site.webmanifest" />
 			<body className={`${GeistSans.className} text-black antialiased min-h-screen min-w-screen bg-background dark:bg-foreground dark:text-white`}>
 				<Providers locale={locale} session={session}>
 					{children}
