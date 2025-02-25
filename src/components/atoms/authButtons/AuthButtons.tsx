@@ -8,7 +8,7 @@ interface SignInButtonProps {
 export function SignInButton({ signIn, text}: SignInButtonProps) {
     return (
         <button
-            className="block rounded-md bg-primary text-background border-2 height:75px; px-5 py-2.5 text-sm font-medium transition hover:bg-background hover:border-2 hover:text-primary hover:border-primary"
+            className="block rounded-md bg-primary text-background border-2 height:75px; px-5 py-2.5 text-sm font-medium transition hover:cursor-pointer hover:bg-background hover:border-2 hover:text-primary hover:border-primary"
             onClick={() => signIn()}
         >
             {text}

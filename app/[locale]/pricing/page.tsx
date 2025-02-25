@@ -56,11 +56,11 @@ export default async function Page() {
                     return (
                         <div
                             key={product.id}
-                            className="grid grid-rows-2 grid-cols-1 border p-6 rounded-lg shadow-md h-5/6 my-auto"
+                            className="grid text-foreground grid-rows-2 grid-cols-1 border p-6 rounded-lg shadow-md h-5/6 my-auto"
                         >
                             <div>
-                                <h3 className="text-2xl font-semibold mb-4">{product.name}</h3>
-                                <p className="text-foreground-700 mb-6">{product.description}</p>
+                                <h3 className="text-2xl text-primary font-semibold mb-4">{product.name}</h3>
+                                <p className="text-foreground mb-6">{product.description}</p>
                             </div>
                             <div className="flex flex-col">
                                 <p className="font-bold">
@@ -88,13 +88,13 @@ export default async function Page() {
                                                 Vous avez déjà ce plan
                                             </p>
                                         </div>
-                                        <a className='inline-block mx-auto mt-2 text-sm text-primary' href='/dashboard/biling'>Modifier mon abonnement</a>
+                                        <a className='inline-block mx-auto mt-2 text-sm text-primary hover:underline underline-offset-2' href='/dashboard/biling'>Modifier mon abonnement</a>
                                     </div>
                                 )}
                                 {showForm && (
                                     <form className='h-full flex justify-center items-center'>
                                         <button
-                                            className="h-fit bg-primary text-foreground py-2 px-4 rounded hover:bg-primary/80 hover:shadow-md"
+                                            className="h-fit bg-primary text-background hover:cursor-pointer py-2 px-4 rounded hover:bg-primary/80 hover:shadow-md"
                                             formAction={async () => {
                                                 "use server";
                                                 if (session) {
