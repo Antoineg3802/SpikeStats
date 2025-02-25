@@ -6,27 +6,26 @@ const config: Config = {
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
-	darkMode: "selector",
+	darkMode: "class", // Utilise la classe 'dark' pour le mode sombre
 	theme: {
 		extend: {
 			colors: {
-				white: "#fff",
-				black: "#000000",
-				darkBlue: "#0B2647",
-				lightOrange: "#feb272",
-				orange: "#ff7f32",
-				lightRed: "#f8d7da",
-				transparent: "rgba(0,0,0,0.5)",
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
-				card: {
-					DEFAULT: "hsl(var(--card))",
-					foreground: "hsl(var(--card-foreground))",
+				muted: {
+					DEFAULT: "hsl(var(--muted))",
+					foreground: "hsl(var(--muted-foreground))",
 				},
 				popover: {
 					DEFAULT: "hsl(var(--popover))",
 					foreground: "hsl(var(--popover-foreground))",
 				},
+				card: {
+					DEFAULT: "hsl(var(--card))",
+					foreground: "hsl(var(--card-foreground))",
+				},
+				border: "hsl(var(--border))",
+				input: "hsl(var(--input))",
 				primary: {
 					DEFAULT: "hsl(var(--primary))",
 					foreground: "hsl(var(--primary-foreground))",
@@ -34,10 +33,6 @@ const config: Config = {
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
 					foreground: "hsl(var(--secondary-foreground))",
-				},
-				muted: {
-					DEFAULT: "hsl(var(--muted))",
-					foreground: "hsl(var(--muted-foreground))",
 				},
 				accent: {
 					DEFAULT: "hsl(var(--accent))",
@@ -47,38 +42,14 @@ const config: Config = {
 					DEFAULT: "hsl(var(--destructive))",
 					foreground: "hsl(var(--destructive-foreground))",
 				},
-				border: "hsl(var(--border))",
-				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
 				chart: {
-					"1": "hsl(var(--chart-1))",
-					"2": "hsl(var(--chart-2))",
-					"3": "hsl(var(--chart-3))",
-					"4": "hsl(var(--chart-4))",
-					"5": "hsl(var(--chart-5))",
+					1: "hsl(var(--chart-1))",
+					2: "hsl(var(--chart-2))",
+					3: "hsl(var(--chart-3))",
+					4: "hsl(var(--chart-4))",
+					5: "hsl(var(--chart-5))",
 				},
-			},
-			listStyleImage: {
-				checkmark: 'url("/img/checkmark.svg")',
-			},
-			keyframes: {
-				l3: {
-					"20%": {
-						backgroundPosition: "0% 0%, 50% 50%, 100% 50%",
-					},
-					"40%": {
-						backgroundPosition: "0% 100%, 50% 0%, 100% 50%",
-					},
-					"60%": {
-						backgroundPosition: "0% 50%, 50% 100%, 100% 0%",
-					},
-					"80%": {
-						backgroundPosition: "0% 50%, 50% 50%, 100% 100%",
-					},
-				},
-			},
-			animation: {
-				l3: "l3 1s infinite linear",
 			},
 			borderRadius: {
 				lg: "var(--radius)",
@@ -87,6 +58,7 @@ const config: Config = {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [],
 };
+
 export default config;
