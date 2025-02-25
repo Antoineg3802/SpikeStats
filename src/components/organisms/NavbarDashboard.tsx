@@ -18,9 +18,9 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 	const url = "/" + pathname.split("/").slice(2).join("/");
 
 	return (
-		<header className="w-1/6 h-full bg-lightOrange flex flex-col justify-center">
+		<header className="w-1/6 h-full bg-primary flex flex-col justify-center">
 			<a
-				className="block text-white w-fit mx-auto hover:text-darkBlue dark:text-lightOrange"
+				className="block text-foreground w-fit mx-auto hover:text-background"
 				href="/"
 			>
 				<span className="sr-only">Home</span>
@@ -34,14 +34,14 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 				{DashboardMenus.map((menu, index) => {
 					const IconComponent = menu.icon;
 					let textColor =
-						url === menu.link ? "text-darkBlue" : "text-white";
+						url === menu.link ? "text-darkbackground" : "text-foreground";
 
 					return (
 						<div className="flex" key={index}>
 							<a
 								className={
 									textColor +
-									" text-xl transition hover:text-darkBlue dark:text-white dark:hover:text-white/75 flex gap-2"
+									" text-xl transition hover:text-foreground flex gap-2"
 								}
 								href={menu.link}
 							>

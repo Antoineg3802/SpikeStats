@@ -3,8 +3,9 @@
 import { IconChevronDown, IconLogout } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useI18n } from "../../../locales/client";
-import Switch from "../atoms/Switch";
 import Image from "next/image";
+import { useTheme } from "next-themes";
+import ThemeSwitcher from "../atoms/ThemeSwitcher";
 
 interface DropdownMenuProps {
     image: string;
@@ -20,12 +21,9 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
         setIsOpen(!isOpen);
     };
 
-    const [theme, setTheme] = useState<'light' | 'dark'>('light');
+    const { theme, setTheme } = useTheme();
 
     useEffect(() => {
-        const root = window.document.documentElement;
-        root.classList.remove(theme === 'dark' ? 'light' : 'dark');
-        root.classList.add(theme);
     }, [theme]);
 
     function handleThemeSwitcherClick() {
@@ -34,7 +32,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
 
     return (
         <div className="relative">
-            <div onClick={() => handleOpen()} className="inline-flex items-center shadow-inner rounded-md border border-gray-300 overflow-hidden p-1 hover:bg-gray-50 hover:text-gray-700 hover:cursor-pointer">
+            <div onClick={() => handleOpen()} className="inline-flex items-center shadow-inner rounded-md border border-foreground-300 overflow-hidden p-1 hover:bg-foreground-50 hover:text-foreground-700 hover:cursor-pointer">
                 <span className="sr-only">Toggle dashboard menu</span>
 
                 {image ? (
@@ -56,12 +54,12 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                         quality={100}
                     />
                 )}
-                <IconChevronDown width={18} height={18} className={isOpen ? "rotate-180" : "rotate-0" + 'transition-all duration-200 ease-in-out'} />
+                <IconChevronDown width={18} height={18} className={isOpen ? "rotate-180" : "rotate-0" + ' transition-all duration-200 ease-in-out stroke-foreground'} />
             </div>
 
             {isOpen && (
                 <div
-                    className="absolute right-0 z-10 mt-2 w-56 rounded-md border border-gray-100 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900"
+                    className="absolute right-0 z-10 mt-2 w-56 rounded-md border border-foreground-100 text-foreground bg-background shadow-lg"
                     role="menu"
                 >
                     <div className="p-2">
@@ -70,7 +68,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                                 <a
                                     key={index}
                                     href={menu.link}
-                                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                                    className="block rounded-lg px-4 py-2 text-sm text-foreground-500 hover:bg-foreground-50 hover:text-foreground-700"
                                     role="menuitem"
                                 >
                                     {/* @ts-ignore */}
@@ -79,9 +77,9 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                             )
                         })}
 
-                        <div className="select-none flex items-center gap-4 rounded-lg px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
+                        <div className="select-none flex items-center gap-4 rounded-lg px-4 py-2 text-sm text-foreground-500">
                             {t("menus.darkmode")}
-                            <Switch onClick={handleThemeSwitcherClick} />
+                            <ThemeSwitcher handleThemeChange={handleThemeSwitcherClick} theme={theme} />
                         </div>
 
                         <button

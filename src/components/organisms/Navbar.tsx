@@ -14,21 +14,21 @@ interface NavbarProps {
 export default async function Navbar({ session }: NavbarProps) {
     const t = await getI18n();
     return (
-        <header className="bg-white dark:bg-gray-900 shadow-sm">
+        <header className="bg-background shadow-sm">
             <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
-                <a className="block text-lightOrange hover:text-darkBlue dark:text-lightOrange" href="/">
+                <a className="block text-primary hover:text-darkbackground" href="/">
                     <span className="sr-only">Home</span>
                     <IconAnalyze width={32} height={32} className="animate-spin transition-duration: 75ms;" />
                 </a>
 
                 <div className="flex flex-1 items-center justify-end md:justify-between">
-                    <nav aria-label="Global" className="hidden md:block text-gray-600">
+                    <nav aria-label="Global" className="hidden md:block text-foreground-600">
                         <ul className="flex items-center gap-6 text-sm">
                             {ProfilMenus.mainMenus.map((menu: { link: string, name: string }, index) => {
                                 return (
                                     <li key={index}>
                                         <a
-                                            className="text-gray-600 transition hover:text-lightOrange/75 dark:text-white dark:hover:text-white/75"
+                                            className="text-foreground transition hover:text-primary/75"
                                             href={menu.link}
                                         >
                                             {/* @ts-ignore */}

@@ -158,9 +158,9 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
         <div className="w-full flex flex-col">
             <DashboardSubtitle subtitle="Facturation" />
 
-            <div className="w-full flex justify-between bg-lightOrange/20 rounded-tr-lg rounded-tl-lg border border-lightOrange">
+            <div className="w-full flex justify-between bg-primary/20 rounded-tr-lg rounded-tl-lg border border-primary">
                 <p
-                    className="w-1/3 text-center px-4 py-2 hover:cursor-pointer hover:bg-lightOrange/40 select-none"
+                    className="w-1/3 text-center px-4 py-2 hover:cursor-pointer hover:bg-primary/40 select-none"
                     onClick={() => handleSortChange("NAME")}
                 >
                     Nom de l'abonnement
@@ -168,7 +168,7 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
                 </p>
 
                 <p
-                    className="w-1/3 text-center px-4 py-2 hover:cursor-pointer hover:bg-lightOrange/40 select-none"
+                    className="w-1/3 text-center px-4 py-2 hover:cursor-pointer hover:bg-primary/40 select-none"
                     onClick={() => handleSortChange("STARTDATE")}
                 >
                     Début de période
@@ -176,7 +176,7 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
                 </p>
 
                 <p
-                    className="w-1/3 text-center px-4 py-2 hover:cursor-pointer hover:bg-lightOrange/40 select-none"
+                    className="w-1/3 text-center px-4 py-2 hover:cursor-pointer hover:bg-primary/40 select-none"
                     onClick={() => handleSortChange("ENDDATE")}
                 >
                     Fin de période
@@ -184,7 +184,7 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
                 </p>
 
                 <p
-                    className="w-3/12 text-center px-4 py-2 hover:cursor-pointer hover:bg-lightOrange/40 select-none"
+                    className="w-3/12 text-center px-4 py-2 hover:cursor-pointer hover:bg-primary/40 select-none"
                     onClick={() => handleSortChange("AMOUNT")}
                 >
                     Montant
@@ -199,7 +199,7 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
                     return (
                         <div
                             key={index}
-                            className="w-full flex justify-between items-center px-4 py-2 border-b border-l border-r hover:text-lightOrange"
+                            className="w-full flex justify-between items-center px-4 py-2 border-b border-l border-r hover:text-primary"
                         >
                             <p className="w-1/3 h-fit align-middle text-center">
                                 {line.description}
@@ -219,10 +219,10 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
                                     target="_blank"
                                     rel="noreferrer"
                                 >
-                                    <IconEye className="text-lightOrange rounded-full h-full w-auto bg-lightOrange/20 p-1 hover:cursor-pointer" />
+                                    <IconEye className="text-primary rounded-full h-full w-auto bg-primary/20 p-1 hover:cursor-pointer" />
                                 </a>
                                 <a href={invoice.invoice_pdf ?? ""}>
-                                    <IconDownload className="text-lightOrange rounded-full h-full w-auto bg-lightOrange/20 p-1 hover:cursor-pointer" />
+                                    <IconDownload className="text-primary rounded-full h-full w-auto bg-primary/20 p-1 hover:cursor-pointer" />
                                 </a>
                             </div>
                         </div>
