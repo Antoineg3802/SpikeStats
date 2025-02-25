@@ -18,7 +18,7 @@ export default async function Layout({ children, params }: { children: ReactElem
 
 	return (
 		<html lang={locale}>
-			<body className={`${GeistSans.className} text-black antialiased min-h-screen min-w-screen bg-background dark:bg-foreground dark:text-white`}>
+			<body className={`${GeistSans.className} text-foreground antialiased min-h-screen min-w-screen bg-background`}>
 				<Providers locale={locale} session={session}>
 					{children}
 				</Providers>

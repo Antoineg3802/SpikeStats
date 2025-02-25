@@ -1,5 +1,6 @@
 import { LocaleProvider } from "@/lib/providers/LocaleProvider";
 import { NextAuthProvider } from "@/lib/providers/NextAuthProvider";
+import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import { Session } from "next-auth";
 
 interface ProvidersProps {
@@ -12,7 +13,9 @@ export default function Providers({ children, locale, session }: ProvidersProps)
     return (
         <NextAuthProvider session={session}>
             <LocaleProvider locale={locale}>
-                {children}
+                <ThemeProvider>
+                    {children}
+                </ThemeProvider>
             </LocaleProvider>
         </NextAuthProvider>
     );

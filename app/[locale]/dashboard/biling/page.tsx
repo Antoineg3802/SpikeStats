@@ -67,7 +67,7 @@ export default function Page() {
                                             <div key={index} className="w-1/3 p-6 border shadow-md flex flex-col gap-2 justify-between rounded-lg">
                                                 <h4>{product.name}</h4>
                                                 <div>
-                                                    <p><span className="text-lightOrange text-xl font-semibold">{priceAmount}€</span>/{price.recurring?.interval === "month"
+                                                    <p><span className="text-primary text-xl font-semibold">{priceAmount}€</span>/{price.recurring?.interval === "month"
                                                         ? "mois"
                                                         : price.recurring?.interval === "year"
                                                             ? "année"
@@ -75,7 +75,7 @@ export default function Page() {
                                                     <p>{product.description}</p>
                                                 </div>
                                                 {parsedSession.user.userPlan == product.metadata.userPlan ? (
-                                                    <button className="p-2 rounded-lg border-[1px] border-lightOrange bg-lightOrange text-white hover:text-lightOrange hover:bg-lightOrange/20" onClick={(e) => {
+                                                    <button className="p-2 rounded-lg border-[1px] border-primary bg-primary text-foreground hover:text-primary hover:bg-primary/20" onClick={(e) => {
                                                         let confirmAnulation: boolean = confirm("Voulez-vous vraiment résilier votre abonnement ?");
                                                         if (confirmAnulation) {
                                                             // cancelSubscription({subscriptionId: profil.customer}).then((response)=>{
@@ -88,7 +88,7 @@ export default function Page() {
                                                         Annuler mon abonnement
                                                     </button>
                                                 ) : (
-                                                    <button className="p-2 rounded-lg border-[1px] border-lightOrange bg-lightOrange/20 text-lightOrange hover:text-white hover:bg-lightOrange"
+                                                    <button className="p-2 rounded-lg border-[1px] border-primary bg-primary/20 text-primary hover:text-foreground hover:bg-primary"
                                                     onClick={(e) => updateSubscription({priceId : price.id, userPlan : product.metadata.userPlan})}>
                                                         Changer d'abonnement
                                                     </button>

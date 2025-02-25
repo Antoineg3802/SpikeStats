@@ -8,7 +8,7 @@ export default function LocaleSelector() {
     return (
         <select value={locale}
             onChange={(e) => changeLocale(e.target.value as "fr" | "en")}
-            className="mt-1.5 1/2 rounded-lg border-gray-300 text-gray-700 sm:text-sm"
+            className="mt-1.5 1/2 rounded-lg bg-background border-foreground-300 text-foreground sm:text-sm"
         >
             <option value="en">English</option>
             <option value="fr">Français</option>

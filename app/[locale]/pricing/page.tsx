@@ -56,15 +56,15 @@ export default async function Page() {
                     return (
                         <div
                             key={product.id}
-                            className="grid grid-rows-2 grid-cols-1 border p-6 rounded-lg shadow-md h-5/6 my-auto"
+                            className="grid text-foreground grid-rows-2 grid-cols-1 border p-6 rounded-lg shadow-md h-5/6 my-auto"
                         >
                             <div>
-                                <h3 className="text-2xl font-semibold mb-4">{product.name}</h3>
-                                <p className="text-gray-700 mb-6">{product.description}</p>
+                                <h3 className="text-2xl text-primary font-semibold mb-4">{product.name}</h3>
+                                <p className="text-foreground mb-6">{product.description}</p>
                             </div>
                             <div className="flex flex-col">
                                 <p className="font-bold">
-                                    <span className="text-2xl text-lightOrange">
+                                    <span className="text-2xl text-primary">
                                         {price.unit_amount ? price.unit_amount / 100 : ''}{" "}
                                         {price.currency.toUpperCase() === "EUR" ? "€" : "$"}
                                     </span>{" "}
@@ -83,18 +83,18 @@ export default async function Page() {
                                 {showDisableForm && (
                                     <div className='h-full flex flex-col justify-center items-center'>
                                         <div className='flex justify-center items-center'>
-                                            <IconCircleCheckFilled className='fill-lightOrange' />
-                                            <p className="text-gray-400 ml-2 italic text-center">
+                                            <IconCircleCheckFilled className='fill-primary' />
+                                            <p className="text-foreground-400 ml-2 italic text-center">
                                                 Vous avez déjà ce plan
                                             </p>
                                         </div>
-                                        <a className='inline-block mx-auto mt-2 text-sm text-lightOrange' href='/dashboard/biling'>Modifier mon abonnement</a>
+                                        <a className='inline-block mx-auto mt-2 text-sm text-primary hover:underline underline-offset-2' href='/dashboard/biling'>Modifier mon abonnement</a>
                                     </div>
                                 )}
                                 {showForm && (
                                     <form className='h-full flex justify-center items-center'>
                                         <button
-                                            className="h-fit bg-lightOrange text-white py-2 px-4 rounded hover:bg-lightOrange/80 hover:shadow-md"
+                                            className="h-fit bg-primary text-background hover:cursor-pointer py-2 px-4 rounded hover:bg-primary/80 hover:shadow-md"
                                             formAction={async () => {
                                                 "use server";
                                                 if (session) {
@@ -107,7 +107,7 @@ export default async function Page() {
                                     </form>
                                 )}
                                 {!session && (
-                                    <p className="text-gray-400 mt-4 italic text-center">
+                                    <p className="text-foreground-400 mt-4 italic text-center">
                                         Vous devez être connecté pour procéder au paiement
                                     </p>
                                 )}
