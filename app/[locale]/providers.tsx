@@ -13,7 +13,7 @@ export default function Providers({ children, locale, session }: ProvidersProps)
     return (
         <NextAuthProvider session={session}>
             <LocaleProvider locale={locale}>
-                <ThemeProvider attribute="class" defaultTheme="system">
+                <ThemeProvider>
                     {children}
                 </ThemeProvider>
             </LocaleProvider>
