@@ -22,8 +22,8 @@ export default function InvoiceExcerpt({ invoices }: InvoiceExcerptProps) {
                 <div className="flex gap-4">
                     {invoices.map((invoice: Stripe.Invoice) => {
                         return (
-                            <a href={invoice.hosted_invoice_url? invoice.hosted_invoice_url : ""} key={invoice.id} target="_blank" className="flex text-foreground-400 shadow-inner justify-between p-2 border-[1px] border-foreground-300 rounded-lg w-1/3 hover:shadow-none hover:border-primary hover:text-primary">
-                                <div className="text-background">
+                            <a href={invoice.hosted_invoice_url? invoice.hosted_invoice_url : ""} key={invoice.id} target="_blank" className="flex text-foreground shadow-inner justify-between p-2 border-[1px] border-foreground-300 rounded-lg w-1/3 hover:shadow-none hover:border-primary hover:text-primary">
+                                <div className="text-foreground">
                                     <p>Facture n°{invoice.number}</p>
                                     <p>Montant : {invoice.amount_due / 100}€</p>
                                     <p>Date : {new Date(invoice.created * 1000).toLocaleDateString()}</p>

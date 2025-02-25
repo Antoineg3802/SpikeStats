@@ -84,7 +84,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
 
                         <button
                             type="submit"
-                            className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                            className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:cursor-pointer hover:bg-red-50"
                             role="menuitem"
                             onClick={signOut}
                         >
