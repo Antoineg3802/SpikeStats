@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
@@ -62,20 +62,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				return false;
 			}
 		},
+		async session({ session }: any) {
+			let subscription = await prisma.subscription.findFirst({
+				where: {
+					userId: session.user.id,
+				},
+			});
+			if (subscription) {
+				session.user.subscription = subscription;
+			}
+			return session;
+		},
 	},
 	events: {
 		createUser: async (message) => {
 			const user = message.user;
-			const  { id , email , name } = user;
+			const { id, email, name } = user;
 
-			if (!id || !email ){
+			if (!id || !email) {
 				return;
 			}
 
 			const stripeCustomer = await stripe.customers.create({
 				email,
 				name: name ?? undefined,
-			})
+			});
 
 			await prisma?.user.update({
 				where: {
@@ -84,7 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				data: {
 					stripeCustomerId: stripeCustomer.id,
 				},
-			})
+			});
 		},
 	},
 	session: {
