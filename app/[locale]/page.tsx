@@ -10,7 +10,6 @@ export default async function Home() {
 		<div>
 			<Navbar session={session} />
 			<LocaleSelector />
-			<Image src={"/img/defaultProfilePicture.png"} alt={""} width={32} height={32}/>
 		</div>
 	);
 }
