@@ -1,64 +1,60 @@
 import { prisma } from "@/lib/prisma";
-import { UserPlan } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 export const POST = async (req: NextRequest) => {
 	const body = (await req.json()) as Stripe.Event;
 	let error: string | null = null;
-	let code: number = 0
+	let code: number = 0;
 
 	switch (body.type) {
-		case "checkout.session.completed":
-			const session = body.data.object as Stripe.Checkout.Session;
+		case "customer.subscription.created":
+			// TODO: Traiter l'abonnement créé
+			const session = body.data.object;
 
 			// Récupérer les informations du client et les métadonnées
 			const stripeCustomerId = session.customer as string;
 
 			// Vérifier si l'utilisateur existe
 			const user = await findUserFromCustomerId(stripeCustomerId);
-			if (!user) {
-				console.error("Utilisateur introuvable");
-				return NextResponse.json(
-					{ error: "Utilisateur introuvable" },
-					{ status: 400 }
-				);
+
+			if (user === null) {
+				error = "User not found";
+				code = 404;
+				break;
 			}
 
-			const userPlan = session.metadata?.userPlan as UserPlan;
-
-			if (!userPlan) {
-				console.error("Plan utilisateur introuvable");
-				return NextResponse.json(
-					{ error: "Plan utilisateur introuvable" },
-					{ status: 400 }
-				);
+			const product = await findProductFromProductId(session.items.data[0].price.product);
+			if (product === null) {
+				error = "Product not found";
+				code = 404;
+				break;
 			}
 
-			// Mettre à jour l'utilisateur dans la base de données
-			await prisma.user.update({
-				where: {
-					id: user.id,
-				},
+			// Mettre à jour le plan de l'utilisateur
+			let subscription = await prisma.subscription.create({
 				data: {
-					userPlan,
+					productId: product.id,
+					userId: user.id,
+					subscriptionStripeId: session.id as string,
+					startedAt: new Date(session.current_period_start * 1000),
+					endedAt: new Date(session.current_period_end * 1000),
 				},
-			});
-			code = 200;
+			})
 
 			break;
 		case "customer.subscription.updated":
 			//TODO: Traiter l'abonnement mis à jour
-			error = 'Not implemented';
-			code = 501
+			error = "Not implemented";
+			code = 501;
 			break;
 		case "customer.subscription.deleted":
 			//TODO: Traiter l'abonnement résilié
-			error = 'Not implemented';
+			error = "Not implemented";
 			code = 501;
 			break;
 		default:
-			error = 'Event not supported';
+			error = "Event not supported";
 			code = 400;
 			break;
 	}
@@ -80,6 +76,17 @@ const findUserFromCustomerId = async (stripeCustomerId: unknown) => {
 	return prisma.user.findFirst({
 		where: {
 			stripeCustomerId,
+		},
+	});
+};
+
+const findProductFromProductId = async (stripeProductId: unknown) => {
+	if (typeof stripeProductId !== "string") {
+		return null;
+	}
+	return prisma.product.findFirst({
+		where: {
+			stripeProductId,
 		},
 	});
 };
