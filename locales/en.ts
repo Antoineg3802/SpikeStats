@@ -15,7 +15,7 @@ export default {
 		about: "About",
 		services: "Services",
 		contact: "Contact",
-		pricing: "Pricing",
+		solutions: "Solutions",
 		aboutUs: "About us",
 		biling: 'Billing',
 		matches: 'Matches',

@@ -162,7 +162,7 @@ async function handleFormAction(priceId: string, product: Stripe.Product, sessio
             ],
             mode: 'subscription',
             success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling`,
-            cancel_url: `${process.env.NEXTAUTH_URL}/pricing`,
+            cancel_url: `${process.env.NEXTAUTH_URL}/solutions`,
             customer: stripeCustomerId,
             metadata: {
                 userPlan: product.metadata.userPlan
