@@ -1,6 +1,6 @@
 "use client"
 
-import { IconSun, IconMoon } from '@tabler/icons-react';
+import { Moon, Sun } from 'lucide-react';
 
 interface ThemeSwitcherProps {
     handleThemeChange: () => void;
@@ -11,8 +11,8 @@ export default function ThemeSwitcher({ handleThemeChange, theme }: ThemeSwitche
     return (
         <div className="flex w-fit h-fit p-1 rounded-full bg-foreground cursor-pointer select-none" onClick={handleThemeChange}>
             <div className="flex h-fit rounded-full m-auto">
-                <IconSun className={`stroke-background ${theme && theme === "light" ? 'hidden' : ''}`} />
-                <IconMoon className={`stroke-background ${theme && theme !== "light" ? 'hidden' : ''}`} />
+                <Sun className={`stroke-background ${theme && theme === "light" ? 'hidden' : ''}`} />
+                <Moon className={`stroke-background ${theme && theme !== "light" ? 'hidden' : ''}`} />
             </div>
         </div>
     );
