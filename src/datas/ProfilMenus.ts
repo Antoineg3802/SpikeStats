@@ -11,8 +11,8 @@ const ProfilMenus: ProfilMenus = {
 			link: "/contact",
 		},
 		{
-			name: "pricing",
-			link: "/pricing",
+			name: "solutions",
+			link: "/solutions",
 		},
 		{
 			name: "about",
