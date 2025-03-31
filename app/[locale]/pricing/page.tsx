@@ -43,9 +43,11 @@ export default async function Page() {
                     // Déterminer si le formulaire doit être affiché
                     const showForm =
                         session &&
-                        user
+                        user &&
+                        user.userPlan &&
+                        user.userPlan !== product.metadata.userPlan;
 
-                    const showDisableForm = session && user;
+                    const showDisableForm = session && user && user.userPlan === product.metadata.userPlan;
 
                     // Si le prix n'est pas valide, ne rien rendre
                     if (!isPriceValid) return null;
@@ -77,7 +79,7 @@ export default async function Page() {
                                         <li key={index}>{feature.name}</li>
                                     ))}
                                 </ul>
-                                {showDisableForm && 0 == 1 && (
+                                {showDisableForm && (
                                     <div className='h-full flex flex-col justify-center items-center'>
                                         <div className='flex justify-center items-center'>
                                             <IconCircleCheckFilled className='fill-primary' />
