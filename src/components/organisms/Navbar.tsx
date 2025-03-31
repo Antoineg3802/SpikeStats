@@ -1,4 +1,4 @@
-import { LoaderPinwheel } from "lucide-react";
+import { Volleyball } from "lucide-react";
 import { getI18n } from "../../../locales/server";
 import { Session } from "next-auth";
 import { SignInButton } from "../atoms/authButtons/AuthButtons";
@@ -18,7 +18,7 @@ export default async function Navbar({ session }: NavbarProps) {
             <div className="mx-auto flex h-16 max-w-(--breakpoint-xl) items-center gap-8 px-4 sm:px-6 lg:px-8">
                 <a className="block text-primary hover:text-darkbackground" href="/">
                     <span className="sr-only">Home</span>
-                    <LoaderPinwheel width={32} height={32} className="animate-spin transition-duration: 75ms;" />
+                    <Volleyball width={32} height={32} className="animate-spin transition-duration: 75ms;" />
                 </a>
 
                 <div className="flex flex-1 items-center justify-end md:justify-between">

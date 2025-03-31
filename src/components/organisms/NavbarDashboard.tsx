@@ -1,5 +1,5 @@
 "use client";
-import { LoaderPinwheel } from "lucide-react";
+import { Volleyball } from "lucide-react";
 import { Session } from "next-auth";
 import { DashboardMenus } from "@/datas/ProfilMenus";
 import { usePathname } from "next/navigation";
@@ -24,7 +24,7 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 				href="/"
 			>
 				<span className="sr-only">Home</span>
-				<LoaderPinwheel
+				<Volleyball
 					width={46}
 					height={46}
 					className="animate-spin transition-duration: 75ms;"
