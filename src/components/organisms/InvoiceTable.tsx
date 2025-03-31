@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import DashboardSubtitle from "../atoms/Titles/DashboardSubtitle";
-import { IconDownload, IconEye, IconChevronUp, IconChevronDown } from "@tabler/icons-react";
+import { Download, Eye, ChevronUp, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { InvoiceFilters } from "@/datas/Dashboard/filters";
 
@@ -121,33 +121,33 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
 
         if (isName) {
             if (selectedFilter === InvoiceFilters.NAMEDESC) {
-                return <IconChevronDown className="inline-block ml-1" size={16} />;
+                return <ChevronDown className="inline-block ml-1" size={16} />;
             } else if (selectedFilter === InvoiceFilters.NAMEASC) {
-                return <IconChevronUp className="inline-block ml-1" size={16} />;
+                return <ChevronUp className="inline-block ml-1" size={16} />;
             }
         }
 
         if (isStartDate) {
             if (selectedFilter === InvoiceFilters.STARTDATEDESC) {
-                return <IconChevronDown className="inline-block ml-1" size={16} />;
+                return <ChevronDown className="inline-block ml-1" size={16} />;
             } else if (selectedFilter === InvoiceFilters.STARTDATEASC) {
-                return <IconChevronUp className="inline-block ml-1" size={16} />;
+                return <ChevronUp className="inline-block ml-1" size={16} />;
             }
         }
 
         if (isEndDate) {
             if (selectedFilter === InvoiceFilters.ENDDATEDESC) {
-                return <IconChevronDown className="inline-block ml-1" size={16} />;
+                return <ChevronDown className="inline-block ml-1" size={16} />;
             } else if (selectedFilter === InvoiceFilters.ENDDATEASC) {
-                return <IconChevronUp className="inline-block ml-1" size={16} />;
+                return <ChevronUp className="inline-block ml-1" size={16} />;
             }
         }
 
         if (isAmount) {
             if (selectedFilter === InvoiceFilters.AMOUNTDESC) {
-                return <IconChevronDown className="inline-block ml-1" size={16} />;
+                return <ChevronDown className="inline-block ml-1" size={16} />;
             } else if (selectedFilter === InvoiceFilters.AMOUNTASC) {
-                return <IconChevronUp className="inline-block ml-1" size={16} />;
+                return <ChevronUp className="inline-block ml-1" size={16} />;
             }
         }
 
@@ -219,10 +219,10 @@ export default function InvoiceTable({ invoices }: InvoiceTableProps) {
                                     target="_blank"
                                     rel="noreferrer"
                                 >
-                                    <IconEye className="text-primary rounded-full h-full w-auto bg-primary/20 p-1 hover:cursor-pointer" />
+                                    <Eye className="text-primary rounded-full h-full w-auto bg-primary/20 p-1 hover:cursor-pointer" />
                                 </a>
                                 <a href={invoice.invoice_pdf ?? ""}>
-                                    <IconDownload className="text-primary rounded-full h-full w-auto bg-primary/20 p-1 hover:cursor-pointer" />
+                                    <Download className="text-primary rounded-full h-full w-auto bg-primary/20 p-1 hover:cursor-pointer" />
                                 </a>
                             </div>
                         </div>

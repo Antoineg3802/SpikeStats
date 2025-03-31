@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import DashboardSubtitle from "../atoms/Titles/DashboardSubtitle";
-import { IconChevronRight, IconDots } from "@tabler/icons-react";
+import { ChevronRight, Ellipsis } from "lucide-react";
 
 interface InvoiceExcerptProps {
     invoices: Stripe.Invoice[]
@@ -28,12 +28,12 @@ export default function InvoiceExcerpt({ invoices }: InvoiceExcerptProps) {
                                     <p>Montant : {invoice.amount_due / 100}€</p>
                                     <p>Date : {new Date(invoice.created * 1000).toLocaleDateString()}</p>
                                 </div>
-                                <IconChevronRight height={32} width={32} className="hover:text-primary my-auto"/>
+                                <ChevronRight height={32} width={32} className="hover:text-primary my-auto"/>
                             </a>
                         );
                     })}
                     <a href='/dashboard/biling' className="flex flex-col text-center justify-center p-2 bg-primary border-[1px] border-primary rounded-lg w-1/3 text-foreground hover:cursor-pointer hover:shadow-inner hover:text-primary hover:bg-foreground transition">
-                        <IconDots className="m-auto my-0" stroke={3} height={32} width={32} />
+                        <Ellipsis className="m-auto my-0" stroke="3" height={32} width={32} />
                         <p className="text-lg font-bold">Voir toutes les factures</p>
                     </a>
                 </div>

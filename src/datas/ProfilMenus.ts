@@ -1,4 +1,6 @@
-import { Icon, IconUsers , IconLayoutDashboard, IconUser, IconFileDollar, IconSettings, IconBallVolleyball } from '@tabler/icons-react';
+import { LayoutDashboard, LucideProps, Receipt, Settings, User, Users, Volleyball } from 'lucide-react';
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
+
 
 const ProfilMenus: ProfilMenus = {
 	mainMenus: [
@@ -39,39 +41,39 @@ export const DashboardMenus: DashboardMenus[] = [
 	{
 		name: "dashboard",
 		link: "/dashboard",
-		icon: IconLayoutDashboard,
+		icon: LayoutDashboard,
 	},
 	{
 		name: "profile",
 		link: "/dashboard/profil",
-		icon: IconUser
+		icon: User
 	},
 	{
 		name: "biling",
 		link: "/dashboard/biling",
-		icon: IconFileDollar
+		icon: Receipt
 	},
 	{
 		name: "settings",
 		link: "/dashboard/settings",
-		icon: IconSettings
+		icon: Settings
 	},
 	{
 		name: "matches",
 		link: "/dashboard/matches",
-		icon: IconBallVolleyball
+		icon: Volleyball
 	},
 	{
 		name: "teams",
 		link: "/dashboard/teams",
-		icon: IconUsers
+		icon: Users
 	}
 ]
 
 interface DashboardMenus {
 	name: string;
 	link: string;
-	icon: Icon;
+	icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
 }
 
 interface ProfilMenus {

@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe/stripe';
 import { User } from '@prisma/client';
-import { IconCircleCheckFilled } from '@tabler/icons-react';
+import { CircleCheck } from 'lucide-react';
 import { Session } from 'next-auth';
 import { redirect } from 'next/navigation';
 import React from 'react';
@@ -83,7 +83,7 @@ export default async function Page() {
                                 {showDisableForm && (
                                     <div className='h-full flex flex-col justify-center items-center'>
                                         <div className='flex justify-center items-center'>
-                                            <IconCircleCheckFilled className='fill-primary' />
+                                            <CircleCheck className='fill-primary' />
                                             <p className="text-foreground-400 ml-2 italic text-center">
                                                 Vous avez déjà ce plan
                                             </p>
