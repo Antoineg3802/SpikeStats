@@ -18,5 +18,16 @@ export interface Session {
 	expires: string;
 	createdAt: string;
 	updatedAt: string;
-    user: User;
+	user: User;
+	subscription?: Subscription;
+}
+
+export interface Subscription {
+	id: string;
+	subscriptionStripeId: string;
+	productId: string;
+	active: boolean;
+	userId: string;
+	startedAt: string;
+	endedAt: string | null;
 }
