@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { stripe } from "@/lib/stripe/stripe";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -9,7 +10,6 @@ export const POST = async (req: NextRequest) => {
 
 	switch (body.type) {
 		case "customer.subscription.created":
-			// TODO: Traiter l'abonnement créé
 			const session = body.data.object;
 
 			// Récupérer les informations du client et les métadonnées
@@ -24,7 +24,10 @@ export const POST = async (req: NextRequest) => {
 				break;
 			}
 
-			const product = await findProductFromProductId(session.items.data[0].price.product);
+			const product = await stripe.products.retrieve(
+				session.items.data[0].price.product as string
+			);
+
 			if (product === null) {
 				error = "Product not found";
 				code = 404;
@@ -34,13 +37,21 @@ export const POST = async (req: NextRequest) => {
 			// Mettre à jour le plan de l'utilisateur
 			let subscription = await prisma.subscription.create({
 				data: {
-					productId: product.id,
+					productId: session.items.data[0].price.product as string,
+					active: session.status === "active",
 					userId: user.id,
 					subscriptionStripeId: session.id as string,
-					startedAt: new Date(session.current_period_start * 1000),
-					endedAt: new Date(session.current_period_end * 1000),
+					startedAt: new Date(session.start_date * 1000),
+					endedAt: session.ended_at ? new Date(session.ended_at * 1000) : null,
 				},
 			})
+
+			if (subscription){
+				code = 200;
+			}else{
+				error = "Error creating subscription";
+				code = 500;
+			}
 
 			break;
 		case "customer.subscription.updated":
@@ -76,17 +87,6 @@ const findUserFromCustomerId = async (stripeCustomerId: unknown) => {
 	return prisma.user.findFirst({
 		where: {
 			stripeCustomerId,
-		},
-	});
-};
-
-const findProductFromProductId = async (stripeProductId: unknown) => {
-	if (typeof stripeProductId !== "string") {
-		return null;
-	}
-	return prisma.product.findFirst({
-		where: {
-			stripeProductId,
 		},
 	});
 };
