@@ -44,8 +44,8 @@ export default async function Page() {
                     const showForm =
                         session &&
                         user &&
-                        user.subscription &&
-                        user.subscription.productId !== product.id;
+                        (!user.subscription ||
+                        user.subscription.productId !== product.id);
 
                     const showDisableForm = session && user && user.subscription && user.subscription.productId === product.id;
 
