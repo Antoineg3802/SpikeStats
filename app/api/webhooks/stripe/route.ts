@@ -38,7 +38,7 @@ export const POST = async (req: NextRequest) => {
 			let subscription = await prisma.subscription.create({
 				data: {
 					productId: session.items.data[0].price.product as string,
-					active: session.status === "active",
+					active: true,
 					userId: user.id,
 					subscriptionStripeId: session.id as string,
 					startedAt: new Date(session.start_date * 1000),
