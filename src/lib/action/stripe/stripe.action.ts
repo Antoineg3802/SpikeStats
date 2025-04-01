@@ -1,6 +1,5 @@
 "use server";
 
-import Stripe from "stripe";
 import { stripe } from "../../stripe/stripe";
 import { authActionClient } from "../action";
 import { z } from "zod";
