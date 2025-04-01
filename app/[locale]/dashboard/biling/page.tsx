@@ -5,12 +5,13 @@ import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
 import DashboardSubtitle from "@/components/atoms/Titles/DashboardSubtitle";
 import InvoiceTable from "@/components/organisms/InvoiceTable";
 import DashboardPage from "@/components/pages/DashboardPage";
+import { Button } from "@/components/ui/button";
 import { Session } from "@/datas/session";
 import { UserFullProfil } from "@/datas/User/user";
 import { cancelSubscription, updateSubscription, stripeProductsClient } from "@/lib/action/stripe/stripe.action";
 import { getFullProfil } from "@/lib/action/users/user.action";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Stripe from "stripe";
 
 export default function Page() {
@@ -19,11 +20,13 @@ export default function Page() {
     const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
         null
     );
+    const isMounted = useRef(false);
     const parsedSession = session as Session;
     const [products, setProducts] = useState<Stripe.Product[]>([]);
 
     useEffect(() => {
-        let isMounted = true;
+        if (isMounted.current) return;
+        isMounted.current = true;
         const fetchData = async () => {
             const [fullProfil, allProducts] = await Promise.all([
                 getFullProfil(),
@@ -42,10 +45,6 @@ export default function Page() {
             }
         }
         fetchData();
-
-        return () => {
-            isMounted = false;
-        };
     }, []);
 
     return (
@@ -62,7 +61,7 @@ export default function Page() {
                                 <div className="h-max w-full flex gap-3 items-stretch">
                                     {products.map((product, index) => {
                                         let price = product.default_price as Stripe.Price;
-                                        let priceAmount = price.unit_amount? price.unit_amount/ 100 : "Indisponible";
+                                        let priceAmount = price.unit_amount ? price.unit_amount / 100 : "Indisponible";
                                         return (
                                             <div key={index} className="w-1/3 p-6 border shadow-md flex flex-col gap-2 justify-between rounded-lg">
                                                 <h4>{product.name}</h4>
@@ -74,24 +73,24 @@ export default function Page() {
                                                             : ""}</p>
                                                     <p>{product.description}</p>
                                                 </div>
-                                                {parsedSession.user.userPlan == product.metadata.userPlan ? (
-                                                    <button className="p-2 rounded-lg border-[1px] border-primary bg-primary text-foreground hover:text-primary hover:bg-primary/20" onClick={(e) => {
+                                                {parsedSession.user.subscription?.active && parsedSession.user.subscription?.productId == product.id ? (
+                                                    <Button variant="destructive" onClick={() => {
                                                         let confirmAnulation: boolean = confirm("Voulez-vous vraiment résilier votre abonnement ?");
                                                         if (confirmAnulation) {
                                                             // cancelSubscription({subscriptionId: profil.customer}).then((response)=>{
-                                                                console.log('cancel')
+                                                            console.log('cancel')
                                                             // })
                                                         } else {
                                                             console.log('no cancel')
                                                         }
                                                     }}>
                                                         Annuler mon abonnement
-                                                    </button>
+                                                    </Button>
                                                 ) : (
-                                                    <button className="p-2 rounded-lg border-[1px] border-primary bg-primary/20 text-primary hover:text-foreground hover:bg-primary"
-                                                    onClick={(e) => updateSubscription({priceId : price.id, userPlan : product.metadata.userPlan})}>
+                                                    <Button variant="default"
+                                                        onClick={(e) => updateSubscription({ priceId: price.id, userPlan: product.metadata.userPlan })}>
                                                         Changer d'abonnement
-                                                    </button>
+                                                    </Button>
                                                 )
                                                 }
                                             </div>
@@ -99,7 +98,7 @@ export default function Page() {
                                     })}
                                 </div>
                             </div>
-                            <InvoiceTable invoices={profil.invoices}/>
+                            <InvoiceTable invoices={profil.invoices} />
                         </div>
                     ) : (<p>Vous n'etes pas connecté</p>)
                 )}
