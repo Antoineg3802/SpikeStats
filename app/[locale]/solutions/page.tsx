@@ -1,16 +1,16 @@
 import Navbar from '@/components/organisms/Navbar';
+import { Session } from '@/datas/session';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe/stripe';
 import { User } from '@prisma/client';
 import { CircleCheck } from 'lucide-react';
-import { Session } from 'next-auth';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import Stripe from 'stripe';
 
 export default async function Page() {
-    const session = await auth();
+    const session = await auth() as Session;
     const products = await stripe.products.list({
         active: true,
         expand: ['data.default_price'],
@@ -35,7 +35,7 @@ export default async function Page() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-5/6 w-10/12 m-auto">
                 {products.data.map((product: Stripe.Product) => {
                     const price = product.default_price as Stripe.Price | null;
-                    const user = session?.user as User | null;
+                    const user = session?.user;
 
                     // Vérifier si le prix est valide
                     const isPriceValid = price?.unit_amount != null;
@@ -44,10 +44,10 @@ export default async function Page() {
                     const showForm =
                         session &&
                         user &&
-                        user.userPlan &&
-                        user.userPlan !== product.metadata.userPlan;
+                        user.subscription &&
+                        user.subscription.productId !== product.id;
 
-                    const showDisableForm = session && user && user.userPlan === product.metadata.userPlan;
+                    const showDisableForm = session && user && user.subscription && user.subscription.productId === product.id;
 
                     // Si le prix n'est pas valide, ne rien rendre
                     if (!isPriceValid) return null;
@@ -82,7 +82,7 @@ export default async function Page() {
                                 {showDisableForm && (
                                     <div className='h-full flex flex-col justify-center items-center'>
                                         <div className='flex justify-center items-center'>
-                                            <CircleCheck className='fill-primary' />
+                                            <CircleCheck className='fill-primary text-background' />
                                             <p className="text-foreground-400 ml-2 italic text-center">
                                                 Vous avez déjà ce plan
                                             </p>
@@ -96,8 +96,10 @@ export default async function Page() {
                                             className="h-fit bg-primary text-background hover:cursor-pointer py-2 px-4 rounded hover:bg-primary/80 hover:shadow-md"
                                             formAction={async () => {
                                                 "use server";
-                                                if (session) {
+                                                if (session && !session.user?.subscription) {
                                                     await handleFormAction(price.id, product, session);
+                                                }else if(session.user?.subscription){
+                                                    redirect('/dashboard/biling')
                                                 }
                                             }}
                                         >
