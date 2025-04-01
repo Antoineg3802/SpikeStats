@@ -1,11 +1,11 @@
 "use client"
 
-import { IconChevronDown, IconLogout } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useI18n } from "../../../locales/client";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import ThemeSwitcher from "../atoms/ThemeSwitcher";
+import { ChevronDown, LogOut } from "lucide-react";
 
 interface DropdownMenuProps {
     image: string;
@@ -54,7 +54,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                         quality={100}
                     />
                 )}
-                <IconChevronDown width={18} height={18} className={isOpen ? "rotate-180" : "rotate-0" + ' transition-all duration-200 ease-in-out stroke-foreground'} />
+                <ChevronDown width={18} height={18} className={isOpen ? "rotate-180" : "rotate-0" + ' transition-all duration-200 ease-in-out stroke-foreground'} />
             </div>
 
             {isOpen && (
@@ -88,7 +88,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                             role="menuitem"
                             onClick={signOut}
                         >
-                            <IconLogout />
+                            <LogOut />
                             Se déconnecter
                         </button>
                     </div>
