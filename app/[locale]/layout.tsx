@@ -12,7 +12,7 @@ export default async function Layout({ children, params }: { children: ReactElem
 	const session = await auth()
 
 	return (
-		<html lang={locale}>
+		<html lang={locale} suppressHydrationWarning>
 			<body className={`${GeistSans.className} text-foreground antialiased min-h-screen min-w-screen bg-background`}>
 				<Providers locale={locale} session={session}>
 					{children}

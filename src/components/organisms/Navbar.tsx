@@ -1,18 +1,10 @@
 import { Volleyball } from "lucide-react";
 import { getI18n } from "../../../locales/server";
-import { Session } from "next-auth";
-import { SignInButton } from "../atoms/authButtons/AuthButtons";
-import { signIn, signOut } from "next-auth/react";
-import { DropdownMenu } from "../molecules/DropdownMenu";
 import ProfilMenus from "@/datas/ProfilMenus"
 import Link from "next/link";
+import { NavbarSessionPart } from "../molecules/NavbarSessionPart";
 
-
-interface NavbarProps {
-    session: Session | null
-}
-
-export default async function Navbar({ session }: NavbarProps) {
+export default async function Navbar() {
     const t = await getI18n();
     return (
         <header className="bg-background shadow-xs">
@@ -44,11 +36,7 @@ export default async function Navbar({ session }: NavbarProps) {
 
                     <div className="flex items-center gap-4">
                         <div className="sm:flex sm:gap-4">
-                            {session && session.user ? (
-                                <DropdownMenu personalMenus={ProfilMenus.personalMenus} signOut={signOut} image={session.user.image ? session.user.image : "/img/defaultProfilePicture.png"} />
-                            ) : (
-                                <SignInButton signIn={signIn} text={t("auth.signIn")} />
-                            )}
+                            <NavbarSessionPart />
                         </div>
                     </div>
                 </div>
