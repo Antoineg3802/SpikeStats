@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import DashboardSubtitle from "../atoms/Titles/DashboardSubtitle";
 import { ChevronRight, Ellipsis } from "lucide-react";
+import Link from "next/link";
 
 interface InvoiceExcerptProps {
     invoices: Stripe.Invoice[]
@@ -32,10 +33,10 @@ export default function InvoiceExcerpt({ invoices }: InvoiceExcerptProps) {
                             </a>
                         );
                     })}
-                    <a href='/dashboard/biling' className="flex flex-col text-center justify-center p-2 bg-primary border-[1px] border-primary rounded-lg w-1/3 text-foreground hover:cursor-pointer hover:shadow-inner hover:text-primary hover:bg-foreground transition">
+                    <Link href='/dashboard/biling' className="flex flex-col text-center justify-center p-2 bg-primary border-[1px] border-primary rounded-lg w-1/3 text-foreground hover:cursor-pointer hover:shadow-inner hover:text-primary hover:bg-foreground transition">
                         <Ellipsis className="m-auto my-0" stroke="3" height={32} width={32} />
                         <p className="text-lg font-bold">Voir toutes les factures</p>
-                    </a>
+                    </Link>
                 </div>
             </div>
         );
