@@ -32,7 +32,7 @@ export default async function Page() {
 
     return (
         <div className="h-screen flex flex-col">
-            <Navbar session={session} />
+            <Navbar />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-5/6 w-10/12 m-auto">
                 {products.data.map((product: Stripe.Product) => {
                     const price = product.default_price as Stripe.Price | null;

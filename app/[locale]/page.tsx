@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const metadata: Metadata = {
 	title: "Spikestats - Outil de gestion et planification pour Volleyball",
@@ -50,13 +51,17 @@ export const metadata: Metadata = {
 	},
 };
 
+export async function generateStaticParams() {
+	return [
+		{ locale: 'fr' },
+		{ locale: 'en' },
+	]
+}
 
 export default async function Home() {
-	const session = await auth()
-
 	return (
 		<main className="bg-gray-50">
-			<Navbar session={session} />
+			<Navbar />
 			<div className="text-center py-16 px-4">
 				<h1 className="text-4xl font-bold mb-4">
 					Spikestats : Outil de gestion et planification pour Volleyball
@@ -65,7 +70,9 @@ export default async function Home() {
 					Optimisez la performance de votre équipe de volleyball grâce à Spikestats, votre solution complète pour la gestion des statistiques, l'organisation d'équipe et la planification stratégique des matchs.
 				</p>
 				<div className="mt-8">
-					<Button variant="default">Découvrez nos solutions</Button>
+					<Button variant="default" asChild>
+						<Link href="/solutions">Découvrez nos solutions</Link>
+					</Button>
 				</div>
 			</div>
 
