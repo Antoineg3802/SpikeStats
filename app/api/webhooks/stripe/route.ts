@@ -42,22 +42,68 @@ export const POST = async (req: NextRequest) => {
 					userId: user.id,
 					subscriptionStripeId: session.id as string,
 					startedAt: new Date(session.start_date * 1000),
-					endedAt: session.ended_at ? new Date(session.ended_at * 1000) : null,
+					endedAt: session.ended_at
+						? new Date(session.ended_at * 1000)
+						: null,
 				},
-			})
+			});
 
-			if (subscription){
+			if (subscription) {
 				code = 200;
-			}else{
+			} else {
 				error = "Error creating subscription";
 				code = 500;
 			}
 
 			break;
 		case "customer.subscription.updated":
-			//TODO: Traiter l'abonnement mis à jour
-			error = "Not implemented";
-			code = 501;
+			const updatedSession = body.data.object;
+
+			const updatedStripeCustomerId = updatedSession.customer as string;
+			const updatedUser = await findUserFromCustomerId(
+				updatedStripeCustomerId
+			);
+
+			if (updatedUser === null) {
+				error = "User not found";
+				code = 404;
+				break;
+			}
+
+			const updatedProduct = await stripe.products.retrieve(
+				updatedSession.items.data[0].price.product as string
+			);
+
+			if (updatedProduct === null) {
+				error = "Product not found";
+				code = 404;
+				break;
+			}
+
+			// Mettre à jour le plan de l'utilisateur
+			let updatedSubscription = await prisma.subscription.update({
+				where: {
+					userId: updatedUser.id,
+				},
+				data: {
+					productId: updatedSession.items.data[0].price
+						.product as string,
+					active: updatedSession.status == "active",
+					subscriptionStripeId: updatedSession.id as string,
+					startedAt: new Date(updatedSession.start_date * 1000),
+					endedAt: updatedSession.ended_at
+						? new Date(updatedSession.ended_at * 1000)
+						: null,
+				},
+			});
+
+			if (updatedSubscription) {
+				code = 200;
+			} else {
+				error = "Error updating subscription";
+				code = 500;
+			}
+
 			break;
 		case "customer.subscription.deleted":
 			//TODO: Traiter l'abonnement résilié
