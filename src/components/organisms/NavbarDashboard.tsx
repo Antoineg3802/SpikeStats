@@ -5,6 +5,7 @@ import { DashboardMenus } from "@/datas/ProfilMenus";
 import { usePathname } from "next/navigation";
 import { useI18n } from "../../../locales/client";
 import React from "react";
+import Link from "next/link";
 
 interface NavbarDashboardProps {
 	session: Session | null;
@@ -19,7 +20,7 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 
 	return (
 		<header className="w-1/6 h-full bg-primary flex flex-col justify-center">
-			<a
+			<Link
 				className="block text-foreground w-fit mx-auto hover:text-background"
 				href="/"
 			>
@@ -29,7 +30,7 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 					height={46}
 					className="animate-spin transition-duration: 75ms;"
 				/>
-			</a>
+			</Link>
 			<div className="flex flex-col items-start w-3/4 mx-auto mt-8 gap-3">
 				{DashboardMenus.map((menu, index) => {
 					const IconComponent = menu.icon;
@@ -38,7 +39,8 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 
 					return (
 						<div className="flex" key={index}>
-							<a
+							<Link 
+								prefetch={true}
 								className={
 									textColor +
 									" text-xl transition hover:text-foreground flex gap-2"
@@ -48,7 +50,7 @@ export default function NavbarDashboard({}: NavbarDashboardProps) {
 								<IconComponent />
 								{/* @ts-ignore */}
 								{t(`menus.${menu.name}`)}
-							</a>
+							</Link>
 						</div>
 					);
 				})}

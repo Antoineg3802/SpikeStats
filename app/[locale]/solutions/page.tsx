@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe/stripe';
 import { User } from '@prisma/client';
 import { CircleCheck } from 'lucide-react';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import Stripe from 'stripe';
@@ -87,7 +88,7 @@ export default async function Page() {
                                                 Vous avez déjà ce plan
                                             </p>
                                         </div>
-                                        <a className='inline-block mx-auto mt-2 text-sm text-primary hover:underline underline-offset-2' href='/dashboard/biling'>Modifier mon abonnement</a>
+                                        <Link className='inline-block mx-auto mt-2 text-sm text-primary hover:underline underline-offset-2' href='/dashboard/biling'>Modifier mon abonnement</Link>
                                     </div>
                                 )}
                                 {showForm && (

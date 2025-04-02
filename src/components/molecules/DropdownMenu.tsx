@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import ThemeSwitcher from "../atoms/ThemeSwitcher";
 import { ChevronDown, LogOut } from "lucide-react";
+import Link from "next/link";
 
 interface DropdownMenuProps {
     image: string;
@@ -65,7 +66,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                     <div className="p-2">
                         {personalMenus.map((menu: { link: string, name: string }, index) => {
                             return (
-                                <a
+                                <Link
                                     key={index}
                                     href={menu.link}
                                     className="block rounded-lg px-4 py-2 text-sm text-foreground-500 hover:bg-foreground-50 hover:text-foreground-700"
@@ -73,7 +74,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                                 >
                                     {/* @ts-ignore */}
                                     {t(`menus.${menu.name}`)}
-                                </a>
+                                </Link>
                             )
                         })}
 
