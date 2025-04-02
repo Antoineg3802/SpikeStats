@@ -66,6 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			let subscription = await prisma.subscription.findFirst({
 				where: {
 					userId: session.user.id,
+					active: true,
 				},
 			});
 			if (subscription) {
@@ -94,9 +95,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 						id,
 					},
 					data: {
-						stripeCustomerId: existingStripeCustomerSearch.data[0].id,
+						stripeCustomerId:
+							existingStripeCustomerSearch.data[0].id,
 					},
-				})
+				});
 				const existingStripeCustomer = await stripe.customers.retrieve(
 					existingStripeCustomerSearch.data[0].id as string
 				);

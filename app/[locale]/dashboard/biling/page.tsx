@@ -8,7 +8,7 @@ import DashboardPage from "@/components/pages/DashboardPage";
 import { Button } from "@/components/ui/button";
 import { Session } from "@/datas/session";
 import { UserFullProfil } from "@/datas/User/user";
-import { cancelSubscription, updateSubscription, stripeProductsClient, getPreviewSubscription } from "@/lib/action/stripe/stripe.action";
+import { updateSubscription, stripeProductsClient, getPreviewSubscription, deleteCurrentStripeSubscription } from "@/lib/action/stripe/stripe.action";
 import { getFullProfil } from "@/lib/action/users/user.action";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
@@ -58,8 +58,6 @@ export default function Page() {
 			return
 		}
 
-		console.log(data)
-
 		setPreviewSubscription(data);
 	}
 
@@ -103,8 +101,7 @@ export default function Page() {
 																<AlertDialogFooter>
 																	<AlertDialogCancel>Annuler</AlertDialogCancel>
 																	<AlertDialogAction onClick={() => {
-																		// cancelSubscription({subscriptionId: profil.customer}).then((response)=>{})
-																		console.log('cancel')
+																		deleteCurrentStripeSubscription()
 																	}}>Continuer</AlertDialogAction>
 																</AlertDialogFooter>
 															</AlertDialogContent>
