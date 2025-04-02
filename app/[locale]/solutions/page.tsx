@@ -45,9 +45,9 @@ export default async function Page() {
                         session &&
                         user &&
                         (!user.subscription ||
-                        user.subscription.productId !== product.id);
+                            user.subscription.productId !== product.id);
 
-                    const showDisableForm = session && user && user.subscription && user.subscription.productId === product.id;
+                    const showDisableForm = session && user && user.subscription && user.subscription.productId === product.id && user.subscription.active === true;
 
                     // Si le prix n'est pas valide, ne rien rendre
                     if (!isPriceValid) return null;
@@ -98,7 +98,7 @@ export default async function Page() {
                                                 "use server";
                                                 if (session && !session.user?.subscription) {
                                                     await handleFormAction(price.id, product, session);
-                                                }else if(session.user?.subscription){
+                                                } else if (session.user?.subscription) {
                                                     redirect('/dashboard/biling')
                                                 }
                                             }}

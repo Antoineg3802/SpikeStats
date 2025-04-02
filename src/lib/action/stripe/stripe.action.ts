@@ -157,3 +157,45 @@ export const updateSubscription = authActionClient
 			return { success: true };
 		}
 	});
+
+export const deleteCurrentStripeSubscription = authActionClient.action(
+	async ({ ctx: { user } }) => {
+		if (!user) {
+			return { error: true, message: "User not found" };
+		}
+
+		if (!user.stripeCustomerId) {
+			return { error: true, message: "User not found" };
+		}
+
+		const subscriptionSearch = await stripe.subscriptions.list({
+			customer: user.stripeCustomerId,
+			status: "active",
+			limit: 1,
+		});
+
+		const subscription = await stripe.subscriptions.retrieve(
+			subscriptionSearch.data[0].id as string
+		);
+
+		if (!subscription) {
+			return { error: true, message: "No subscription in progress" };
+		}
+
+		const canceledSubscription = await stripe.subscriptions.update(
+			subscription.id,
+			{
+				cancel_at_period_end: true,
+			}
+		);
+
+		if (!canceledSubscription) {
+			return {
+				error: true,
+				message: "Error while deleting the subscription",
+			};
+		} else {
+			return { success: true };
+		}
+	}
+);
