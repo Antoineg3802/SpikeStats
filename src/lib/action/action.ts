@@ -7,7 +7,7 @@ export const authActionClient = actionClient.use(async ({ next }) => {
 	const currentUser = await getCurrentUser();
 
 	if (!currentUser) {
-		throw new Error("You are not allowed to create a user");
+		throw new Error("User not authenticated");
 	}
 
 	return next({ ctx: { user: currentUser } });

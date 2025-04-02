@@ -18,13 +18,6 @@ export async function sendVerificationRequest(params: {
 			html: html({ url, host }),
 		});
 
-		console.log("Résultat de l'envoi de l'email :", result);
-
-		// Vérification des destinataires acceptés
-		if (result.accepted.includes(identifier)) {
-			console.log(`Email envoyé avec succès à ${identifier}`);
-		}
-
 		// Vérification des destinataires rejetés
 		if (result.rejected.length > 0) {
 			console.error(
@@ -45,6 +38,8 @@ export async function sendVerificationRequest(params: {
 // TODO customize mail template
 function html(params: { url: string; host: string }) {
 	const { url } = params;
+
+	console.log(url);
 
 	const brandColor = "#feb272";
 	const color = {

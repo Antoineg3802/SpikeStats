@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
@@ -62,29 +62,96 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				return false;
 			}
 		},
+		async session({ session }: any) {
+			let subscription = await prisma.subscription.findFirst({
+				where: {
+					userId: session.user.id,
+					active: true,
+				},
+			});
+			if (subscription) {
+				session.user.subscription = subscription;
+			}
+			return session;
+		},
 	},
 	events: {
 		createUser: async (message) => {
 			const user = message.user;
-			const  { id , email , name } = user;
+			const { id, email, name } = user;
 
-			if (!id || !email ){
+			if (!id || !email) {
 				return;
 			}
 
-			const stripeCustomer = await stripe.customers.create({
-				email,
-				name: name ?? undefined,
-			})
+			// Search if a stripe customer already exists for this user to avoid stripe duplicates (DEV and eventually PROD)
+			const existingStripeCustomerSearch = await stripe.customers.search({
+				query: `email:"${email}"`,
+			});
 
-			await prisma?.user.update({
-				where: {
-					id,
-				},
-				data: {
-					stripeCustomerId: stripeCustomer.id,
-				},
-			})
+			if (existingStripeCustomerSearch.data.length > 0) {
+				prisma.user.update({
+					where: {
+						id,
+					},
+					data: {
+						stripeCustomerId:
+							existingStripeCustomerSearch.data[0].id,
+					},
+				});
+				const existingStripeCustomer = await stripe.customers.retrieve(
+					existingStripeCustomerSearch.data[0].id as string
+				);
+
+				if (existingStripeCustomer) {
+					const subscriptionSearch = await stripe.subscriptions.list({
+						customer: existingStripeCustomer.id,
+						limit: 1,
+					});
+
+					const subscription = await stripe.subscriptions.retrieve(
+						subscriptionSearch.data[0].id as string
+					);
+
+					if (subscription) {
+						const product = await stripe.products.retrieve(
+							subscription.items.data[0].price.product as string
+						);
+
+						await prisma.subscription.create({
+							data: {
+								subscriptionStripeId: subscription.id,
+								productId: product.id,
+								userId: user.id as string,
+								active: subscription.status == "active",
+								startedAt: new Date(
+									subscription.created * 1000
+								),
+								endedAt:
+									subscription.ended_at == null
+										? null
+										: new Date(
+												subscription.ended_at * 1000
+										  ),
+							},
+						});
+					}
+				}
+			} else {
+				const stripeCustomer = await stripe.customers.create({
+					email,
+					name: name ?? undefined,
+				});
+
+				await prisma?.user.update({
+					where: {
+						id,
+					},
+					data: {
+						stripeCustomerId: stripeCustomer.id,
+					},
+				});
+			}
 		},
 	},
 	session: {

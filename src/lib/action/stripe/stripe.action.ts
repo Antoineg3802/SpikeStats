@@ -1,10 +1,8 @@
 "use server";
 
-import Stripe from "stripe";
 import { stripe } from "../../stripe/stripe";
 import { authActionClient } from "../action";
 import { z } from "zod";
-import { redirect } from "next/navigation";
 
 export const stripeProductsClient = authActionClient.action(async () => {
 	const products = await stripe.products.list({
@@ -57,6 +55,55 @@ export const cancelSubscription = authActionClient
 		}
 	});
 
+export const getPreviewSubscription = authActionClient
+	.schema(
+		z.object({
+			priceId: z.string(),
+		})
+	)
+	.action(async ({ parsedInput: { priceId }, ctx: { user } }) => {
+		if (!user) {
+			return { error: true, message: "User not found" };
+		}
+
+		if (!user.stripeCustomerId) {
+			return { error: true, message: "User not found" };
+		}
+
+		const subscriptionSearch = await stripe.subscriptions.list({
+			customer: user.stripeCustomerId,
+			status: "active",
+			limit: 1,
+		});
+
+		const subscription = await stripe.subscriptions.retrieve(
+			subscriptionSearch.data[0].id as string
+		);
+
+		if (!subscription) {
+			return { error: true, message: "No subscription in progress" };
+		}
+
+		const items = [
+			{
+				id: subscription.items.data[0].id,
+				price: priceId,
+			},
+		];
+
+		const invoice = await stripe.invoices.createPreview({
+			subscription: subscription.id,
+			subscription_details: {
+				items: items,
+				proration_date: Math.floor(Date.now() / 1000),
+			},
+		});
+
+		const invoicePlain = JSON.parse(JSON.stringify(invoice));
+
+		return invoicePlain;
+	});
+
 export const updateSubscription = authActionClient
 	.schema(
 		z.object({
@@ -73,28 +120,82 @@ export const updateSubscription = authActionClient
 			return { error: true, message: "User not found" };
 		}
 
-		const sessionStripe = await stripe.checkout.sessions.create({
-			payment_method_types: ["card"],
-			line_items: [
-				{
-					price: priceId,
-					quantity: 1,
-				},
-			],
-			mode: "subscription",
-			success_url: `${process.env.NEXTAUTH_URL}/dashboard/biling`,
-			cancel_url: `${process.env.NEXTAUTH_URL}/dashboard/biling`,
+		const subscriptionSearch = await stripe.subscriptions.list({
 			customer: user.stripeCustomerId,
-			metadata: {
-				userPlan,
-			},
+			status: "active",
+			limit: 1,
 		});
 
-		if (sessionStripe.url != null) {
-			redirect(sessionStripe.url);
+		const subscription = await stripe.subscriptions.retrieve(
+			subscriptionSearch.data[0].id as string
+		);
+
+		if (!subscription) {
+			return { error: true, message: "No subscription in progress" };
+		}
+
+		const newSubscription = await stripe.subscriptions.update(
+			subscription.id,
+			{
+				items: [
+					{
+						id: subscription.items.data[0].id,
+						price: priceId,
+					},
+				],
+				proration_behavior: "create_prorations",
+				proration_date: Math.floor(Date.now() / 1000),
+			}
+		);
+
+		if (!newSubscription) {
+			return {
+				error: true,
+				message: "Error while updating the subscription",
+			};
 		} else {
-			throw new Error(
-				"Erreur lors de la création de la session de payement"
-			);
+			return { success: true };
 		}
 	});
+
+export const deleteCurrentStripeSubscription = authActionClient.action(
+	async ({ ctx: { user } }) => {
+		if (!user) {
+			return { error: true, message: "User not found" };
+		}
+
+		if (!user.stripeCustomerId) {
+			return { error: true, message: "User not found" };
+		}
+
+		const subscriptionSearch = await stripe.subscriptions.list({
+			customer: user.stripeCustomerId,
+			status: "active",
+			limit: 1,
+		});
+
+		const subscription = await stripe.subscriptions.retrieve(
+			subscriptionSearch.data[0].id as string
+		);
+
+		if (!subscription) {
+			return { error: true, message: "No subscription in progress" };
+		}
+
+		const canceledSubscription = await stripe.subscriptions.update(
+			subscription.id,
+			{
+				cancel_at_period_end: true,
+			}
+		);
+
+		if (!canceledSubscription) {
+			return {
+				error: true,
+				message: "Error while deleting the subscription",
+			};
+		} else {
+			return { success: true };
+		}
+	}
+);
