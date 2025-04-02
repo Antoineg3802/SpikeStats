@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest) => {
 			});
 
 			if (subscription) {
-				code = 200;
+				code = 201;
 			} else {
 				error = "Error creating subscription";
 				code = 500;
@@ -98,7 +98,7 @@ export const POST = async (req: NextRequest) => {
 			});
 
 			if (updatedSubscription) {
-				code = 200;
+				code = 202;
 			} else {
 				error = "Error updating subscription";
 				code = 500;
@@ -106,13 +106,39 @@ export const POST = async (req: NextRequest) => {
 
 			break;
 		case "customer.subscription.deleted":
-			//TODO: Traiter l'abonnement résilié
-			error = "Not implemented";
-			code = 501;
+			const deletedSession = body.data.object;
+			const deletedStripeCustomerId = deletedSession.customer as string;
+			const deletedUser = await findUserFromCustomerId(
+				deletedStripeCustomerId
+			);
+			if (deletedUser === null) {
+				error = "User not found";
+				code = 404;
+				break;
+			}
+			// Mettre à jour le plan de l'utilisateur
+			let deletedSubscription = await prisma.subscription.update({
+				where: {
+					userId: deletedUser.id,
+				},
+				data: {
+					active: false,
+					subscriptionStripeId: deletedSession.id as string,
+					endedAt: deletedSession.ended_at
+						? new Date(deletedSession.ended_at * 1000)
+						: new Date(),
+				},
+			});
+			if (deletedSubscription) {
+				code = 204;
+			} else {
+				error = "Error deleting subscription";
+				code = 500;
+			}
 			break;
 		default:
 			error = "Event not supported";
-			code = 400;
+			code = 200;
 			break;
 	}
 
