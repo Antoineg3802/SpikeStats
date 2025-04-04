@@ -101,7 +101,6 @@ export const getUserTeams = authActionClient.action(
 				active: true,
 			},
 		});
-		console.log(teams);
 
 		return teams as TeamDashboardExtended[];
 	}
