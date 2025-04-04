@@ -10,9 +10,10 @@ import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
 import ProfilLine from "@/components/molecules/ProfilLine";
 import InvoiceExcerpt from "@/components/molecules/InvoiceExcerpt";
 import Image from "next/image";
+import { Session } from "@/datas/session";
 
 export default function Page() {
-	const { data: session } = useSession();
+	const session = useSession().data as Session | null;
 	const [isLoading, setIsLoading] = useState(true);
 	const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
 		null

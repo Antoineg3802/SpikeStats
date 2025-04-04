@@ -16,7 +16,7 @@ import Stripe from "stripe";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 export default function Page() {
-	const { data: session } = useSession();
+	const session = useSession().data as Session | null;
 	const [isLoading, setIsLoading] = useState(true);
 	const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
 		null
