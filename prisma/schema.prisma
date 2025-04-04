@@ -101,10 +101,11 @@ model Team {
     updatedAt   DateTime @updatedAt
     logo        String?
     active      Boolean  @default(true)
+    joinCode    String   @unique @default(cuid())
 
     // Relations
     owner       User         @relation("TeamOwner", fields: [ownerId], references: [id])
-    teamMembers TeamMember[] // Les membres de l'équipe
+    teamMembers TeamMember[]
 }
 
 model TeamMember {
@@ -112,6 +113,7 @@ model TeamMember {
     teamId String
     userId String
     role   String
+    active Boolean @default(true)
 
     // Relations
     team Team @relation(fields: [teamId], references: [id])

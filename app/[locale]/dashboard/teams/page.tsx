@@ -4,13 +4,13 @@ import DashboardPage from "@/components/pages/DashboardPage";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Session } from "@/datas/session";
-import { ArrowRight, CircleCheck, Plus } from "lucide-react";
+import { ArrowRight, CircleCheck, CornerDownRight, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { DynamicForm } from "@/components/molecules/DynamicForm";
 import { Modale } from "@/components/organisms/Modale";
 import { Field } from "@/datas/form";
-import { createTeam, getUserTeams } from "@/lib/action/team/team.action";
+import { createTeam, getUserTeams, joinTeam } from "@/lib/action/team/team.action";
 import { TeamDashboardExtended } from "@/datas/Teams/team";
 import { toast, Toaster } from "sonner"
 import Link from "next/link";
@@ -20,6 +20,7 @@ export default function Page() {
     const session = useSession().data as Session | null;
     const [userTeams, setUserTeams] = useState<TeamDashboardExtended[]>([]);
     const [showForm, setShowForm] = useState(false);
+    const [showJoinForm, setShowJoinForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const formFields: Field[] = [{ name: "teamName", type: "text", label: "Nom de l'équipe", required: true }, { name: "description", type: "textarea", label: "Description de l'équipe", required: false }]
 
@@ -29,6 +30,23 @@ export default function Page() {
                 setUserTeams([...userTeams, res.data]);
                 setShowForm(false);
                 toast.success("L'équipe a été créée",
+                    {
+                        duration: 1500,
+                        icon: <CircleCheck className="text-green-500" />
+                    }
+                )
+            } else {
+                toast.error("Une erreur est survenue lors de la création de l'équipe.");
+            }
+        })
+    }
+
+    const handleFormJoinSubmit = (values: { joinCode: string }) => {
+        joinTeam(values).then((res) => {
+            if (res?.data && res.data !== null) {
+                setUserTeams([...userTeams, res.data]);
+                setShowJoinForm(false);
+                toast.success("Vous avez rejoint l'équipe",
                     {
                         duration: 1500,
                         icon: <CircleCheck className="text-green-500" />
@@ -73,16 +91,28 @@ export default function Page() {
                     </p>
                 </div>
 
-                <Button variant="outline" className="border-2 absolute top-8 right-8" onClick={() => setShowForm(true)}>
-                    <Plus />
-                    Ajouter une équipe
-                </Button>
+                <div className="absolute top-8 right-8 flex flex-col gap-2 items-stretch">
+                    <Button variant="default" className="" onClick={() => setShowForm(true)}>
+                        <Plus />
+                        Ajouter une équipe
+                    </Button>
+                    <Button variant="outline" className="border-2" onClick={() => setShowJoinForm(true)}>
+                        <CornerDownRight />
+                        Rejoindre une équipe
+                    </Button>
+                </div>
 
                 <Toaster />
 
                 <Modale open={showForm} onClose={() => setShowForm(false)} title="Ajouter une équipe" description="Remplissez le formulaire ci-dessous pour ajouter une équipe.">
                     <DynamicForm fields={formFields} onSubmit={function (values: { teamName: string, description: string }): void {
                         handleFormSubmit(values);
+                    }} />
+                </Modale>
+
+                <Modale open={showJoinForm} onClose={() => setShowJoinForm(false)} title="Rejoindre une équipe" description="Entrez le code d'invitation pour rejoindre une équipe.">
+                    <DynamicForm fields={[{ name: "joinCode", type: "text", label: "Code d'invitation", required: true }]} onSubmit={function (values: { joinCode: string }): void {
+                        handleFormJoinSubmit(values);
                     }} />
                 </Modale>
 
