@@ -77,11 +77,7 @@ export const getUserTeams = authActionClient.action(
 				description: true,
 				createdAt: true,
 				logo: true,
-				owner: {
-					select: {
-						id: true,
-					},
-				},
+				ownerId: true,
 				teamMembers: {
 					select: {
 						id: true,
