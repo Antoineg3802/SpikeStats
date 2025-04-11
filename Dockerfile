@@ -28,4 +28,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 # CMD par défaut : en environnement de développement on peut lancer "pnpm dev"
 # en production, on lancera plutôt "pnpm start" (après avoir fait le build via entrypoint)
-CMD ["pnpm", "dev"]
+CMD ["pnpm", "start"]
