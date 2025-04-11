@@ -1,14 +1,35 @@
-version: '3.9'
+version: "3.8"
 
 services:
   postgres:
-    image: postgres
+    image: postgres:15
     restart: always
     ports:
-      - 3039:5432
+      - "3039:5432"
     volumes:
-      - ~/apps/postgres-spikestats:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=spikestats_db
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_DB:-spikestats_db}
+    networks:
+      - spikestats
+
+  next:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3000"
+    env_file:
+      - .env.production
+    networks:
+      - spikestats
+    restart: always
+
+volumes:
+  postgres-data:
+
+networks:
+  spikestats:
+    driver: bridge
