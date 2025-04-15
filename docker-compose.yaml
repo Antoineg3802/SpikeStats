@@ -1,14 +1,57 @@
-version: '3.9'
-
 services:
   postgres:
-    image: postgres
+    image: postgres:15
     restart: always
     ports:
-      - 3039:5432
+      - "3039:5432"
     volumes:
-      - ~/apps/postgres-spikestats:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=spikestats_db
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_DB:-spikestats_db}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - spikestats
+
+  prisma-studio:
+    image: node:lts-alpine3.17
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    command: npx prisma studio --port 5555 --browser none
+    ports:
+      - "5555:5555"
+    env_file:
+      - .env.production
+    networks:
+      - spikestats
+    depends_on:
+      postgres:
+        condition: service_healthy
+      next:
+        condition: service_started
+
+
+  next:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3000"
+    env_file:
+      - .env.production
+    networks:
+      - spikestats
+    restart: always
+
+volumes:
+  postgres-data:
+
+networks:
+  spikestats:
+    driver: bridge
