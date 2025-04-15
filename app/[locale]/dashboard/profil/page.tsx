@@ -38,7 +38,7 @@ export default function Page() {
 						{profil &&
 						profil.customer &&
 						!profil.customer.deleted ? (
-							<div className="w-full overflow-auto">
+							<div className="w-full overflow-auto p-4">
 								<DashboardPageTitle title="Votre profil" />
 								<ProfilLine subtitle="Photo de profil" >
 									<Image className="rounded-lg" height={80} width={80} src={session?.user?.image || "/img/defaultProfilePicture.png"} alt="" />

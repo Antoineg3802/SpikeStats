@@ -68,7 +68,7 @@ export default function Page() {
 					<Loader />
 				) : (
 					(profil && profil.customer && !profil.customer.deleted) ? (
-						<div className="w-full overflow-auto">
+						<div className="w-full overflow-auto p-4">
 							<DashboardPageTitle title="Facturation et abonnement" />
 							<div className="w-full mb-4">
 								<DashboardSubtitle subtitle="Abonnement" />

@@ -8,6 +8,9 @@ export interface TeamDashboardExtended {
 	ownerId?: string;
 	owner?: {
 		id: string;
+		name: string;
+		image: string;
+		email: string;
 	};
 	teamMembers: {
 		id: string;

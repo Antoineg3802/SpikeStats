@@ -80,7 +80,7 @@ export default function Page() {
                 <Loader />
             </div>
         ) : (
-            <>
+            <div className="h-full w-full p-4">
                 <DashboardPageTitle title="Gestionnaire d'équipes" />
                 <div className="mb-4">
                     <p className="text-sm text-gray-500">
@@ -91,7 +91,7 @@ export default function Page() {
                     </p>
                 </div>
 
-                <div className="absolute top-8 right-8 flex flex-col gap-2 items-stretch">
+                <div className="absolute top-4 right-4 flex flex-col gap-2 items-stretch">
                     <Button variant="default" className="" onClick={() => setShowForm(true)}>
                         <Plus />
                         Ajouter une équipe
@@ -136,7 +136,7 @@ export default function Page() {
                         )
                     })}
                 </div>
-            </>
+            </div>
         )}
 
     </DashboardPage>

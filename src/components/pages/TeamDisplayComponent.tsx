@@ -53,12 +53,30 @@ export default function TeamDisplayComponent({ teamId, session }: TeamDisplayCom
                     </div>
                     <Card className="row-start-2 row-end-4 col-start-1 col-end-3">
                         <CardHeader>
-                            <CardTitle>Membre de l'équipe</CardTitle>
+                            <CardTitle>Membres de l'équipe</CardTitle>
                             <CardDescription>
                                 Vous pouvez gérer les membres de votre équipe ici.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="grid gap-6">
+                        <CardContent className="grid gap-4">
+                            <div className="flex items-center justify-between space-x-4" key={session?.user.id}>
+                                <div className="flex items-center space-x-4">
+                                    <Avatar className="h-8 w-8">
+                                        {team.owner?.image ? (<AvatarImage src={team.owner?.image} alt="Image" />) : (
+                                            <span className="h-8 w-8 flex justify-center items-center">
+                                                {team.owner?.name.split(" ")
+                                                    .map((name) => name.charAt(0).toUpperCase())
+                                                    .join("")
+                                                    .slice(0, 2)}
+                                            </span>
+                                        )}
+                                    </Avatar>
+                                    <div>
+                                        <p className="text-sm font-medium leading-none">{team.owner?.name} {team.owner?.id == session?.user.id ? <span className="text-sm font-medium text-muted-foreground">(Toi)</span> : ""}</p>
+                                        <p className="text-sm text-muted-foreground">{team.owner?.email}</p>
+                                    </div>
+                                </div>
+                            </div>
                             {team.teamMembers.map((member) => {
                                 const initials = member.user.name
                                     .split(" ")
@@ -70,7 +88,11 @@ export default function TeamDisplayComponent({ teamId, session }: TeamDisplayCom
                                         <div className="flex items-center space-x-4">
                                             <Avatar className="h-8 w-8">
                                                 <AvatarImage src={member.user.image} alt="Image" />
-                                                <AvatarFallback>{initials}</AvatarFallback>
+                                                {member.user.image ? (<AvatarImage src={member.user.image} alt="Image" />) : (
+                                                    <span className="h-8 w-8 flex justify-center items-center">
+                                                        {initials}
+                                                    </span>
+                                                )}
                                             </Avatar>
                                             <div>
                                                 <p className="text-sm font-medium leading-none">{member.user.name}</p>
@@ -94,8 +116,13 @@ export default function TeamDisplayComponent({ teamId, session }: TeamDisplayCom
                         </CardFooter>
                     </Card>
                     <Card className="row-start-4 row-end-6 col-start-1 col-end-5">
+                        <CardHeader>
+                            <CardTitle>
+                                Prochains matchs
+                            </CardTitle>
+                        </CardHeader>
                         <CardContent>
-                            <p>titutututututuu</p>
+                            <p>Vous retrouverez ici tous vos prochains matchs</p>
                         </CardContent>
                     </Card>
                     <Card className="row-start-4 row-end-6 col-start-5 col-end-7">

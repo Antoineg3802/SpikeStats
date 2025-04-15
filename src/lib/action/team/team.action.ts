@@ -220,10 +220,20 @@ export const getTeamById = authActionClient
 							select: {
 								id: true,
 								name: true,
+								email: true,
+								image: true,
 							},
 						},
 					},
 				},
+				owner: {
+					select: {
+						id: true,
+						name: true,
+						image: true,
+						email: true,
+					},
+				}
 			},
 			where: {
 				AND: [
