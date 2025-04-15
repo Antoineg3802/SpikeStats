@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 export default function Loader() {
     return (
-        <div className="m-auto flex items-center justify-center gap-1">
+        <div className="m-auto flex items-center justify-center gap-1 h-full">
             {[0, 1, 2].map((i) => (
                 <motion.span
                     key={i}

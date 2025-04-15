@@ -177,6 +177,8 @@ export const joinTeam = authActionClient
 					select: {
 						id: true,
 						name: true,
+						image: true,
+						email: true,
 					},
 				},
 			},
@@ -188,6 +190,58 @@ export const joinTeam = authActionClient
 
 		return team as TeamDashboardExtended;
 	});
+
+export const getTeamById = authActionClient
+	.schema(
+		z.object({
+			teamId: z.string(),
+		})
+	)
+	.action(async ({ parsedInput: { teamId }, ctx: { user } }) => {
+		if (!user || !teamId) {
+			return null;
+		}
+		const team = await prisma.team.findFirst({
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				createdAt: true,
+				logo: true,
+				joinCode: true,
+				ownerId: true,
+				teamMembers: {
+					select: {
+						id: true,
+						userId: true,
+						role: true,
+						active: true,
+						user: {
+							select: {
+								id: true,
+								name: true,
+							},
+						},
+					},
+				},
+			},
+			where: {
+				AND: [
+					{ id: teamId },
+					{
+						OR: [
+							{ ownerId: user.id },
+							{ teamMembers: { some: { userId: user.id } } },
+						],
+					},
+				],
+			},
+		})
+
+		if (!team) return null;
+
+		return team as TeamDashboardExtended;
+	})
 
 async function generateCode() {
 	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

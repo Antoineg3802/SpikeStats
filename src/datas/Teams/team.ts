@@ -11,20 +11,25 @@ export interface TeamDashboardExtended {
 	};
 	teamMembers: {
 		id: string;
+		userId: string;
+		role: string;
+		active: boolean;
 		user: {
 			id: string;
 			name: string;
+			image: string;
+			email: string;
 		};
 	}[];
 }
 
 export interface TeamMemberAdd {
-	id: string,
-	userId: string,
-	role: string,
-	active: boolean,
+	id: string;
+	userId: string;
+	role: string;
+	active: boolean;
 	user: {
-		id: string,
-		name: string,
+		id: string;
+		name: string;
 	};
 }
