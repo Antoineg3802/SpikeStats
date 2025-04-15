@@ -1,7 +1,7 @@
 import Navbar from '@/components/organisms/Navbar';
 import { Session } from '@/datas/session';
 import { auth } from '@/lib/auth/auth';
-import prisma from '@/lib/prisma';
+import prisma from '@/lib/prisma/prisma';
 import { stripe } from '@/lib/stripe/stripe';
 import { CircleCheck } from 'lucide-react';
 import Link from 'next/link';

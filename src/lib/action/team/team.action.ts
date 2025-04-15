@@ -3,7 +3,7 @@
 import { TeamMember } from "@prisma/client";
 import { authActionClient } from "../action";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma/prisma";
 import { TeamDashboardExtended, TeamMemberAdd } from "@/datas/Teams/team";
 
 export const createTeam = authActionClient
