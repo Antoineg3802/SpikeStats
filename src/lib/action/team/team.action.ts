@@ -1,6 +1,5 @@
 "use server";
 
-import { TeamMember } from "@prisma/client";
 import { authActionClient } from "../action";
 import { z } from "zod";
 import prisma from "@/lib/prisma/prisma";

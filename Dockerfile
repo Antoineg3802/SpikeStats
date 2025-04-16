@@ -14,7 +14,6 @@ RUN pnpm install --frozen-lockfile
 
 # Copier tout le projet
 COPY . .
-COPY .env.production .env
 
 # Copier le script d'entrypoint et lui donner les droits
 COPY entrypoint.sh /entrypoint.sh
