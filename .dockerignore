@@ -1,4 +1,5 @@
 node_modules
 .next
+.env.production
 
 src/lib/prisma/client

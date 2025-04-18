@@ -1,9 +1,13 @@
-FROM node:lts-alpine3.17
+FROM node:lts
 
 WORKDIR /app
 
 # Installer des dépendances système
-RUN apk add --no-cache libc6-compat postgresql-client openssl
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    openssl \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
 # Activer pnpm via corepack
 RUN corepack enable pnpm 
@@ -20,7 +24,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Exposer le port de l'application
-EXPOSE 3000
+EXPOSE 3003
 
 # Définir l'entrypoint pour que le script se lance à démarrage du conteneur.
 ENTRYPOINT ["/entrypoint.sh"]

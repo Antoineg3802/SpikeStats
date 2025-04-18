@@ -6,6 +6,8 @@ until pg_isready -h postgres -p $POSTGRES_PORT -U "$POSTGRES_USER"; do
 done
 echo "✅ PostgreSQL est prêt. Lancement du build..."
 
+rm -f /app/.env.production
+
 pnpm build
 
 exec "$@"
