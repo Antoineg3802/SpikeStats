@@ -1,13 +1,9 @@
-FROM node:lts
+FROM node:18-alpine
 
 WORKDIR /app
 
 # Installer des dépendances système
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    openssl \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache libc6-compat postgresql-client openssl
 
 # Activer pnpm via corepack
 RUN corepack enable pnpm 
