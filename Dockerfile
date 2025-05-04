@@ -15,12 +15,14 @@ RUN pnpm install --frozen-lockfile
 # Copier tout le projet
 COPY . .
 
+RUN mv .env.production .env
+
 # Copier le script d'entrypoint et lui donner les droits
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Exposer le port de l'application
-EXPOSE 3003
+EXPOSE 3000
 
 # Définir l'entrypoint pour que le script se lance à démarrage du conteneur.
 ENTRYPOINT ["/entrypoint.sh"]

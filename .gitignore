@@ -31,12 +31,12 @@ yarn-error.log*
 .env.production
 .env.development
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docker
+docker-compose.prod.yaml
 
 # prisma ignore client generation
 src/lib/prisma/client
