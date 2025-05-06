@@ -43,9 +43,20 @@ Utilisation de la commande `stripe listen --forward-to localhost:3000/api/webhoo
 
 Pour build l'application avec un tag précis et le publier utiliser cette commande (par exemple avec le tag latest et v0.5) : 
 ```
-docker buildx build \                            
+// prod
+docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  -t antoineg3802/spikestats:v0.5 \
-  --push \
-  .
+  --target prod \
+  -t antoineg3802/spikestats:prod-v0.1 \
+  -t antoineg3802/spikestats:latest \
+  --push .
+
+// dev
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --target dev \
+  -t antoineg3802/spikestats:dev-v0.1 \
+  -t antoineg3802/spikestats:latest-dev \
+  --push .
+
 ```

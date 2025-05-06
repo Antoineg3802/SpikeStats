@@ -36,7 +36,7 @@ yarn-error.log*
 next-env.d.ts
 
 # docker
-docker-compose.prod.yaml
+docker/
 
 # prisma ignore client generation
 src/lib/prisma/client

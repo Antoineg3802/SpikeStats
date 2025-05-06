@@ -1,32 +1,33 @@
-FROM node:18-alpine
+FROM node:18-alpine AS base
 
 WORKDIR /app
 
-# Installer des dépendances système
 RUN apk add --no-cache libc6-compat postgresql-client openssl
 
-# Activer pnpm via corepack
-RUN corepack enable pnpm 
+RUN corepack enable pnpm
 
-# Copier package.json, pnpm-lock.yaml et .npmrc (si présent) et installer les dépendances
-COPY package.json pnpm-lock.yaml .npmrc* ./
-RUN pnpm install --frozen-lockfile
-
-# Copier tout le projet
 COPY . .
 
-RUN mv .env.production .env
-
-# Copier le script d'entrypoint et lui donner les droits
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Exposer le port de l'application
+FROM base AS dev
+
+ENV NODE_ENV=development \
+    WATCHPACK_POLLING=true \
+    PORT=3000
+
 EXPOSE 3000
-
-# Définir l'entrypoint pour que le script se lance à démarrage du conteneur.
 ENTRYPOINT ["/entrypoint.sh"]
+CMD ["pnpm", "dev"]
 
-# CMD par défaut : en environnement de développement on peut lancer "pnpm dev"
-# en production, on lancera plutôt "pnpm start" (après avoir fait le build via entrypoint)
+FROM base AS prod
+
+ENV NODE_ENV=production \
+    PORT=3000
+
+WORKDIR /app
+
+EXPOSE 3000
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["pnpm", "start"]
