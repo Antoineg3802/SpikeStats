@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if [ ! -d "node_modules" ]; then
-  pnpm install --frozen-lockfile
-fi
+pnpm install --frozen-lockfile
 
 until pg_isready -h postgres -p $POSTGRES_PORT -U "$POSTGRES_USER"; do
   echo "↪️ En attente de PostgreSQL..."
@@ -12,7 +10,7 @@ done
 pnpm dlx prisma migrate deploy
 pnpm prisma generate
 
-if [ "$NODE_ENV" = "production" ] && [ ! -d ".next" ]; then
+if [ "$NODE_ENV" = "production" ]; then
   pnpm build
 fi
 
