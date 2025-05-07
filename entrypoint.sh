@@ -9,9 +9,8 @@ until pg_isready -h postgres -p $POSTGRES_PORT -U "$POSTGRES_USER"; do
   sleep 2
 done
 
-if [ -f "prisma/schema.prisma" ]; then
-  pnpm prisma generate
-fi
+pnpm dlx prisma migrate deploy
+pnpm prisma generate
 
 if [ "$NODE_ENV" = "production" ] && [ ! -d ".next" ]; then
   pnpm build
