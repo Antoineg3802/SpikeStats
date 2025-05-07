@@ -58,6 +58,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /chemin/vers/ton/projet
+            cd spike-stats/
             docker-compose pull ${{ steps.vars.outputs.SERVICE }}
             docker-compose up -d --no-deps ${{ steps.vars.outputs.SERVICE }}
