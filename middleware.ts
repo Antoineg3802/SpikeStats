@@ -1,3 +1,4 @@
+// middleware.ts
 import { createI18nMiddleware } from "next-international/middleware";
 import { NextRequest } from "next/server";
 

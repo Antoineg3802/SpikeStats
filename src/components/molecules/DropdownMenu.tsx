@@ -10,7 +10,7 @@ import Link from "next/link";
 
 interface DropdownMenuProps {
     image: string;
-    personalMenus: { name: string, link: string }[];
+    personalMenus: {name: string, link: string}[];
     signOut: () => void;
 }
 
@@ -64,7 +64,7 @@ export const DropdownMenu = ({ image, signOut, personalMenus }: DropdownMenuProp
                     role="menu"
                 >
                     <div className="p-2">
-                        {personalMenus.map((menu: { link: string, name: string }, index) => {
+                        {personalMenus.map((menu: {link: string, name: string}, index) => {
                             return (
                                 <Link
                                     key={index}

@@ -1,5 +1,4 @@
-import { createSafeActionClient } from "next-safe-action";
-import { getCurrentUser } from "../auth/auth";
+import { createSafeActionClient } from 'next-safe-action';
 
 export const actionClient = createSafeActionClient();
 

@@ -16,7 +16,7 @@ const ProfilMenus: ProfilMenus = {
 			name: "solutions",
 			link: "/solutions",
 		},
-		{
+        {
 			name: "about",
 			link: "/more",
 		},
@@ -26,7 +26,7 @@ const ProfilMenus: ProfilMenus = {
 			name: "dashboard",
 			link: "/dashboard",
 		},
-		{
+        {
 			name: "settings",
 			link: "settings",
 		},

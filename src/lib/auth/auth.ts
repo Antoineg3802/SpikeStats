@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma/prisma";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/lib/server/server";
-import { sendVerificationRequest } from "@/lib/auth/mailer";
+import {sendVerificationRequest} from "@/lib/auth/mailer";
 import Nodemailer from "next-auth/providers/nodemailer";
 import { stripe } from "../stripe/stripe";
 import { PrismaClient } from "@prisma/client";
@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		Nodemailer({
 			server: process.env.EMAIL_SERVER,
 			from: process.env.EMAIL_FROM,
-			sendVerificationRequest,
+			sendVerificationRequest
 		}),
 		GoogleProvider({
 			clientId: env.GOOGLE_CLIENT_ID || "",
@@ -25,13 +25,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	callbacks: {
 		async signIn({ user, account, profile }: any) {
 			try {
-				if (!account) {
-					return true;
+                if (!account) {
+                    return true;
 				}
-
+                
 				const existingUser = await prisma.user.findUnique({
-					where: {
-						email: user.email as string,
+                    where: {
+                        email: user.email as string,
 					},
 				});
 
@@ -159,20 +159,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		maxAge: 12 * 60 * 60, // (12 hours)
 		updateAge: 24 * 60 * 60, // Increase Session if active (User making requests)
 	},
-});
-
-export const getCurrentUser = async () => {
-	const session = await auth();
-
-	if (!session) {
-		return null;
-	}
-
-	const user = await prisma.user.findUnique({
-		where: {
-			id: session.user?.id,
-		},
-	});
-
-	return user;
-};
+})

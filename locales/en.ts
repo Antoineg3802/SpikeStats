@@ -17,8 +17,5 @@ export default {
 		contact: "Contact",
 		solutions: "Solutions",
 		aboutUs: "About us",
-		biling: 'Billing',
-		matches: 'Matches',
-		teams: 'Teams',
 	}
 } as const;
