@@ -10,9 +10,10 @@ import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
 import ProfilLine from "@/components/molecules/ProfilLine";
 import InvoiceExcerpt from "@/components/molecules/InvoiceExcerpt";
 import Image from "next/image";
+import { Session } from "@/datas/session";
 
 export default function Page() {
-	const { data: session } = useSession();
+	const session = useSession().data as Session | null;
 	const [isLoading, setIsLoading] = useState(true);
 	const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
 		null
@@ -37,7 +38,7 @@ export default function Page() {
 						{profil &&
 						profil.customer &&
 						!profil.customer.deleted ? (
-							<div className="w-full overflow-auto">
+							<div className="w-full overflow-auto p-4">
 								<DashboardPageTitle title="Votre profil" />
 								<ProfilLine subtitle="Photo de profil" >
 									<Image className="rounded-lg" height={80} width={80} src={session?.user?.image || "/img/defaultProfilePicture.png"} alt="" />

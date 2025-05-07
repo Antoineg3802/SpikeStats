@@ -1,14 +1,37 @@
-version: '3.9'
-
 services:
   postgres:
-    image: postgres
+    image: postgres:15
     restart: always
     ports:
-      - 3039:5432
+      - "5432:5432"
     volumes:
-      - ~/apps/postgres-spikestats:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - .env.production
     environment:
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=spikestats_db
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_DB:-spikestats_db}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - spikestats
+
+  next:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    networks:
+      - spikestats
+
+volumes:
+  postgres-data:
+
+networks:
+  spikestats:
+    driver: bridge

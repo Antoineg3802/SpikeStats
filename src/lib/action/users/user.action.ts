@@ -1,6 +1,6 @@
 "use server";
 
-import { actionClient } from "@/lib/action/action";
+import { actionClient, authActionClient } from "@/lib/action/action";
 import { auth } from "@/lib/auth/auth";
 import { stripe } from "@/lib/stripe/stripe";
 import { Session } from "@/datas/session";
@@ -22,4 +22,13 @@ export const getFullProfil = actionClient
     }else {
         return null;
     }
+})
+
+export const getUserConnected = authActionClient
+.action(async ({ctx: { user } }) => {
+    if (!user) {
+        return null;
+    }
+
+    return user
 })

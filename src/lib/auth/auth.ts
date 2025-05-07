@@ -1,14 +1,15 @@
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma/prisma";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/lib/server/server";
 import { sendVerificationRequest } from "@/lib/auth/mailer";
 import Nodemailer from "next-auth/providers/nodemailer";
 import { stripe } from "../stripe/stripe";
+import { PrismaClient } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-	adapter: PrismaAdapter(prisma),
+	adapter: PrismaAdapter(prisma as PrismaClient),
 	providers: [
 		Nodemailer({
 			server: process.env.EMAIL_SERVER,

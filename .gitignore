@@ -28,10 +28,15 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
-
-# vercel
-.vercel
+.env.production
+.env.development
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docker
+docker/
+
+# prisma ignore client generation
+src/lib/prisma/client

@@ -16,7 +16,7 @@ import Stripe from "stripe";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 export default function Page() {
-	const { data: session } = useSession();
+	const session = useSession().data as Session | null;
 	const [isLoading, setIsLoading] = useState(true);
 	const [profil, setProfil] = useState<UserFullProfil | null | undefined>(
 		null
@@ -68,7 +68,7 @@ export default function Page() {
 					<Loader />
 				) : (
 					(profil && profil.customer && !profil.customer.deleted) ? (
-						<div className="w-full overflow-auto">
+						<div className="w-full overflow-auto p-4">
 							<DashboardPageTitle title="Facturation et abonnement" />
 							<div className="w-full mb-4">
 								<DashboardSubtitle subtitle="Abonnement" />

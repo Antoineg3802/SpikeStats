@@ -38,3 +38,25 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ### STRIPE CLI
 
 Utilisation de la commande `stripe listen --forward-to localhost:3000/api/webhooks/stripe` pour rediriger les demandes des webhooks Stripe sur le site local
+
+### Docker Image 
+
+Pour build l'application avec un tag précis et le publier utiliser cette commande (par exemple avec le tag latest et v0.5) : 
+```
+// prod
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --target prod \
+  -t antoineg3802/spikestats:prod-v0.1 \
+  -t antoineg3802/spikestats:latest \
+  --push .
+
+// dev
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --target dev \
+  -t antoineg3802/spikestats:dev-v0.1 \
+  -t antoineg3802/spikestats:latest-dev \
+  --push .
+
+```
