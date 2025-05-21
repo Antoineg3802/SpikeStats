@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react"
 import { SignInButton } from "../atoms/authButtons/AuthButtons"
 import { DropdownMenu } from "../molecules/DropdownMenu"
 import ProfilMenus from "@/datas/ProfilMenus"
-import { useI18n } from "../../../locales/client"
+import { useI18n } from "../../locales/client"
 
 export function NavbarSessionPart() {
     const { data: session } = useSession()

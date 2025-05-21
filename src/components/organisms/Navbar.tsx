@@ -1,5 +1,5 @@
 import { Volleyball } from "lucide-react";
-import { getI18n } from "../../../locales/server";
+import { getI18n } from "@/locales/server";
 import ProfilMenus from "@/datas/ProfilMenus"
 import Link from "next/link";
 import { NavbarSessionPart } from "../molecules/NavbarSessionPart";
