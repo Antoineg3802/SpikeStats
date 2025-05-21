@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth/auth";
 import { ReactElement } from "react";
 import Providers from "./providers";
 import { GeistSans } from "geist/font/sans";
+import DevVisualizer from "@/components/atoms/DevVisualizer";
 
 export default async function Layout({ children, params }: { children: ReactElement, params: Promise<{ locale: string }> }) {
 	const { locale } = await params
