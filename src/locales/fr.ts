@@ -28,6 +28,12 @@ export default {
 				"Optimisez la performance de votre équipe de volleyball grâce à Spikestats, votre solution complète pour la gestion des statistiques, l'organisation d'équipe et la planification stratégique des matchs.",
 			cta: "Découvrez nos solutions",
 			sections: {
+				warningDev: {
+					title: "Ce site est en cours de développement",
+					description:
+						"Restez à l'écoute pour découvrir nos solutions innovantes pour le volleyball.",
+					cta: "Inscrivez-vous pour être informé",
+				},
 				stats: {
 					title: "Gestion des statistiques : Analyse de performance",
 					data: "Collecte de données",

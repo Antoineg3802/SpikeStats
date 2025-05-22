@@ -2,7 +2,7 @@ import LocaleSelector from "@/components/atoms/LocaleSelector";
 import Navbar from "@/components/organisms/Navbar";
 import { Metadata } from "next";
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getScopedI18n } from "@/locales/server";
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 		"logiciel statistique de volley ball",
 		"application de statistique pour volley ball",
 		"application pour les clubs de volley ball",
-		"logiciel pour les entraineurs de volley ball"
+		"logiciel pour les entraineurs de volley ball",
 	].join(", "),
 	openGraph: {
 		title: "Spikestats - Outil de gestion et planification pour Volleyball",
@@ -52,47 +52,66 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-	return [
-		{ locale: 'fr' },
-		{ locale: 'en' },
-	]
+	return [{ locale: "fr" }, { locale: "en" }];
 }
 
 export default async function Home() {
-	const t = await getScopedI18n('pages.home');
+	const t = await getScopedI18n("pages.home");
 	return (
 		<main className="bg-gray-50">
 			<Navbar />
-			<div className="text-center py-16 px-4">
+			<section className="text-center py-16 px-4">
 				<h1 className="text-4xl font-bold mb-4">{t("title")}</h1>
-				<p className="text-lg text-gray-700 max-w-2xl mx-auto">{t("description")}</p>
+				<p className="text-lg text-gray-700 max-w-2xl mx-auto">
+					{t("description")}
+				</p>
 				<div className="mt-8">
 					<Button variant="default" asChild>
 						<Link href="/solutions">{t("cta")}</Link>
 					</Button>
 				</div>
-			</div>
+			</section>
+
+			<section className="container bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 mx-auto">
+				<h2 className="font-bold">{t("sections.warningDev.title")}</h2>
+				<p>{t("sections.warningDev.description")}</p>
+				<Link
+					href="/contact"
+					className="text-yellow-600 hover:text-yellow-800 font-semibold"
+				/>
+			</section>
 
 			{/* Section 1 : Gestion des statistiques */}
-			<section id="gestion-statistiques" className="container mx-auto px-4 py-12">
+			<section
+				id="gestion-statistiques"
+				className="container mx-auto px-4 py-12"
+			>
 				<Card className="mb-8 shadow">
 					<CardHeader>
-						<CardTitle className="text-2xl font-semibold">{t("sections.stats.title")}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">
+							{t("sections.stats.title")}
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<h3 className="text-xl font-medium mt-4">{t("sections.stats.data")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.stats.data")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.stats.points.1")}</li>
 							<li>{t("sections.stats.points.2")}</li>
 							<li>{t("sections.stats.points.3")}</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">{t("sections.stats.analysis")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.stats.analysis")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.stats.analysisPoints.1")}</li>
 							<li>{t("sections.stats.analysisPoints.2")}</li>
 							<li>{t("sections.stats.analysisPoints.3")}</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">{t("sections.stats.decision")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.stats.decision")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.stats.decisionPoints.1")}</li>
 							<li>{t("sections.stats.decisionPoints.2")}</li>
@@ -103,24 +122,35 @@ export default async function Home() {
 			</section>
 
 			{/* Section 2 : Organisation de l'équipe */}
-			<section id="organisation-equipe" className="container mx-auto px-4 py-12">
+			<section
+				id="organisation-equipe"
+				className="container mx-auto px-4 py-12"
+			>
 				<Card className="mb-8 shadow">
 					<CardHeader>
-						<CardTitle className="text-2xl font-semibold">{t("sections.team.title")}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">
+							{t("sections.team.title")}
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<h3 className="text-xl font-medium mt-4">{t("sections.team.communication")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.team.communication")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.team.communicationPoints.1")}</li>
 							<li>{t("sections.team.communicationPoints.2")}</li>
 							<li>{t("sections.team.communicationPoints.3")}</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">{t("sections.team.roles")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.team.roles")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.team.rolesPoints.1")}</li>
 							<li>{t("sections.team.rolesPoints.2")}</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">{t("sections.team.spirit")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.team.spirit")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.team.spiritPoints.1")}</li>
 							<li>{t("sections.team.spiritPoints.2")}</li>
@@ -129,18 +159,27 @@ export default async function Home() {
 				</Card>
 			</section>
 
-			<section id="planification-matchs" className="container mx-auto px-4 py-12">
+			<section
+				id="planification-matchs"
+				className="container mx-auto px-4 py-12"
+			>
 				<Card className="mb-8 shadow">
 					<CardHeader>
-						<CardTitle className="text-2xl font-semibold">{t("sections.planning.title")}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">
+							{t("sections.planning.title")}
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<h3 className="text-xl font-medium mt-4">{t("sections.planning.strategy")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.planning.strategy")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.planning.strategyPoints.1")}</li>
 							<li>{t("sections.planning.strategyPoints.2")}</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">{t("sections.planning.live")}</h3>
+						<h3 className="text-xl font-medium mt-4">
+							{t("sections.planning.live")}
+						</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
 							<li>{t("sections.planning.livePoints.1")}</li>
 							<li>{t("sections.planning.livePoints.2")}</li>
@@ -151,7 +190,12 @@ export default async function Home() {
 			</section>
 
 			<LocaleSelector />
-			<Image src={"/img/defaultProfilePicture.png"} alt={""} width={32} height={32} />
+			<Image
+				src={"/img/defaultProfilePicture.png"}
+				alt={""}
+				width={32}
+				height={32}
+			/>
 		</main>
 	);
 }
