@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import { CheckCircle } from "lucide-react";
-import { Field } from "@/datas/form";
 import { EarlyAccessForm } from "@/components/organisms/EarlyAccessForm";
 
 export const metadata: Metadata = {
-    title: "Bientôt disponible – Spike‑Stats",
+    title: "Bientôt disponible – Spike-Stats",
     description:
         "Notre site est en cours de construction. Restez à l'écoute pour découvrir nos solutions innovantes pour le volleyball.",
 };
