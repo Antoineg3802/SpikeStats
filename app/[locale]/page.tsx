@@ -1,5 +1,4 @@
 import LocaleSelector from "@/components/atoms/LocaleSelector";
-import Navbar from "@/components/organisms/Navbar";
 import { Metadata } from "next";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,8 +57,7 @@ export async function generateStaticParams() {
 export default async function Home() {
 	const t = await getScopedI18n("pages.home");
 	return (
-		<main className="bg-gray-50">
-			<Navbar />
+		<main>
 			<section className="text-center py-16 px-4">
 				<h1 className="text-4xl font-bold mb-4">{t("title")}</h1>
 				<p className="text-lg text-gray-700 max-w-2xl mx-auto">

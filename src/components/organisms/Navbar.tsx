@@ -7,7 +7,7 @@ import { NavbarSessionPart } from "../molecules/NavbarSessionPart";
 export default async function Navbar() {
     const t = await getI18n();
     return (
-        <header className="bg-background shadow-xs">
+        <header className="bg-background shadow-sm">
             <div className="mx-auto flex h-16 max-w-(--breakpoint-xl) items-center gap-8 px-4 sm:px-6 lg:px-8">
                 <Link className="block text-primary hover:text-darkbackground" href="/">
                     <span className="sr-only">Home</span>
