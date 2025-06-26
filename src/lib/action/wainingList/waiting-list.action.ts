@@ -16,63 +16,59 @@ export const registerWaintingList = actionClient
 	)
 	.action(async ({ parsedInput: { email, name } }) => {
 		let parsedEmail = email.trim().toLowerCase();
-		prisma.waitingList
-			.findFirst({
-				where: {
-					email: parsedEmail,
-				},
-			})
-			.then(async (existingEntry) => {
-				if (existingEntry) {
-					return {
-						success: false,
-						message: "Vous êtes déjà inscrit à la liste d'attente.",
-					};
-				}
+		let existingEntry = await prisma.waitingList.findFirst({
+			where: {
+				email: parsedEmail,
+			},
+		});
+		if (existingEntry) {
+			return {
+				success: false,
+				message: "Vous êtes déjà inscrit à la liste d'attente.",
+			};
+		}
 
-				const confirmationToken = Math.random().toString(36);
-				const tokenExpiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+		const confirmationToken = Math.random().toString(36);
+		const tokenExpiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
-				const sendEmailResponse = sendEmail({
-					to: parsedEmail,
-					subject: "Confirmation d'inscription à la liste d'attente",
-					react: WaintingListConfirm({
-						confirmationUrl: `${
-							process.env.NEXTAUTH_URL
-						}confirm/waiting-list?token=${confirmationToken}&email=${encodeURIComponent(
-							parsedEmail
-						)}`,
-					}),
-					text: `Bonjour ${name},\n\nMerci de vous être inscrit à notre liste d'attente. Veuillez confirmer votre inscription en cliquant sur le lien suivant :\n\n${
-						process.env.NEXT_PUBLIC_BASE_URL
-					}/confirm-waiting-list?email=${encodeURIComponent(
-						email
-					)}\n\nCordialement,\nL'équipe`,
-				});
+		const sendEmailResponse = sendEmail({
+			to: parsedEmail,
+			subject: "Confirmation d'inscription à la liste d'attente",
+			react: WaintingListConfirm({
+				confirmationUrl: `${
+					process.env.NEXTAUTH_URL
+				}confirm/waiting-list?token=${confirmationToken}&email=${encodeURIComponent(
+					parsedEmail
+				)}`,
+			}),
+			text: `Bonjour ${name},\n\nMerci de vous être inscrit à notre liste d'attente. Veuillez confirmer votre inscription en cliquant sur le lien suivant :\n\n${
+				process.env.NEXT_PUBLIC_BASE_URL
+			}/confirm-waiting-list?email=${encodeURIComponent(
+				email
+			)}\n\nCordialement,\nL'équipe`,
+		});
 
-				if (!sendEmailResponse) {
-					return {
-						success: false,
-						message:
-							"Erreur lors de l'envoi de l'e-mail de confirmation.",
-					};
-				}
+		if (!sendEmailResponse) {
+			return {
+				success: false,
+				message: "Erreur lors de l'envoi de l'e-mail de confirmation.",
+			};
+		}
 
-				await prisma.waitingList.create({
-					data: {
-						email: parsedEmail,
-						name: name,
-						createdAt: new Date(),
-						confirmToken: confirmationToken,
-						tokenExpiresAt: tokenExpiresAt,
-					},
-				});
+		await prisma.waitingList.create({
+			data: {
+				email: parsedEmail,
+				name: name,
+				createdAt: new Date(),
+				confirmToken: confirmationToken,
+				tokenExpiresAt: tokenExpiresAt,
+			},
+		});
 
-				return {
-					success: true,
-					message: "Inscription réussie à la liste d'attente.",
-				} as WaintingListInscriptionType;
-			});
+		return {
+			success: true,
+			message: "Inscription réussie à la liste d'attente. Veuillez vérfier vos emails !",
+		} as WaintingListInscriptionType;
 	});
 
 export const confirmWaintingList = actionClient
