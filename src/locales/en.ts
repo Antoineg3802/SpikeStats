@@ -90,5 +90,28 @@ export default {
 				},
 			},
 		},
+		comingSoon: {
+			title: "Coming Soon",
+			description:
+				"Our site is under construction. Stay tuned to discover our innovative solutions for volleyball.",
+			cta: "Sign up to be notified",
+			sections: {
+				features: {
+					title: "Upcoming Features",
+					points: {
+						1: "Advanced performance analysis.",
+						2: "Team planning tools.",
+						3: "Real-time match statistics.",
+					},
+				},
+				subscribe: {
+					title: "Sign up to be notified",
+					description:
+						"Be the first to discover our features and receive updates about our launch.",
+					emailPlaceholder: "Enter your email address",
+					submitButton: "Sign up",
+				},
+			},
+		},
 	},
 } as const;
