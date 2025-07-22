@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getScopedI18n } from "@/locales/server";
+import DevVisualizer from "@/components/atoms/DevVisualizer";
 
 export const metadata: Metadata = {
 	title: "Spikestats - Outil de gestion et planification pour Volleyball",
@@ -75,8 +76,11 @@ export default async function Home() {
 				<p>{t("sections.warningDev.description")}</p>
 				<Link
 					href="/contact"
-					className="text-yellow-600 hover:text-yellow-800 font-semibold"
-				/>
+					className="text-yellow-800 underline hover:text-yellow-600 mt-2"
+					prefetch={true}
+				>
+					{t("sections.warningDev.cta")}
+				</Link>
 			</section>
 
 			{/* Section 1 : Gestion des statistiques */}

@@ -32,7 +32,7 @@ export default {
 					title: "Ce site est en cours de développement",
 					description:
 						"Restez à l'écoute pour découvrir nos solutions innovantes pour le volleyball.",
-					cta: "Inscrivez-vous pour être informé",
+					cta: "Abonnez-vous à notre newsletter !",
 				},
 				stats: {
 					title: "Gestion des statistiques : Analyse de performance",
