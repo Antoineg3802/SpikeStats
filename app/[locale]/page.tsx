@@ -75,7 +75,7 @@ export default async function Home() {
 				<h2 className="font-bold">{t("sections.warningDev.title")}</h2>
 				<p>{t("sections.warningDev.description")}</p>
 				<Link
-					href="/contact"
+					href="/coming-soon"
 					className="text-yellow-800 underline hover:text-yellow-600 mt-2"
 					prefetch={true}
 				>
