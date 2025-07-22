@@ -3,7 +3,7 @@ import { Volleyball } from "lucide-react";
 import { Session } from "next-auth";
 import { DashboardMenus } from "@/datas/ProfilMenus";
 import { usePathname } from "next/navigation";
-import { useI18n } from "../../locales/client";
+import { useI18n } from "../../../locales/client";
 import React from "react";
 import Link from "next/link";
 

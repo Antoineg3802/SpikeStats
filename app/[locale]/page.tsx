@@ -1,10 +1,11 @@
 import LocaleSelector from "@/components/atoms/LocaleSelector";
+import Navbar from "@/components/organisms/Navbar";
+import { auth } from "@/lib/auth/auth";
 import { Metadata } from "next";
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getScopedI18n } from "@/locales/server";
 
 export const metadata: Metadata = {
 	title: "Spikestats - Outil de gestion et planification pour Volleyball",
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
 		"logiciel statistique de volley ball",
 		"application de statistique pour volley ball",
 		"application pour les clubs de volley ball",
-		"logiciel pour les entraineurs de volley ball",
+		"logiciel pour les entraineurs de volley ball"
 	].join(", "),
 	openGraph: {
 		title: "Spikestats - Outil de gestion et planification pour Volleyball",
@@ -51,149 +52,157 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-	return [{ locale: "fr" }, { locale: "en" }];
+	return [
+		{ locale: 'fr' },
+		{ locale: 'en' },
+	]
 }
 
 export default async function Home() {
-	const t = await getScopedI18n("pages.home");
 	return (
-		<main>
-			<section className="text-center py-16 px-4">
-				<h1 className="text-4xl font-bold mb-4">{t("title")}</h1>
+		<main className="bg-gray-50">
+			<Navbar />
+			<div className="text-center py-16 px-4">
+				<h1 className="text-4xl font-bold mb-4">
+					Spikestats : Outil de gestion et planification pour Volleyball
+				</h1>
 				<p className="text-lg text-gray-700 max-w-2xl mx-auto">
-					{t("description")}
+					Optimisez la performance de votre équipe de volleyball grâce à Spikestats, votre solution complète pour la gestion des statistiques, l'organisation d'équipe et la planification stratégique des matchs.
 				</p>
 				<div className="mt-8">
 					<Button variant="default" asChild>
-						<Link href="/solutions">{t("cta")}</Link>
+						<Link href="/solutions">Découvrez nos solutions</Link>
 					</Button>
 				</div>
-			</section>
-
-			<section className="container bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 mx-auto">
-				<h2 className="font-bold">{t("sections.warningDev.title")}</h2>
-				<p>{t("sections.warningDev.description")}</p>
-				<Link
-					href="/contact"
-					className="text-yellow-600 hover:text-yellow-800 font-semibold"
-				/>
-			</section>
+			</div>
 
 			{/* Section 1 : Gestion des statistiques */}
-			<section
-				id="gestion-statistiques"
-				className="container mx-auto px-4 py-12"
-			>
+			<section id="gestion-statistiques" className="container mx-auto px-4 py-12">
 				<Card className="mb-8 shadow">
 					<CardHeader>
 						<CardTitle className="text-2xl font-semibold">
-							{t("sections.stats.title")}
+							Gestion des statistiques : Analyse de performance
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.stats.data")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Collecte de données</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.stats.points.1")}</li>
-							<li>{t("sections.stats.points.2")}</li>
-							<li>{t("sections.stats.points.3")}</li>
+							<li>
+								Identifiez les statistiques clés du volleyball (points marqués, réceptions, passes décisives, blocs, services efficaces).
+							</li>
+							<li>
+								Utilisez Spikestats pour collecter et suivre les données lors des matchs et des entraînements.
+							</li>
+							<li>
+								Impliquez joueurs et staff pour une collecte de données exhaustive.
+							</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.stats.analysis")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Analyse et interprétation</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.stats.analysisPoints.1")}</li>
-							<li>{t("sections.stats.analysisPoints.2")}</li>
-							<li>{t("sections.stats.analysisPoints.3")}</li>
+							<li>
+								Transformez les données brutes en indicateurs de performance (taux de réussite, tendances de jeu, points forts et axes d'amélioration).
+							</li>
+							<li>
+								Utilisez des graphiques et des tableaux pour visualiser et comprendre les statistiques.
+							</li>
+							<li>
+								Identifiez les domaines à améliorer, individuellement et collectivement.
+							</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.stats.decision")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Prise de décision</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.stats.decisionPoints.1")}</li>
-							<li>{t("sections.stats.decisionPoints.2")}</li>
-							<li>{t("sections.stats.decisionPoints.3")}</li>
+							<li>
+								Ajustez stratégies et tactiques en fonction des analyses.
+							</li>
+							<li>
+								Personnalisez les entraînements pour corriger les faiblesses identifiées.
+							</li>
+							<li>
+								Évaluez la performance des joueurs pour optimiser la composition de l’équipe.
+							</li>
 						</ul>
 					</CardContent>
 				</Card>
 			</section>
 
 			{/* Section 2 : Organisation de l'équipe */}
-			<section
-				id="organisation-equipe"
-				className="container mx-auto px-4 py-12"
-			>
+			<section id="organisation-equipe" className="container mx-auto px-4 py-12">
 				<Card className="mb-8 shadow">
 					<CardHeader>
 						<CardTitle className="text-2xl font-semibold">
-							{t("sections.team.title")}
+							Organisation de l'équipe : Cohésion et efficacité
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.team.communication")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Communication efficace</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.team.communicationPoints.1")}</li>
-							<li>{t("sections.team.communicationPoints.2")}</li>
-							<li>{t("sections.team.communicationPoints.3")}</li>
+							<li>
+								Utilisez des applications de messagerie et organisez des réunions régulières pour une communication fluide.
+							</li>
+							<li>
+								Diffusez les informations importantes (horaires, lieux, changements) à l'ensemble de l'équipe.
+							</li>
+							<li>
+								Encouragez un dialogue ouvert et le feedback constructif.
+							</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.team.roles")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Définition des rôles</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.team.rolesPoints.1")}</li>
-							<li>{t("sections.team.rolesPoints.2")}</li>
+							<li>
+								Attribuez clairement les rôles et responsabilités (joueurs, entraîneurs, staff technique).
+							</li>
+							<li>
+								Favorisez la collaboration et le soutien mutuel pour renforcer la cohésion.
+							</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.team.spirit")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Esprit d'équipe</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.team.spiritPoints.1")}</li>
-							<li>{t("sections.team.spiritPoints.2")}</li>
+							<li>
+								Organisez des activités de team building pour renforcer les liens.
+							</li>
+							<li>
+								Célébrez les succès et apprenez des défis rencontrés en équipe.
+							</li>
 						</ul>
 					</CardContent>
 				</Card>
 			</section>
 
-			<section
-				id="planification-matchs"
-				className="container mx-auto px-4 py-12"
-			>
+			{/* Section 3 : Planification des matchs */}
+			<section id="planification-matchs" className="container mx-auto px-4 py-12">
 				<Card className="mb-8 shadow">
 					<CardHeader>
 						<CardTitle className="text-2xl font-semibold">
-							{t("sections.planning.title")}
+							Planification des matchs : Préparation et stratégie
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.planning.strategy")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Stratégie de match</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.planning.strategyPoints.1")}</li>
-							<li>{t("sections.planning.strategyPoints.2")}</li>
+							<li>
+								Analysez les forces et faiblesses de l'équipe pour adapter votre stratégie.
+							</li>
+							<li>
+								Développez des tactiques spécifiques et organisez des séances d'entraînement ciblées.
+							</li>
 						</ul>
-						<h3 className="text-xl font-medium mt-4">
-							{t("sections.planning.live")}
-						</h3>
+						<h3 className="text-xl font-medium mt-4">Suivi en match</h3>
 						<ul className="list-disc ml-6 mt-2 text-gray-700">
-							<li>{t("sections.planning.livePoints.1")}</li>
-							<li>{t("sections.planning.livePoints.2")}</li>
-							<li>{t("sections.planning.livePoints.3")}</li>
+							<li>
+								Surveillez la performance des joueurs en temps réel et ajustez la stratégie.
+							</li>
+							<li>
+								Communiquez clairement les consignes pendant le match.
+							</li>
+							<li>
+								Analysez les performances post-match pour identifier les axes d'amélioration.
+							</li>
 						</ul>
 					</CardContent>
 				</Card>
 			</section>
-
 			<LocaleSelector />
-			<Image
-				src={"/img/defaultProfilePicture.png"}
-				alt={""}
-				width={32}
-				height={32}
-			/>
+			<Image src={"/img/defaultProfilePicture.png"} alt={""} width={32} height={32} />
 		</main>
 	);
 }

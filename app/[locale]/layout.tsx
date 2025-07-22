@@ -1,32 +1,21 @@
+import type { Metadata } from "next";
 import "./globals.css";
 
 import { auth } from "@/lib/auth/auth";
 import { ReactElement } from "react";
+import { QueryClient } from "react-query";
 import Providers from "./providers";
 import { GeistSans } from "geist/font/sans";
-import DevVisualizer from "@/components/atoms/DevVisualizer";
-import Navbar from "@/components/organisms/Navbar";
 
-export default async function Layout({
-	children,
-	params,
-}: {
-	children: ReactElement;
-	params: Promise<{ locale: string }>;
-}) {
-	const { locale } = await params;
-	const session = await auth();
+export default async function Layout({ children, params }: { children: ReactElement, params: Promise<{ locale: string }> }) {
+	const { locale } = await params
+	const session = await auth()
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
-			<body
-				className={`${GeistSans.className} text-foreground antialiased min-h-screen w-dvw bg-background`}
-			>
+			<body className={`${GeistSans.className} text-foreground antialiased min-h-screen min-w-screen bg-background`}>
 				<Providers locale={locale} session={session}>
-					<div className="h-screen flex flex-col bg-background">
-						<Navbar />
-						{children}
-					</div>
+					{children}
 				</Providers>
 			</body>
 		</html>
