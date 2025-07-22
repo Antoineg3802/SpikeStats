@@ -11,7 +11,6 @@ export function EarlyAccessForm() {
 		email: string;
 		name: string;
 	}) => {
-		console.log(values);
 		registerWaintingList(values).then((res) => {
 			if (res && res.data && res.data.success) {
 				toast.success(res.data.message, {

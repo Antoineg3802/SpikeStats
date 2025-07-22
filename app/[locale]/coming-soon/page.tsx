@@ -21,31 +21,8 @@ export default async function EarlyAccessPage() {
 					{t("description")}
 				</p>
 
-				{/* Features */}
-				<section className="space-y-6">
-					<h2 className="text-2xl font-semibold">
-						{t("sections.features.title")}
-					</h2>
-					<ul className="grid gap-3 text-left">
-						<li className="flex items-start gap-2">
-							<CheckCircle className="h-5 w-5 shrink-0" />
-							<span>{t("sections.features.points.1")}</span>
-						</li>
-						<li className="flex items-start gap-2">
-							<CheckCircle className="h-5 w-5 shrink-0" />
-							<span>{t("sections.features.points.2")}</span>
-						</li>
-						<li className="flex items-start gap-2">
-							<CheckCircle className="h-5 w-5 shrink-0" />
-							<span>
-								{t("sections.features.points.3")}
-							</span>
-						</li>
-					</ul>
-				</section>
-
 				<section id="subscribe" className="space-y-6">
-					<h2 className="text-2xl font-semibold">
+					<h2 className="text-2xl font-semibold text-primary">
 						{t("sections.subscribe.title")}
 					</h2>
 					<p className="text-muted-foreground">

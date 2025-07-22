@@ -96,18 +96,10 @@ export default {
 				"Notre site est en cours de construction. Restez à l'écoute pour découvrir nos solutions innovantes pour le volleyball.",
 			cta: "Inscrivez-vous pour être informé",
 			sections: {
-				features: {
-					title: "Fonctionnalités à venir",
-					points: {
-						1: "Analyse avancée des performances.",
-						2: "Outils de planification d'équipe.",
-						3: "Statistiques en temps réel pendant les matchs.",
-					},
-				},
 				subscribe: {
 					title: "Inscrivez-vous pour être informé",
 					description:
-						"Soyez le premier à découvrir nos fonctionnalités et à recevoir des mises à jour sur notre lancement.",
+						"Soyez parmis les premiers à découvrir nos fonctionnalités et à recevoir des mises à jour sur notre lancement.",
 					emailPlaceholder: "Entrez votre adresse e-mail",
 					submitButton: "S'inscrire",
 				},
