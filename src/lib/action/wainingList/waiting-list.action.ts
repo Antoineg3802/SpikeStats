@@ -12,9 +12,18 @@ export const registerWaintingList = actionClient
 		z.object({
 			email: z.string().email("Adresse e-mail invalide"),
 			name: z.string().min(1, "Le nom est requis"),
+			extradata : z.string().optional(),
 		})
 	)
-	.action(async ({ parsedInput: { email, name } }) => {
+	.action(async ({ parsedInput: { email, name, extradata } }) => {
+		// Detection of completion on honeyPot input (only used by bots)
+		if (extradata && extradata.trim() !== "") {
+			console.log("HoneyPot triggered, possible bot submission:", extradata);	
+			return {
+				success: false,
+				message: "Erreur lors de la soumission. Veuillez réessayer.",
+			};
+		}
 		let parsedEmail = email.trim().toLowerCase();
 		let existingEntry = await prisma.waitingList.findFirst({
 			where: {
@@ -67,7 +76,8 @@ export const registerWaintingList = actionClient
 
 		return {
 			success: true,
-			message: "Inscription réussie à la liste d'attente. Veuillez vérfier vos emails !",
+			message:
+				"Inscription réussie à la liste d'attente. Veuillez vérfier vos emails !",
 		} as WaintingListInscriptionType;
 	});
 

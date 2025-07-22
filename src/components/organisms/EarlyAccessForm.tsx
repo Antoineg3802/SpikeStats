@@ -10,6 +10,7 @@ export function EarlyAccessForm() {
 	const handleEarlyAccessSubmit = (values: {
 		email: string;
 		name: string;
+		extradata?: string;
 	}) => {
 		registerWaintingList(values).then((res) => {
 			if (res && res.data && res.data.success) {
