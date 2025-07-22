@@ -3,10 +3,10 @@ import { confirmWaintingList } from "@/lib/action/wainingList/waiting-list.actio
 import Link from "next/link";
 
 interface PageProps {
-	searchParams: {
+	searchParams: Promise<{
 		token: string;
 		email: string;
-	};
+	}>;
 }
 
 export default async function page({ searchParams }: PageProps) {
