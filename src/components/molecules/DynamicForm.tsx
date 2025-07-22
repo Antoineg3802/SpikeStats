@@ -102,9 +102,6 @@ export function DynamicForm({ fields, onSubmit }: DynamicFormProps) {
         return acc;
     }, {} as Record<string, z.ZodTypeAny>);
 
-    // Add HoneyPot field to detect bots without user interaction (do not add validator message)
-    schemaShape["extradata"] = z.string().optional();
-
     const defaultValues = fields.reduce((acc, field) => {
         switch (field.type) {
             case "checkbox":
@@ -131,18 +128,6 @@ export function DynamicForm({ fields, onSubmit }: DynamicFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                {/* HoneyPot : Piège pour les bots d'auto complete */}
-                <FormField
-                    control={form.control}
-                    name="extradata"
-                    render={({ field }) => (
-                        <FormItem className="hidden">
-                            <FormControl>
-                                <Input autoComplete="off" tabIndex={-1} {...field} />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                />
                 {fields.map((field) => (
                     <FormField
                         key={field.name}
