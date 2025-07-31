@@ -111,11 +111,19 @@ export const POST = async (req: NextRequest) => {
 			const deletedUser = await findUserFromCustomerId(
 				deletedStripeCustomerId
 			);
-			if (deletedUser === null) {
-				error = "User not found";
+
+			const subscriptionToDelete = await prisma.subscription.findFirst({
+				where: {
+					userId: deletedUser?.id,
+				},
+			});
+
+			if (deletedUser === null || subscriptionToDelete === null) {
+				error = "User or subscription not found";
 				code = 404;
 				break;
 			}
+
 			// Mettre à jour le plan de l'utilisateur
 			let deletedSubscription = await prisma.subscription.update({
 				where: {
