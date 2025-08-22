@@ -7,14 +7,14 @@ import { sendVerificationRequest } from "@/lib/auth/mailer";
 import Nodemailer from "next-auth/providers/nodemailer";
 import { stripe } from "../stripe/stripe";
 import { PrismaClient } from "@prisma/client";
+import Resend from "next-auth/providers/resend";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	adapter: PrismaAdapter(prisma as PrismaClient),
 	providers: [
-		Nodemailer({
-			server: process.env.EMAIL_SERVER,
-			from: process.env.EMAIL_FROM,
-			sendVerificationRequest,
+		Resend({
+			apiKey: env.RESEND_API_KEY,
+			sendVerificationRequest
 		}),
 		GoogleProvider({
 			clientId: env.GOOGLE_CLIENT_ID || "",
