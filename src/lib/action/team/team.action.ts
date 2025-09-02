@@ -4,6 +4,7 @@ import { authActionClient } from "../action";
 import { z } from "zod";
 import prisma from "@/lib/prisma/prisma";
 import { TeamDashboardExtended, TeamMemberAdd } from "@/datas/Teams/team";
+import { PlayerProfile, TeamMember, User } from "@/lib/prisma/client";
 
 export const createTeam = authActionClient
 	.schema(
@@ -232,7 +233,7 @@ export const getTeamById = authActionClient
 						image: true,
 						email: true,
 					},
-				}
+				},
 			},
 			where: {
 				AND: [
@@ -245,12 +246,48 @@ export const getTeamById = authActionClient
 					},
 				],
 			},
-		})
+		});
 
 		if (!team) return null;
 
 		return team as TeamDashboardExtended;
-	})
+	});
+
+export const getTeamPlayers = authActionClient
+	.schema(
+		z.object({
+			teamId: z.string(),
+		})
+	)
+	.action(async ({ parsedInput: { teamId }, ctx: { user } }) => {
+		if (!user || !teamId) {
+			return null;
+		}
+
+		type teamMembersWithProfile = TeamMember & {
+			user : User;
+			PlayerProfile: PlayerProfile | null;
+		};
+
+		const team = await prisma.team.findFirst({
+			where: {
+				ownerId: user.id,
+			},
+		});
+
+		if (!team || team.ownerId != user.id) return null;
+		const teamMembers = await prisma.teamMember.findMany({
+			where: {
+				teamId,
+			},
+			include: {
+				user: true, 
+				playerProfile: true
+			},
+		});
+
+		return teamMembers
+	});
 
 async function generateCode() {
 	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

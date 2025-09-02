@@ -1,8 +1,7 @@
 generator client {
-    provider        = "prisma-client-js"
-    binaryTargets   = ["native", "linux-musl"]
-    previewFeatures = ["prismaSchemaFolder"]
-    output          = "../src/lib/prisma/client"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl"]
+    output        = "../src/lib/prisma/client"
 }
 
 datasource db {
@@ -19,12 +18,10 @@ model User {
     accounts      Account[]
     sessions      Session[]
 
-    license String?
-
     // Relations
-    userRoles   UserRole[] // Les rôles globaux de l'utilisateur
-    ownedTeams  Team[]       @relation("TeamOwner") // Les équipes dont l'utilisateur est propriétaire
-    teamMembers TeamMember[] // Les équipes auxquelles l'utilisateur appartient
+    userRoles   UserRole[]
+    ownedTeams  Team[]       @relation("TeamOwner")
+    teamMembers TeamMember[]
 
     // Stripe
     stripeCustomerId String?
@@ -119,10 +116,20 @@ model TeamMember {
     active Boolean @default(true)
 
     // Relations
-    team Team @relation(fields: [teamId], references: [id])
-    user User @relation(fields: [userId], references: [id])
+    team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+    user          User           @relation(fields: [userId], references: [id])
+    playerProfile PlayerProfile?
+}
 
-    @@unique([teamId, userId])
+model PlayerProfile {
+    id           String   @id @default(uuid())
+    teamId       String
+    position     Position
+    license      String?
+    jerseyNumber Int?     @unique
+    teamMemberId String   @unique
+
+    TeamMember TeamMember @relation(fields: [teamMemberId], references: [id])
 }
 
 model Subscription {
@@ -146,4 +153,12 @@ model WaitingList {
     confirmed      Boolean   @default(false)
     confirmToken   String?   @unique
     tokenExpiresAt DateTime?
+}
+
+enum Position {
+    OUTSIDEHITTER
+    MIDDLEBLOCKER
+    OPPOSITEHITTER
+    LIBERO
+    SETTER
 }
