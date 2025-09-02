@@ -74,9 +74,9 @@ export default function TeamDisplayComponent({
 								ici.
 							</CardDescription>
 						</CardHeader>
-						<CardContent className="grid gap-4">
+						<CardContent className="grid gap-3 overflow-hidden relative">
 							<div
-								className="flex items-center justify-between space-x-4"
+								className="flex items-center justify-between space-x-4 sticky top-0"
 								key={session?.user.id}
 							>
 								<div className="flex items-center space-x-4">
@@ -111,6 +111,9 @@ export default function TeamDisplayComponent({
 											) : (
 												""
 											)}
+											<span className="ml-2 text-sm font-medium text-primary">
+												Gérant
+											</span>
 										</p>
 										<p className="text-sm text-muted-foreground">
 											{team.owner?.email}
@@ -118,46 +121,53 @@ export default function TeamDisplayComponent({
 									</div>
 								</div>
 							</div>
-							{team.teamMembers.map((member) => {
-								const initials = member.user.name
-									.split(" ")
-									.map((name) => name.charAt(0).toUpperCase())
-									.join("")
-									.slice(0, 2);
-								return (
-									<div
-										className="flex items-center justify-between space-x-4"
-										key={member.id}
-									>
-										<div className="flex items-center space-x-4">
-											<Avatar className="h-8 w-8">
-												<AvatarImage
-													src={member.user.image}
-													alt="Image"
-												/>
-												{member.user.image ? (
+							<div className="border-t py-3 grid gap-3 overflow-y-scroll">
+								{team.teamMembers.map((member) => {
+									const initials = member.user.name
+										.split(" ")
+										.map((name) =>
+											name.charAt(0).toUpperCase()
+										)
+										.join("")
+										.slice(0, 2);
+									return (
+										<div
+											className="flex items-center justify-between space-x-4"
+											key={member.id}
+										>
+											<div className="flex items-center space-x-4">
+												<Avatar className="h-8 w-8">
 													<AvatarImage
 														src={member.user.image}
 														alt="Image"
 													/>
-												) : (
-													<span className="h-8 w-8 flex justify-center items-center">
-														{initials}
-													</span>
-												)}
-											</Avatar>
-											<div>
-												<p className="text-sm font-medium leading-none">
-													{member.user.name}
-												</p>
-												<p className="text-sm text-muted-foreground">
-													{member.user.email}
-												</p>
+													{member.user.image ? (
+														<AvatarImage
+															src={
+																member.user
+																	.image
+															}
+															alt="Image"
+														/>
+													) : (
+														<span className="h-8 w-8 flex justify-center items-center">
+															{initials}
+														</span>
+													)}
+												</Avatar>
+												<div>
+													<p className="text-sm font-medium leading-none">
+														{member.user.name}
+													</p>
+													<p className="text-sm text-muted-foreground">
+														{member.user.email}
+													</p>
+												</div>
 											</div>
 										</div>
-									</div>
-								);
-							})}
+									);
+								})}
+							</div>
 						</CardContent>
 					</Card>
 					<Card className="row-start-2 row-end-4 col-start-3 col-end-7">
@@ -188,8 +198,9 @@ export default function TeamDisplayComponent({
 						<CardHeader>
 							<CardTitle>Joueur du match</CardTitle>
 							<div className="flex gap-2 text-sm text-muted-foreground whitespace-nowrap">
-								<Star className="text-amber-300 fill-amber-300" /> Performance exceptionnelle lors du dernier
-								match !
+								<Star className="text-amber-300 fill-amber-300" />{" "}
+								Performance exceptionnelle lors du dernier match
+								!
 							</div>
 						</CardHeader>
 						<CardContent className="flex items-center gap-4">
