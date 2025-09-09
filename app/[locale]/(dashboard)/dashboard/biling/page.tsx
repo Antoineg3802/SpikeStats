@@ -83,7 +83,7 @@ export default function Page() {
 	}
 
 	return profil && profil.customer && !profil.customer.deleted ? (
-		<div className="w-full overflow-auto p-4">
+		<>
 			<DashboardPageTitle title="Facturation et abonnement" />
 			<div className="w-full mb-4">
 				<DashboardSubtitle subtitle="Abonnement" />
@@ -220,7 +220,7 @@ export default function Page() {
 				</div>
 			</div>
 			<InvoiceTable invoices={profil.invoices} />
-		</div>
+		</>
 	) : (
 		<p>Vous n'etes pas connecté</p>
 	);

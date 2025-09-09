@@ -16,9 +16,10 @@ import {
 	joinTeam,
 } from "@/lib/action/team/team.action";
 import { TeamDashboardExtended } from "@/datas/Teams/team";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import Link from "next/link";
 import Loader from "@/components/atoms/Loader";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function Page() {
 	const session = useSession().data as Session | null;
@@ -66,10 +67,7 @@ export default function Page() {
 			if (res?.data && res.data !== null) {
 				setUserTeams([...userTeams, res.data]);
 				setShowJoinForm(false);
-				toast.success("Vous avez rejoint l'équipe", {
-					duration: 1500,
-					icon: <CircleCheck className="text-green-500" />,
-				});
+				toast.success("Vous avez rejoint l'équipe");
 			} else {
 				toast.error(
 					"Une erreur est survenue lors de la création de l'équipe."
@@ -95,7 +93,7 @@ export default function Page() {
 
 	if (isLoading) return <Loader />;
 	return (
-		<div className="h-full w-full p-4">
+		<>
 			<DashboardPageTitle title="Gestionnaire d'équipes" />
 			<div className="mb-4">
 				<p className="text-sm text-gray-500">
@@ -215,6 +213,6 @@ export default function Page() {
 					})
 				)}
 			</div>
-		</div>
+		</>
 	);
 }

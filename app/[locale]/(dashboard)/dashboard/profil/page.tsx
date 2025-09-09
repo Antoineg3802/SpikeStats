@@ -32,7 +32,7 @@ export default function Page() {
 
 	if (profil && profil.customer && !profil.customer.deleted)
 		return (
-			<div className="w-full overflow-auto p-4">
+			<>
 				<DashboardPageTitle title="Votre profil" />
 				<ProfilLine subtitle="Photo de profil">
 					<Image
@@ -57,7 +57,7 @@ export default function Page() {
 					</p>
 				</ProfilLine>
 				<InvoiceExcerpt invoices={profil.invoices} />
-			</div>
+			</>
 		);
 	return <p>Vous n'etes pas connecté</p>;
 }

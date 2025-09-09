@@ -13,7 +13,7 @@ export default async function DashboardPage({children}: DashboardPageProps) {
     return (
         <div className="h-screen w-screen flex overflow-hidden">
             <NavbarDashboard session={session} />
-            <main className="flex-1 relative">
+            <main className="flex-1 relative h-full w-full p-4">
                 {!session || !session.user.subscription ? (<p>Vous n'etes pas connecté</p>) : (children)}
             </main>
         </div>
