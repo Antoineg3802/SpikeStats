@@ -19,7 +19,7 @@ export default function MatchList({ teamId }: MatchListProps) {
 	}, [execute]);
 
 	return (
-		<div className="h-full overflow-scroll">
+		<div className="flex-1 overflow-y-auto">
 			{status === "executing" || status === "idle" ? (
 				<Loader />
 			) : status === "hasSucceeded" ? (
@@ -30,7 +30,7 @@ export default function MatchList({ teamId }: MatchListProps) {
 							: "Une erreur est survenue."}
 					</p>
 				) : result.data?.data && result.data?.data.length > 0 ? (
-					<div className="mb-4 flex flex-col w-full items-center justify-between">
+					<div className="mb-4 flex gap-2 flex-col w-full items-center justify-between">
 						{Array.isArray(result.data?.data) &&
 							result.data?.data.map((match) => {
 								let matchDate = new Date(match.matchDate);
