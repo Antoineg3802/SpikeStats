@@ -185,20 +185,67 @@ export default function TeamDisplayComponent({
 							</Button>
 						</CardFooter>
 					</Card>
-					<Card className="row-start-4 row-end-6 col-start-1 col-end-5">
+					<Card className="row-start-4 row-end-6 col-start-1 col-end-5 gap-2">
 						<CardHeader>
 							<CardTitle>Prochains matchs</CardTitle>
 						</CardHeader>
-						<CardContent className="flex justify-between">
-							<p>
-								Vous retrouverez ici tous vos prochains matchs
-							</p>
+						<CardContent className="flex flex-col gap-2">
+							{team.Match &&
+								team.Match.filter(
+									(match) =>
+										new Date(match.matchDate) >= new Date()
+								)
+									.sort(
+										(a, b) =>
+											new Date(a.matchDate).getTime() -
+											new Date(b.matchDate).getTime()
+									)
+									.slice(0, 3)
+									.map((match) => (
+										<Link
+											key={match.id}
+											className="flex flex-col border rounded-lg p-2 min-w-[150px] hover:bg-primary/10 hover:border-primary"
+											href={
+												"/dashboard/teams/" +
+												teamId +
+												"/matches/" +
+												match.id
+											}
+										>
+											<div className="flex align-bottom gap-1 font-medium">
+												<p className="h-fit">
+													{match.oponentName}
+												</p>
+												<p className="text-sm self-end text-muted-foreground h-fit">
+													{match.location}
+												</p>
+											</div>
+											<p className="text-sm">
+												{new Date(
+													match.matchDate
+												).toLocaleDateString("fr-FR", {
+													weekday: "long",
+													day: "numeric",
+													month: "long",
+												})}
+											</p>
+										</Link>
+									))}
+						</CardContent>
+						<CardFooter>
 							<Button asChild>
-								<Link href={"/dashboard/teams/" + teamId +"/matches"} prefetch>
-									azeaze
+								<Link
+									href={
+										"/dashboard/teams/" +
+										teamId +
+										"/matches"
+									}
+									prefetch
+								>
+									Voir tous les matchs
 								</Link>
 							</Button>
-						</CardContent>
+						</CardFooter>
 					</Card>
 					<Card className="row-start-4 row-end-6 col-start-5 col-end-7">
 						<CardHeader>
