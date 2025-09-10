@@ -1,11 +1,11 @@
+import Navbar from "@/components/organisms/Navbar";
 import { ReactElement } from "react";
 
-export default async function Layout({
-	children,
-}: {
-	children: ReactElement;
-}) {
+export default async function Layout({ children }: { children: ReactElement }) {
 	return (
-		<div className="h-screen flex flex-col bg-background">{children}</div>
+		<div className="h-screen flex flex-col bg-background">
+			<Navbar />
+			{children}
+		</div>
 	);
 }

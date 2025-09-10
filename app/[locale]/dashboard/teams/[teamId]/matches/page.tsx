@@ -1,9 +1,8 @@
 import DashboardPageTitle from "@/components/atoms/Titles/DashboardPageTitle";
 import FormAddMatch from "@/components/organisms/FormAddMatch";
-import MatchCSVImport from "@/components/organisms/MatchCSVImport";
 import MatchList from "@/components/organisms/MatchList";
 
-export default async function Page({ params }: { params: { teamId: string } }) {
+export default async function Page({ params }: { params: Promise<{teamId: string}> }) {
 	const { teamId } = await params;
 
 	return (

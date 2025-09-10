@@ -264,11 +264,6 @@ export const getTeamPlayers = authActionClient
 			return null;
 		}
 
-		type teamMembersWithProfile = TeamMember & {
-			user : User;
-			PlayerProfile: PlayerProfile | null;
-		};
-
 		const team = await prisma.team.findFirst({
 			where: {
 				ownerId: user.id,
@@ -281,12 +276,42 @@ export const getTeamPlayers = authActionClient
 				teamId,
 			},
 			include: {
-				user: true, 
-				playerProfile: true
+				user: true,
+				playerProfile: true,
 			},
 		});
 
-		return teamMembers
+		return teamMembers;
+	});
+
+export const getPlayersSelected = authActionClient
+	.schema(
+		z.object({
+			matchId: z.string(),
+		})
+	)
+	.action(async ({ parsedInput: { matchId }, ctx: { user } }) => {
+		if (!user || !matchId) {
+			return null;
+		}
+
+		const match = await prisma.match.findFirst({
+			where: {
+				id: matchId,
+			},
+			select:{
+				playerSelected: true
+			}
+		});
+
+		if (!match) return []
+
+		const ids: string[] = []
+		match.playerSelected.forEach((player)=>{
+			ids.push(player.id)
+		})
+
+		return ids;
 	});
 
 async function generateCode() {
