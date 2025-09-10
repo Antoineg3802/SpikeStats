@@ -45,13 +45,18 @@ export const createTeam = authActionClient
 					description: true,
 					ownerId: true,
 					logo: true,
+					joinCode: true,
 					teamMembers: {
 						select: {
 							id: true,
+							role: true,
+							active: true,
 							user: {
 								select: {
 									id: true,
 									name: true,
+									image: true,
+									email: true,
 								},
 							},
 						},
@@ -121,21 +126,22 @@ export const joinTeam = authActionClient
 			select: {
 				id: true,
 				name: true,
-				description: true,
 				createdAt: true,
+				description: true,
+				ownerId: true,
 				logo: true,
 				joinCode: true,
-				ownerId: true,
 				teamMembers: {
 					select: {
 						id: true,
-						userId: true,
 						role: true,
 						active: true,
 						user: {
 							select: {
 								id: true,
 								name: true,
+								image: true,
+								email: true,
 							},
 						},
 					},
@@ -234,6 +240,14 @@ export const getTeamById = authActionClient
 						email: true,
 					},
 				},
+				Match: {
+					select: {
+						id: true,
+						oponentName: true,
+						matchDate: true,
+						location: true,
+					},
+				},
 			},
 			where: {
 				AND: [
@@ -299,17 +313,17 @@ export const getPlayersSelected = authActionClient
 			where: {
 				id: matchId,
 			},
-			select:{
-				playerSelected: true
-			}
+			select: {
+				playerSelected: true,
+			},
 		});
 
-		if (!match) return []
+		if (!match) return [];
 
-		const ids: string[] = []
-		match.playerSelected.forEach((player)=>{
-			ids.push(player.id)
-		})
+		const ids: string[] = [];
+		match.playerSelected.forEach((player) => {
+			ids.push(player.id);
+		});
 
 		return ids;
 	});

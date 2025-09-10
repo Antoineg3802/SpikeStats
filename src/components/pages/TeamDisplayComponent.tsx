@@ -17,6 +17,7 @@ import { Session } from "@/datas/session";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import Link from "next/link";
 
 interface TeamDisplayComponentProps {
 	teamId: string;
@@ -188,10 +189,15 @@ export default function TeamDisplayComponent({
 						<CardHeader>
 							<CardTitle>Prochains matchs</CardTitle>
 						</CardHeader>
-						<CardContent>
+						<CardContent className="flex justify-between">
 							<p>
 								Vous retrouverez ici tous vos prochains matchs
 							</p>
+							<Button asChild>
+								<Link href={"/dashboard/teams/" + teamId +"/matches"} prefetch>
+									azeaze
+								</Link>
+							</Button>
 						</CardContent>
 					</Card>
 					<Card className="row-start-4 row-end-6 col-start-5 col-end-7">

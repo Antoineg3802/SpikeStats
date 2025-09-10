@@ -14,7 +14,6 @@ export interface TeamDashboardExtended {
 	};
 	teamMembers: {
 		id: string;
-		userId: string;
 		role: string;
 		active: boolean;
 		user: {
@@ -23,6 +22,12 @@ export interface TeamDashboardExtended {
 			image: string;
 			email: string;
 		};
+	}[];
+	Match: {
+		id: string;
+		oponentName: string;
+		matchDate: Date;
+		location: string;
 	}[];
 }
 
