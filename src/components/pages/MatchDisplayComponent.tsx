@@ -22,7 +22,6 @@ import PlayerSelection from "../organisms/SelectPlayers";
 
 interface MatchDisplayProps {
 	matchId: string;
-	teamId:string;
 }
 
 export default function MatchDisplayComponent({ matchId }: MatchDisplayProps) {
