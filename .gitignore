@@ -40,3 +40,6 @@ docker/
 
 # prisma ignore client generation
 src/lib/prisma/client
+
+# Other
+backup.sql

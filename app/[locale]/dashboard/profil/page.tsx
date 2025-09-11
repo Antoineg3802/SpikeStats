@@ -28,35 +28,36 @@ export default function Page() {
 		});
 	}, [!profil]);
 
-	return (
-		<DashboardPage session={session}>
-			<div className="h-full w-full flex align-middle">
-				{isLoading ? (
-					<Loader />
-				) : (
-					<>
-						{profil &&
-						profil.customer &&
-						!profil.customer.deleted ? (
-							<div className="w-full overflow-auto p-4">
-								<DashboardPageTitle title="Votre profil" />
-								<ProfilLine subtitle="Photo de profil" >
-									<Image className="rounded-lg" height={80} width={80} src={session?.user?.image || "/img/defaultProfilePicture.png"} alt="" />
-								</ProfilLine>
-								<ProfilLine subtitle="Nom" isModifiable>
-									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.name}</p>
-								</ProfilLine>
-								<ProfilLine subtitle="Addresse e-mail" isModifiable>
-									<p className="py-1 px-2 rounded-lg" contentEditable="true">{session?.user?.email}</p>
-								</ProfilLine>
-								<InvoiceExcerpt invoices={profil.invoices}/>
-							</div>
-						) : (
-							<p>Vous n'etes pas connecté</p>
-						)}
-					</>
-				)}
-			</div>
-		</DashboardPage>
-	);
+	if (isLoading) return <Loader />;
+
+	if (profil && profil.customer && !profil.customer.deleted)
+		return (
+			<>
+				<DashboardPageTitle title="Votre profil" />
+				<ProfilLine subtitle="Photo de profil">
+					<Image
+						className="rounded-lg"
+						height={80}
+						width={80}
+						src={
+							session?.user?.image ||
+							"/img/defaultProfilePicture.png"
+						}
+						alt=""
+					/>
+				</ProfilLine>
+				<ProfilLine subtitle="Nom" isModifiable>
+					<p className="py-1 px-2 rounded-lg" contentEditable="true">
+						{session?.user?.name}
+					</p>
+				</ProfilLine>
+				<ProfilLine subtitle="Addresse e-mail" isModifiable>
+					<p className="py-1 px-2 rounded-lg" contentEditable="true">
+						{session?.user?.email}
+					</p>
+				</ProfilLine>
+				<InvoiceExcerpt invoices={profil.invoices} />
+			</>
+		);
+	return <p>Vous n'etes pas connecté</p>;
 }

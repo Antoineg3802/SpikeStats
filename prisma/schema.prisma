@@ -106,6 +106,7 @@ model Team {
     // Relations
     owner       User         @relation("TeamOwner", fields: [ownerId], references: [id])
     teamMembers TeamMember[]
+    Match       Match[]
 }
 
 model TeamMember {
@@ -119,6 +120,8 @@ model TeamMember {
     team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
     user          User           @relation(fields: [userId], references: [id])
     playerProfile PlayerProfile?
+
+    Match Match[]
 }
 
 model PlayerProfile {
@@ -153,6 +156,22 @@ model WaitingList {
     confirmed      Boolean   @default(false)
     confirmToken   String?   @unique
     tokenExpiresAt DateTime?
+}
+
+model Match {
+    id             String   @id @default(cuid())
+    teamId         String
+    
+    oponentName    String
+    matchDate      DateTime
+    location       String?
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    result         String?
+
+    // Relations
+    playerSelected TeamMember[]
+    team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 enum Position {
