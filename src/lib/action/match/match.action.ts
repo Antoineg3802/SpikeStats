@@ -218,3 +218,41 @@ export const assignPlayersToMatch = authActionClient
 			};
 		}
 	);
+
+export const getMatchById = authActionClient
+	.schema(z.object({ matchId: z.string() }))
+	.action(async ({ parsedInput: { matchId }, ctx: { user } }) => {
+		if (!user) {
+			throw new Error("Utilisateur non authentifié.");
+		}
+		const match = await prisma.match.findUnique({
+			where: { id: matchId },
+			include: {
+				team: {
+					include:{
+						teamMembers:{
+							include:{
+								user: true,
+								playerProfile: true
+							}
+						}
+					}
+				},
+				playerSelected: {
+					include: {
+						user: true,
+					},
+				},
+			},
+		});
+
+		if (!match) {
+			return null;
+		}
+
+		if (match.team.ownerId != user.id){
+			return null;
+		}
+
+		return match ;
+	});

@@ -55,11 +55,11 @@ export default function PlayerSelection({
 	}, [selectedPlayers])
 
 	return (
-		<Card className="w-full max-w-md mx-auto">
-			<CardHeader>
-				<CardTitle>Sélection des joueurs</CardTitle>
-			</CardHeader>
-			<CardContent className="space-y-4">
+		<div className="w-full max-w-md mx-auto">
+			<div>
+				<h2>Sélection des joueurs</h2>
+			</div>
+			<div className="space-y-4">
 				{players.length === 0 ? (
 					<p>Aucun joueur dans cette équipe.</p>
 				) : (
@@ -97,8 +97,8 @@ export default function PlayerSelection({
 						? "Enregistrement..."
 						: "Enregistrer la sélection"}
 				</Button>
-			</CardContent>
+			</div>
 			<Toaster />
-		</Card>
+		</div>
 	);
 }
