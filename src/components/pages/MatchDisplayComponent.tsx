@@ -129,7 +129,7 @@ export default function MatchDisplayComponent({ matchId }: MatchDisplayProps) {
 				</CardContent>
 				<CardFooter>
 					<Button asChild>
-						<Link href={`/dashboard/matches/${match.id}/stats`}>
+						<Link href={`${matchId}/stats`}>
 							Voir toutes les stats
 						</Link>
 					</Button>
