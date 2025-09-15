@@ -285,6 +285,16 @@ export const finalizeMatch = authActionClient
 			throw new Error("Non autorisé");
 		}
 
+		const matchEvents = await prisma.matchEvent.findFirst({
+			where: {
+				matchId
+			}
+		})
+
+		if (matchEvents){
+			return
+		}
+
 		// Stocker les events en batch
 		await prisma.matchEvent.createMany({
 			data: events.map((e) => ({

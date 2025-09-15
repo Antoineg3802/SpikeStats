@@ -16,6 +16,8 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const pointTypes: PointType[] = ["POINT", "ACE", "BLOCK", "SERVICE"];
 
@@ -109,6 +111,7 @@ export default function MatchPage({
 			matchId,
 			events: state.points,
 		});
+        toast.success("Match enregistré !")
 	};
 
 	const teamName = result.data?.team?.name || "Équipe";
@@ -486,6 +489,7 @@ export default function MatchPage({
 					</CardContent>
 				</Card>
 			)}
+            <Toaster />
 		</div>
 	);
 }
