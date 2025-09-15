@@ -20,8 +20,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const pointTypes: PointType[] = ["POINT", "ACE", "BLOCK", "SERVICE"];
 
 export default function MatchPage({ params }: { params: { matchId: string } }) {
-	const { starting, selectStarter, setPlayers, score, addPoint, addTimeout } =
-		useMatchStore();
+	const {
+		starting,
+		selectStarter,
+		setPlayers,
+		score,
+		addPoint,
+		addTimeout,
+		substitutePlayer,
+	} = useMatchStore();
 
 	const [open, setOpen] = useState(false);
 
@@ -29,6 +36,11 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 	const [eventOpen, setEventOpen] = useState(false);
 	const [currentTeam, setCurrentTeam] = useState<string | null>(null);
 	const [selectedType, setSelectedType] = useState<PointType>("POINT");
+
+	// modal remplacement
+	const [subOpen, setSubOpen] = useState(false);
+	const [outId, setOutId] = useState("");
+	const [inId, setInId] = useState("");
 
 	// Hook next-safe-action
 	const { execute, result, status } = useAction(getMatchById);
@@ -97,9 +109,7 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 					) : (
 						<div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto">
 							{useMatchStore.getState().players.map((p) => {
-								const selected =
-									starting[p.position]?.id === p.id; // si tu veux garder logique par poste
-								const onCourt = p.onCourt; // flag venant du store
+								const onCourt = p.onCourt;
 
 								return (
 									<Button
@@ -108,7 +118,6 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 											onCourt ? "default" : "outline"
 										}
 										onClick={() => {
-											// toggle selection
 											const newOnCourt = useMatchStore
 												.getState()
 												.players.filter(
@@ -307,6 +316,68 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 				</DialogContent>
 			</Dialog>
 
+			{/* Modal remplacement */}
+			<Dialog open={subOpen} onOpenChange={setSubOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Remplacement</DialogTitle>
+					</DialogHeader>
+
+					<p className="mb-2 font-medium">Qui sort ?</p>
+					<div className="grid grid-cols-2 gap-2 mb-4">
+						{useMatchStore
+							.getState()
+							.players.filter((p) => p.onCourt)
+							.map((p) => (
+								<Button
+									key={p.id}
+									variant={
+										outId === p.id ? "default" : "outline"
+									}
+									onClick={() => setOutId(p.id)}
+								>
+									{p.name} ({p.position})
+								</Button>
+							))}
+					</div>
+
+					<p className="mb-2 font-medium">Qui entre ?</p>
+					<div className="grid grid-cols-2 gap-2 mb-4">
+						{useMatchStore
+							.getState()
+							.players.filter((p) => !p.onCourt)
+							.map((p) => (
+								<Button
+									key={p.id}
+									variant={
+										inId === p.id ? "default" : "outline"
+									}
+									onClick={() => setInId(p.id)}
+								>
+									{p.name} ({p.position})
+								</Button>
+							))}
+					</div>
+
+					<Button
+						className="w-full"
+						disabled={!outId || !inId}
+						onClick={() => {
+							substitutePlayer(
+								result.data?.team?.id || "team",
+								outId,
+								inId
+							);
+							setSubOpen(false);
+							setOutId("");
+							setInId("");
+						}}
+					>
+						Valider le remplacement
+					</Button>
+				</DialogContent>
+			</Dialog>
+
 			{/* Infos Match */}
 			<Card>
 				<CardHeader>
@@ -335,6 +406,15 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 						<span className="text-primary">
 							{score[result.data?.team?.id || "team"] || 0}
 						</span>
+						<p className="text-sm">
+							Sets gagnés :{" "}
+							{useMatchStore(
+								(s) =>
+									s.setsWon[
+										result.data?.team?.id || "team"
+									] || 0
+							)}
+						</p>
 						<p className="text-sm text-gray-500">
 							Temps morts :{" "}
 							{useMatchStore(
@@ -345,16 +425,37 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 							)}{" "}
 							/ 2
 						</p>
+						<p className="text-sm text-gray-500">
+							Changements :{" "}
+							{useMatchStore(
+								(s) =>
+									s.substitutions[
+										result.data?.team?.id || "team"
+									] || 0
+							)}{" "}
+							/ 6
+						</p>
 					</div>
 					<div>
 						{opponent}:{" "}
 						<span className="text-primary">
 							{score["opponent"] || 0}
 						</span>
+						<p className="text-sm">
+							Sets gagnés :{" "}
+							{useMatchStore((s) => s.setsWon["opponent"] || 0)}
+						</p>
 						<p className="text-sm text-gray-500">
 							Temps morts :{" "}
 							{useMatchStore((s) => s.timeouts["opponent"] || 0)}{" "}
 							/ 2
+						</p>
+						<p className="text-sm text-gray-500">
+							Changements :{" "}
+							{useMatchStore(
+								(s) => s.substitutions["opponent"] || 0
+							)}{" "}
+							/ 6
 						</p>
 					</div>
 				</CardContent>
@@ -391,6 +492,9 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 					</Button>
 					<Button onClick={() => addTimeout("opponent")}>
 						Temps mort {opponent}
+					</Button>
+					<Button onClick={() => setSubOpen(true)}>
+						Remplacement
 					</Button>
 				</CardContent>
 			</Card>

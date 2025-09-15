@@ -19,7 +19,8 @@ export const faultTypes = [
 
 export type BasePointType = (typeof basePointTypes)[number];
 export type FaultType = (typeof faultTypes)[number]["key"];
-export type PointType = BasePointType | FaultType;
+export type ExtraType = "TIMEOUT" | "SUBSTITUTION";
+export type PointType = BasePointType | FaultType | ExtraType;
 
 export interface Player {
 	id: string;
@@ -34,6 +35,7 @@ export interface PointEvent {
 	playerId?: string;
 	type: PointType;
 	timestamp: Date;
+	metadata?: Record<string, any>; // 👈 pour stocker qui sort / qui entre
 }
 
 interface MatchState {
@@ -42,6 +44,8 @@ interface MatchState {
 	score: Record<string, number>;
 	points: PointEvent[];
 	timeouts: Record<string, number>;
+	substitutions: Record<string, number>;
+	setsWon: Record<string, number>;
 
 	// Actions
 	setPlayers: (players: Player[]) => void;
@@ -53,6 +57,8 @@ interface MatchState {
 		type: PointType
 	) => void;
 	addTimeout: (teamId: string) => void;
+	substitutePlayer: (teamId: string, outId: string, inId: string) => void;
+	resetForNewSet: () => void;
 }
 
 export const useMatchStore = create<MatchState>()(
@@ -63,6 +69,8 @@ export const useMatchStore = create<MatchState>()(
 			score: {},
 			points: [],
 			timeouts: {},
+			substitutions: {},
+			setsWon: {},
 
 			setPlayers: (players) => set({ players }),
 
@@ -89,12 +97,42 @@ export const useMatchStore = create<MatchState>()(
 						timestamp: new Date(),
 					};
 
+					const newScore = {
+						...state.score,
+						[teamId]: (state.score[teamId] || 0) + 1,
+					};
+
+					// Vérif condition de victoire du set
+					const teamScore = newScore[teamId];
+					const opponentId =
+						Object.keys(newScore).find((id) => id !== teamId) ||
+						"opponent";
+					const opponentScore = newScore[opponentId] || 0;
+
+					let setsWon = { ...state.setsWon };
+					let reset = false;
+
+					if (teamScore >= 25 && teamScore - opponentScore >= 2) {
+						// Set gagné
+						setsWon = {
+							...setsWon,
+							[teamId]: (setsWon[teamId] || 0) + 1,
+						};
+						reset = true;
+					}
+
 					return {
 						points: [...state.points, event],
-						score: {
-							...state.score,
-							[teamId]: (state.score[teamId] || 0) + 1,
-						},
+						score: reset ? {} : newScore,
+						setsWon,
+						timeouts: reset ? {} : state.timeouts,
+						substitutions: reset ? {} : state.substitutions,
+						players: reset
+							? state.players.map((p) => ({
+									...p,
+									onCourt: false,
+							  })) // 👈 reset terrain
+							: state.players,
 					};
 				}),
 
@@ -107,10 +145,62 @@ export const useMatchStore = create<MatchState>()(
 						);
 						return state;
 					}
+					const event: PointEvent = {
+						id: crypto.randomUUID(),
+						teamId,
+						type: "TIMEOUT",
+						timestamp: new Date(),
+					};
 					return {
+						points: [...state.points, event],
 						timeouts: { ...state.timeouts, [teamId]: current + 1 },
 					};
 				}),
+
+			substitutePlayer: (teamId, outId, inId) =>
+				set((state) => {
+					const currentSubs = state.substitutions[teamId] || 0;
+					if (currentSubs >= 6) {
+						alert(
+							"Cette équipe a déjà utilisé ses 6 remplacements autorisés !"
+						);
+						return state;
+					}
+
+					const players = state.players.map((p) => {
+						if (p.id === outId) return { ...p, onCourt: false };
+						if (p.id === inId) return { ...p, onCourt: true };
+						return p;
+					});
+
+					const event: PointEvent = {
+						id: crypto.randomUUID(),
+						teamId,
+						playerId: inId,
+						type: "SUBSTITUTION",
+						timestamp: new Date(),
+						metadata: { outId, inId },
+					};
+
+					return {
+						players,
+						points: [...state.points, event],
+						substitutions: {
+							...state.substitutions,
+							[teamId]: currentSubs + 1,
+						},
+					};
+				}),
+			resetForNewSet: () =>
+				set((state) => ({
+					score: {},
+					timeouts: {},
+					substitutions: {},
+					players: state.players.map((p) => ({
+						...p,
+						onCourt: false,
+					})),
+				})),
 		}),
 		{ name: "match-storage" }
 	)
