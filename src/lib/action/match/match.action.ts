@@ -238,6 +238,7 @@ export const getMatchById = authActionClient
 						},
 					},
 				},
+				MatchEvent: true,
 				playerSelected: {
 					include: {
 						user: true,
@@ -295,5 +296,43 @@ export const finalizeMatch = authActionClient
 			})),
 		});
 
-		return { success: true };
+		let scoreTeam = 0;
+		let scoreOpponent = 0;
+
+		let setsTeam = 0;
+		let setsOpponent = 0;
+
+		// Regrouper par set
+		const sets: Record<number, { team: number; opponent: number }> = {};
+		events.forEach((e) => {
+			if (!sets[e.setNumber]) {
+				sets[e.setNumber] = { team: 0, opponent: 0 };
+			}
+			if (e.teamId === match.teamId) {
+				sets[e.setNumber].team++;
+			} else {
+				sets[e.setNumber].opponent++;
+			}
+		});
+
+		// Parcourir les sets
+		Object.values(sets).forEach(({ team, opponent }) => {
+			scoreTeam += team;
+			scoreOpponent += opponent;
+
+			if (team > opponent) setsTeam++;
+			else setsOpponent++;
+		});
+
+		// Mettre à jour le match avec le résultat
+		await prisma.match.update({
+			where: { id: matchId },
+			data: {
+				result: `${setsTeam}-${setsOpponent}`,
+			},
+		});
+
+		return {
+			success: true,
+		};
 	});
