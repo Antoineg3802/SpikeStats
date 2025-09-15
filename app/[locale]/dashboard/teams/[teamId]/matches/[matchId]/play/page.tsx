@@ -1,7 +1,11 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-import { useMatchStore, PointType } from "@/lib/stores/useMatchStore"; // ⚡ Assure-toi que PointType inclut SERVICE
+import { useEffect, useState } from "react";
+import {
+	useMatchStore,
+	PointType,
+	faultTypes,
+} from "@/lib/stores/useMatchStore";
 import { useAction } from "next-safe-action/hooks";
 import { getMatchById } from "@/lib/action/match/match.action";
 import { Button } from "@/components/ui/button";
@@ -13,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const pointTypes: PointType[] = ["POINT", "FAULT", "ACE", "BLOCK", "SERVICE"];
+const pointTypes: PointType[] = ["POINT", "ACE", "BLOCK", "SERVICE"];
 
 export default function MatchPage({ params }: { params: { matchId: string } }) {
 	const { starting, selectStarter, setPlayers, score, addPoint, addTimeout } =
@@ -25,7 +29,6 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 	const [eventOpen, setEventOpen] = useState(false);
 	const [currentTeam, setCurrentTeam] = useState<string | null>(null);
 	const [selectedType, setSelectedType] = useState<PointType>("POINT");
-	const [selectedPlayer, setSelectedPlayer] = useState<string>("");
 
 	// Hook next-safe-action
 	const { execute, result, status } = useAction(getMatchById);
@@ -56,7 +59,8 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 				}
 			});
 
-			if (match.playerSelected.length === 0) {
+			// auto-open si pas assez de joueurs
+			if (match.playerSelected.length < 6) {
 				setOpen(true);
 			}
 		}
@@ -76,14 +80,6 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 
 	const teamName = result.data?.team?.name || "Équipe";
 	const opponent = result.data?.oponentName || "Adversaire";
-
-	function handleConfirmEvent() {
-		if (!currentTeam || !selectedPlayer) return;
-		addPoint(currentTeam, selectedPlayer, selectedType);
-		setEventOpen(false);
-		setSelectedPlayer("");
-		setSelectedType("POINT");
-	}
 
 	return (
 		<div className="p-4 grid gap-4">
@@ -173,48 +169,141 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 						<DialogTitle>Nouvel événement</DialogTitle>
 					</DialogHeader>
 
-					{/* Choix du type */}
-					<p className="mb-2 font-medium">Type d’action</p>
-					<div className="grid grid-cols-2 gap-2 mb-4">
-						{pointTypes.map((type) => (
-							<Button
-								key={type}
-								variant={
-									selectedType === type
-										? "default"
-										: "outline"
-								}
-								onClick={() => setSelectedType(type)}
-							>
-								{type}
-							</Button>
-						))}
-					</div>
+					{currentTeam === result.data?.team?.id ? (
+						<>
+							{/* Mon équipe marque */}
+							<p className="mb-2 font-medium">Type d’action</p>
+							<div className="grid grid-cols-2 gap-2 mb-4">
+								{pointTypes.map((type) => (
+									<Button
+										key={type}
+										variant={
+											selectedType === type
+												? "default"
+												: "outline"
+										}
+										onClick={() => setSelectedType(type)}
+									>
+										{type}
+									</Button>
+								))}
+							</div>
 
-					{/* Choix du joueur (⚡ clic = validation immédiate) */}
-					<p className="mb-2 font-medium">Qui a réalisé l’action ?</p>
-					<div className="grid grid-cols-2 gap-2">
-						{useMatchStore
-							.getState()
-							.players.filter((p) => p.onCourt) // seulement joueurs sur le terrain
-							.map((p) => (
-								<Button
-									key={p.id}
-									onClick={() => {
-										if (!currentTeam) return;
-										addPoint(
-											currentTeam,
-											p.id,
-											selectedType
-										); // enregistre direct
-										setEventOpen(false); // ferme la modale
-										setSelectedType("POINT"); // reset pour la prochaine
-									}}
-								>
-									{p.name} ({p.position})
-								</Button>
-							))}
-					</div>
+							<p className="mb-2 font-medium">Qui a marqué ?</p>
+							<div className="grid grid-cols-2 gap-2">
+								{useMatchStore
+									.getState()
+									.players.filter((p) => p.onCourt)
+									.map((p) => (
+										<Button
+											key={p.id}
+											onClick={() => {
+												addPoint(
+													currentTeam!,
+													p.id,
+													selectedType
+												);
+												setEventOpen(false);
+												setSelectedType("POINT");
+											}}
+										>
+											{p.name} ({p.position})
+										</Button>
+									))}
+							</div>
+						</>
+					) : (
+						<>
+							{/* Adversaire marque */}
+							{!selectedType.startsWith("FAULT") ? (
+								<>
+									<p className="mb-2 font-medium">
+										Cause du point adverse
+									</p>
+									<div className="grid grid-cols-1 gap-2 mb-4">
+										{faultTypes.map((f) => (
+											<Button
+												key={f.key}
+												variant="outline"
+												onClick={() => {
+													if (!f.needsPlayer) {
+														addPoint(
+															currentTeam!,
+															undefined,
+															f.key
+														);
+														setEventOpen(false);
+														setSelectedType(
+															"POINT"
+														);
+													} else {
+														setSelectedType(f.key);
+													}
+												}}
+											>
+												{f.label}
+											</Button>
+										))}
+										<Button
+											variant="outline"
+											onClick={() => {
+												addPoint(
+													currentTeam!,
+													undefined,
+													"POINT"
+												);
+												setEventOpen(false);
+												setSelectedType("POINT");
+											}}
+										>
+											Point direct adverse
+										</Button>
+									</div>
+								</>
+							) : (
+								<>
+									{/* Faute nécessitant un joueur */}
+									{faultTypes.find(
+										(f) => f.key === selectedType
+									)?.needsPlayer && (
+										<>
+											<p className="mb-2 font-medium">
+												Quel joueur a commis la faute ?
+											</p>
+											<div className="grid grid-cols-2 gap-2">
+												{useMatchStore
+													.getState()
+													.players.filter(
+														(p) => p.onCourt
+													)
+													.map((p) => (
+														<Button
+															key={p.id}
+															onClick={() => {
+																addPoint(
+																	currentTeam!,
+																	p.id,
+																	selectedType
+																);
+																setEventOpen(
+																	false
+																);
+																setSelectedType(
+																	"POINT"
+																);
+															}}
+														>
+															{p.name} (
+															{p.position})
+														</Button>
+													))}
+											</div>
+										</>
+									)}
+								</>
+							)}
+						</>
+					)}
 				</DialogContent>
 			</Dialog>
 
@@ -246,12 +335,27 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 						<span className="text-primary">
 							{score[result.data?.team?.id || "team"] || 0}
 						</span>
+						<p className="text-sm text-gray-500">
+							Temps morts :{" "}
+							{useMatchStore(
+								(s) =>
+									s.timeouts[
+										result.data?.team?.id || "team"
+									] || 0
+							)}{" "}
+							/ 2
+						</p>
 					</div>
 					<div>
 						{opponent}:{" "}
 						<span className="text-primary">
 							{score["opponent"] || 0}
 						</span>
+						<p className="text-sm text-gray-500">
+							Temps morts :{" "}
+							{useMatchStore((s) => s.timeouts["opponent"] || 0)}{" "}
+							/ 2
+						</p>
 					</div>
 				</CardContent>
 			</Card>
