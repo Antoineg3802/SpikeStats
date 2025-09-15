@@ -46,6 +46,7 @@ interface MatchState {
 	timeouts: Record<string, number>;
 	substitutions: Record<string, number>;
 	setsWon: Record<string, number>;
+	matchFinished?: boolean;
 
 	// Actions
 	setPlayers: (players: Player[]) => void;
@@ -61,7 +62,8 @@ interface MatchState {
 	resetForNewSet: () => void;
 }
 
-export const useMatchStore = create<MatchState>()(
+export const createMatchStore = (matchId: string) =>
+create<MatchState>()(
 	persist(
 		(set, get) => ({
 			players: [],
@@ -102,23 +104,40 @@ export const useMatchStore = create<MatchState>()(
 						[teamId]: (state.score[teamId] || 0) + 1,
 					};
 
-					// Vérif condition de victoire du set
-					const teamScore = newScore[teamId];
+					// Ids des équipes en jeu
+					const teamIds = Object.keys(newScore);
 					const opponentId =
-						Object.keys(newScore).find((id) => id !== teamId) ||
-						"opponent";
+						teamIds.find((id) => id !== teamId) || "opponent";
+
+					const teamScore = newScore[teamId];
 					const opponentScore = newScore[opponentId] || 0;
 
-					let setsWon = { ...state.setsWon };
-					let reset = false;
+					// Nombre de sets déjà gagnés
+					const setsWon = { ...state.setsWon };
+					const teamSets = setsWon[teamId] || 0;
+					const opponentSets = setsWon[opponentId] || 0;
 
-					if (teamScore >= 25 && teamScore - opponentScore >= 2) {
-						// Set gagné
-						setsWon = {
-							...setsWon,
-							[teamId]: (setsWon[teamId] || 0) + 1,
-						};
+					// Détermination du nombre de points nécessaires dans ce set
+					const isTiebreak = teamSets === 2 && opponentSets === 2;
+					const pointsToWin = isTiebreak ? 15 : 25;
+
+					let reset = false;
+					let winner: string | null = null;
+					let matchFinished = false;
+
+					// Condition de victoire du set
+					if (
+						teamScore >= pointsToWin &&
+						teamScore - opponentScore >= 2
+					) {
+						setsWon[teamId] = teamSets + 1;
 						reset = true;
+						winner = teamId;
+
+						// Fin du match si une équipe a 3 sets
+						if (setsWon[teamId] === 3) {
+							matchFinished = true;
+						}
 					}
 
 					return {
@@ -131,8 +150,9 @@ export const useMatchStore = create<MatchState>()(
 							? state.players.map((p) => ({
 									...p,
 									onCourt: false,
-							  })) // 👈 reset terrain
+							  }))
 							: state.players,
+						matchFinished,
 					};
 				}),
 
@@ -202,6 +222,6 @@ export const useMatchStore = create<MatchState>()(
 					})),
 				})),
 		}),
-		{ name: "match-storage" }
+		{name: `match-storage-${matchId}`}
 	)
 );

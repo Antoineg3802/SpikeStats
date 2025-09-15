@@ -1,8 +1,8 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import {
-	useMatchStore,
+	createMatchStore,
 	PointType,
 	faultTypes,
 } from "@/lib/stores/useMatchStore";
@@ -19,9 +19,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const pointTypes: PointType[] = ["POINT", "ACE", "BLOCK", "SERVICE"];
 
-export default function MatchPage({ params }: { params: Promise<{ matchId: string }> }) {
+export default function MatchPage({
+	params,
+}: {
+	params: Promise<{ matchId: string }>;
+}) {
+	const { matchId } = use(params);
+	const useMatchStore = createMatchStore(matchId);
+
 	const {
 		starting,
+		players,
 		selectStarter,
 		setPlayers,
 		score,
@@ -29,8 +37,6 @@ export default function MatchPage({ params }: { params: Promise<{ matchId: strin
 		addTimeout,
 		substitutePlayer,
 	} = useMatchStore();
-
-    const { matchId } = use(params);
 
 	const [open, setOpen] = useState(false);
 
@@ -46,51 +52,83 @@ export default function MatchPage({ params }: { params: Promise<{ matchId: strin
 
 	// Hook next-safe-action
 	const { execute, result, status } = useAction(getMatchById);
+    const hydrated = useRef(false);
 
 	useEffect(() => {
 		execute({ matchId: matchId });
 	}, [matchId, execute]);
 
 	useEffect(() => {
-		if (status === "hasSucceeded" && result.data) {
-			const match = result.data;
+		if (status !== "hasSucceeded" || !result.data) return;
 
-			const players = match.team.teamMembers.map((tm) => ({
-				id: tm.id,
-				name: tm.user?.name || "Joueur",
-				position: tm.playerProfile?.position || "UNKNOWN",
-			}));
+		// 👉 empêcher les appels multiples
+		if (hydrated.current) return;
+		hydrated.current = true;
 
-			setPlayers(players);
+		const match = result.data;
 
-			match.playerSelected.forEach((tm) => {
-				if (tm.playerProfile?.position) {
-					selectStarter(tm.playerProfile.position, {
-						id: tm.id,
-						name: tm.user?.name || "Joueur",
-						position: tm.playerProfile.position,
-					});
-				}
-			});
+		// Construire la liste des joueurs du match
+		const players = match.team.teamMembers.map((tm) => ({
+			id: tm.id,
+			name: tm.user?.name || "Joueur",
+			position: tm.playerProfile?.position || "UNKNOWN",
+			onCourt: false, // par défaut
+		}));
 
-			// auto-open si pas assez de joueurs
-			if (match.playerSelected.length < 6) {
-				setOpen(true);
+		// On merge avec les joueurs existants (localStorage)
+		const mergedPlayers = players.map((p) => {
+			const existing = useMatchStore
+				.getState()
+				.players.find((ep) => ep.id === p.id);
+			return existing ? { ...p, onCourt: existing.onCourt } : p;
+		});
+
+		setPlayers(mergedPlayers);
+
+		// Vérifie si des joueurs sont déjà sur le terrain
+		const alreadyOnCourt = mergedPlayers
+			.filter((p) => p.onCourt)
+			.map((p) => p.id);
+
+		if (alreadyOnCourt.length === 0) {
+			const onCourtIds = match.playerSelected.map((tm) => tm.id);
+			if (onCourtIds.length > 0) {
+				useMatchStore.getState().setOnCourt(onCourtIds);
 			}
 		}
-	}, [status, result, setPlayers, selectStarter]);
 
-	useEffect(() => {
-		const onCourtCount = useMatchStore
-			.getState()
-			.players.filter((p) => p.onCourt).length;
+		// Hydrate les titulaires par poste
+		match.playerSelected.forEach((tm) => {
+			if (tm.playerProfile?.position) {
+				selectStarter(tm.playerProfile.position, {
+					id: tm.id,
+					name: tm.user?.name || "Joueur",
+					position: tm.playerProfile.position,
+					onCourt: true,
+				});
+			}
+		});
 
-		if (onCourtCount < 6) {
+		// Si toujours pas 6 joueurs → ouvre la modale
+		const totalOnCourt =
+			alreadyOnCourt.length || match.playerSelected.length;
+		if (totalOnCourt < 6) {
 			setOpen(true);
-		} else {
-			setOpen(false);
 		}
-	}, [useMatchStore((s) => s.players.map((p) => p.onCourt).join(","))]);
+	}, [status, result.data]); // ✅ pas de setPlayers ni selectStarter ici
+
+	// useEffect(() => {
+	// 	const onCourtCount = useMatchStore
+	// 		.getState()
+	// 		.players.filter((p) => p.onCourt).length;
+
+	// 	console.log(onCourtCount);
+	// 	if (onCourtCount < 6) {
+	// 		setOpen(true);
+	// 	} else {
+	// 		setOpen(false);
+	// 	}
+	// }, [useMatchStore((s) => s.players.map((p) => p.onCourt).join(","))]);
 
 	const teamName = result.data?.team?.name || "Équipe";
 	const opponent = result.data?.oponentName || "Adversaire";
@@ -500,6 +538,32 @@ export default function MatchPage({ params }: { params: Promise<{ matchId: strin
 					</Button>
 				</CardContent>
 			</Card>
+
+			{useMatchStore((s) => s.matchFinished) && (
+				<Card>
+					<CardHeader>
+						<CardTitle>Match terminé</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<p>
+							Vainqueur :{" "}
+							{useMatchStore((s) => {
+								const sets = s.setsWon;
+								if (
+									(sets[result.data?.team?.id || "team"] ||
+										0) === 3
+								) {
+									return teamName;
+								}
+								if ((sets["opponent"] || 0) === 3) {
+									return opponent;
+								}
+								return "Indéterminé";
+							})}
+						</p>
+					</CardContent>
+				</Card>
+			)}
 		</div>
 	);
 }
