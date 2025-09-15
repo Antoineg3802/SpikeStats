@@ -229,18 +229,19 @@ export const getMatchById = authActionClient
 			where: { id: matchId },
 			include: {
 				team: {
-					include:{
-						teamMembers:{
-							include:{
+					include: {
+						teamMembers: {
+							include: {
 								user: true,
-								playerProfile: true
-							}
-						}
-					}
+								playerProfile: true,
+							},
+						},
+					},
 				},
 				playerSelected: {
 					include: {
 						user: true,
+						playerProfile: true
 					},
 				},
 			},
@@ -250,9 +251,9 @@ export const getMatchById = authActionClient
 			return null;
 		}
 
-		if (match.team.ownerId != user.id){
+		if (match.team.ownerId != user.id) {
 			return null;
 		}
 
-		return match ;
+		return match;
 	});
