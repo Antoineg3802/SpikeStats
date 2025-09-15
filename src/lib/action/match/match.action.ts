@@ -229,18 +229,19 @@ export const getMatchById = authActionClient
 			where: { id: matchId },
 			include: {
 				team: {
-					include:{
-						teamMembers:{
-							include:{
+					include: {
+						teamMembers: {
+							include: {
 								user: true,
-								playerProfile: true
-							}
-						}
-					}
+								playerProfile: true,
+							},
+						},
+					},
 				},
 				playerSelected: {
 					include: {
 						user: true,
+						playerProfile: true,
 					},
 				},
 			},
@@ -250,9 +251,49 @@ export const getMatchById = authActionClient
 			return null;
 		}
 
-		if (match.team.ownerId != user.id){
+		if (match.team.ownerId != user.id) {
 			return null;
 		}
 
-		return match ;
+		return match;
+	});
+
+export const finalizeMatch = authActionClient
+	.schema(
+		z.object({
+			matchId: z.string(),
+			events: z.array(
+				z.object({
+					teamId: z.string(),
+					playerId: z.string().optional(),
+					type: z.string(),
+					setNumber: z.number(),
+				})
+			),
+		})
+	)
+	.action(async ({ parsedInput: { matchId, events }, ctx: { user } }) => {
+		if (!user) throw new Error("Non authentifié");
+
+		// Vérifier que l’utilisateur est bien propriétaire de l’équipe
+		const match = await prisma.match.findUnique({
+			where: { id: matchId },
+			include: { team: true },
+		});
+		if (!match || match.team.ownerId !== user.id) {
+			throw new Error("Non autorisé");
+		}
+
+		// Stocker les events en batch
+		await prisma.matchEvent.createMany({
+			data: events.map((e) => ({
+				matchId,
+				teamId: e.teamId,
+				playerId: e.playerId,
+				type: e.type,
+				setNumber: e.setNumber,
+			})),
+		});
+
+		return { success: true };
 	});

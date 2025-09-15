@@ -43,11 +43,11 @@ export default function MatchDisplayComponent({ matchId }: MatchDisplayProps) {
 
 	const match = result.data;
 
-	const playerSelected : string[] = []
+	const playerSelected: string[] = [];
 
-	match.playerSelected.map((player)=>{
-		playerSelected.push(player.id) 
-	})
+	match.playerSelected.map((player) => {
+		playerSelected.push(player.id);
+	});
 
 	return (
 		<div className="h-full grid grid-cols-6 grid-rows-[10%_repeat(4,_1fr)] gap-4 relative">
@@ -107,9 +107,11 @@ export default function MatchDisplayComponent({ matchId }: MatchDisplayProps) {
 					)}
 				</CardContent>
 				<CardFooter>
-					<Button onClick={()=>{
-						setIsModaleSelectedPlayerOpen(true)
-					}}>
+					<Button
+						onClick={() => {
+							setIsModaleSelectedPlayerOpen(true);
+						}}
+					>
 						Modifier la selection
 					</Button>
 				</CardFooter>
@@ -166,7 +168,9 @@ export default function MatchDisplayComponent({ matchId }: MatchDisplayProps) {
 				asChild
 				className="absolute top-0 right-0 rounded-full h-[60px] w-[60px]"
 			>
-				<Play size={40} />
+				<Link href={`${match.id}/play`}>
+					<Play size={40} />
+				</Link>
 			</Button>
 			<Modale
 				open={isModaleSelectedPlayerOpen}
@@ -174,7 +178,12 @@ export default function MatchDisplayComponent({ matchId }: MatchDisplayProps) {
 					setIsModaleSelectedPlayerOpen(false);
 				}}
 			>
-				<PlayerSelection teamId={match.teamId} matchId={matchId} players={match.team.teamMembers} idsSelectedPlayers={playerSelected} />
+				<PlayerSelection
+					teamId={match.teamId}
+					matchId={matchId}
+					players={match.team.teamMembers}
+					idsSelectedPlayers={playerSelected}
+				/>
 			</Modale>
 		</div>
 	);
