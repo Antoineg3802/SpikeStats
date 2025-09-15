@@ -1,4 +1,6 @@
-import { createTransport } from "nodemailer";
+import LoginEmail from "@/components/emailTemplates/LoginEmail";
+import { sendEmail } from "../mailService/emailService";
+import { env } from "../server/server";
 
 export async function sendVerificationRequest(params: {
 	identifier: any;
@@ -7,28 +9,14 @@ export async function sendVerificationRequest(params: {
 }) {
 	const { identifier, url, provider } = params;
 	const { host } = new URL(url);
-	const transport = createTransport(provider.server);
 
 	try {
-		const result = await transport.sendMail({
+		const {data, error} = await sendEmail({
 			to: identifier,
-			from: provider.from,
 			subject: `Votre lien de connexion vers SpikeStats !`,
+			react: LoginEmail({url}),
 			text: text({ url, host }),
-			html: html({ url, host }),
 		});
-
-		// Vérification des destinataires rejetés
-		if (result.rejected.length > 0) {
-			console.error(
-				`L'envoi a échoué pour les destinataires suivants : ${result.rejected.join(
-					", "
-				)}`
-			);
-			throw new Error(
-				`Email(s) non envoyé(s) à : ${result.rejected.join(", ")}`
-			);
-		}
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email :", error);
 		throw error; // Vous pouvez personnaliser la gestion de l'erreur ici

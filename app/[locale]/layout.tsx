@@ -4,8 +4,6 @@ import { auth } from "@/lib/auth/auth";
 import { ReactElement } from "react";
 import Providers from "./providers";
 import { GeistSans } from "geist/font/sans";
-import DevVisualizer from "@/components/atoms/DevVisualizer";
-import Navbar from "@/components/organisms/Navbar";
 
 export default async function Layout({
 	children,
@@ -23,10 +21,7 @@ export default async function Layout({
 				className={`${GeistSans.className} text-foreground antialiased min-h-screen w-dvw bg-background`}
 			>
 				<Providers locale={locale} session={session}>
-					<div className="h-screen flex flex-col bg-background">
-						<Navbar />
-						{children}
-					</div>
+					{children}
 				</Providers>
 			</body>
 		</html>

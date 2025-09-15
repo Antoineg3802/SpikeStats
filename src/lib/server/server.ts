@@ -12,6 +12,7 @@ export const env = createEnv({
         NEXTAUTH_URL: z.string().url(),
         EMAIL_SERVER: z.string(),
         EMAIL_FROM: z.string().email(),
+        RESEND_API_KEY: z.string(),
     },
     runtimeEnv:{
         DATABASE_URL: process.env.DATABASE_URL,
@@ -22,5 +23,6 @@ export const env = createEnv({
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
         EMAIL_SERVER: process.env.EMAIL_SERVER,
         EMAIL_FROM: process.env.EMAIL_FROM,
+        RESEND_API_KEY: process.env.RESEND_API_KEY,
     }
 })
