@@ -64,7 +64,10 @@ export default function TeamDisplayComponent({
 			return (
 				<div className="h-full grid grid-cols-6 grid-rows-[10%_repeat(4,_1fr)] gap-4 p-4">
 					<div className="row-start-1 row-end-2 col-start-1 col-end-7">
-						<DashboardPageTitle title={team.name} />
+						<div className="flex items-end gap-2">
+							<DashboardPageTitle title={team.name} />
+							<span className="text-gray-500">#{team.joinCode}</span>
+						</div>
 						<p className="text-gray-500">{team.description}</p>
 					</div>
 					<Card className="row-start-2 row-end-4 col-start-1 col-end-3">
