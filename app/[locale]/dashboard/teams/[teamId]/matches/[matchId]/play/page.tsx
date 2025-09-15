@@ -41,16 +41,19 @@ export default function MatchPage({
 	const players = useMatchStore((s) => s.players);
 	const matchFinished = useMatchStore((s) => s.matchFinished);
 
-	// ---- ACTIONS (pas de hook, accès direct) ----
+	// ---- ACTIONS ----
 	const { setPlayers, selectStarter } = useMatchStore.getState();
 	const { addPoint, addTimeout, substitutePlayer } = useMatchStore.getState();
 
 	// ---- UI ----
 	const [open, setOpen] = useState(false); // modale sélection joueurs
-	const [eventOpen, setEventOpen] = useState(false);
-	const [subOpen, setSubOpen] = useState(false);
+	const [eventOpen, setEventOpen] = useState(false); // modale événement
+	const [subOpen, setSubOpen] = useState(false); // modale remplacement
 
 	const [currentTeam, setCurrentTeam] = useState<string | null>(null);
+	const [selectedType, setSelectedType] = useState<PointType>("POINT");
+	const [outId, setOutId] = useState("");
+	const [inId, setInId] = useState("");
 
 	// ---- FETCH MATCH ----
 	const { execute, result, status } = useAction(getMatchById);
@@ -172,6 +175,192 @@ export default function MatchPage({
 						className="mt-4 w-full"
 					>
 						Valider
+					</Button>
+				</DialogContent>
+			</Dialog>
+
+			{/* ---- Modal événement ---- */}
+			<Dialog open={eventOpen} onOpenChange={setEventOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Nouvel événement</DialogTitle>
+					</DialogHeader>
+
+					{currentTeam === result.data?.team?.id ? (
+						<>
+							<p className="mb-2 font-medium">Type d’action</p>
+							<div className="grid grid-cols-2 gap-2 mb-4">
+								{pointTypes.map((type) => (
+									<Button
+										key={type}
+										variant={
+											selectedType === type
+												? "default"
+												: "outline"
+										}
+										onClick={() => setSelectedType(type)}
+									>
+										{type}
+									</Button>
+								))}
+							</div>
+
+							<p className="mb-2 font-medium">Qui a marqué ?</p>
+							<div className="grid grid-cols-2 gap-2">
+								{players
+									.filter((p) => p.onCourt)
+									.map((p) => (
+										<Button
+											key={p.id}
+											onClick={() => {
+												addPoint(
+													currentTeam!,
+													p.id,
+													selectedType
+												);
+												setEventOpen(false);
+												setSelectedType("POINT");
+											}}
+										>
+											{p.name} ({p.position})
+										</Button>
+									))}
+							</div>
+						</>
+					) : (
+						<>
+							<p className="mb-2 font-medium">
+								Cause du point adverse
+							</p>
+							<div className="grid grid-cols-1 gap-2 mb-4">
+								{faultTypes.map((f) => (
+									<Button
+										key={f.key}
+										variant="outline"
+										onClick={() => {
+											if (!f.needsPlayer) {
+												addPoint(
+													currentTeam!,
+													undefined,
+													f.key
+												);
+												setEventOpen(false);
+												setSelectedType("POINT");
+											} else {
+												setSelectedType(f.key);
+											}
+										}}
+									>
+										{f.label}
+									</Button>
+								))}
+								<Button
+									variant="outline"
+									onClick={() => {
+										addPoint(
+											currentTeam!,
+											undefined,
+											"POINT"
+										);
+										setEventOpen(false);
+										setSelectedType("POINT");
+									}}
+								>
+									Point direct adverse
+								</Button>
+							</div>
+
+							{faultTypes.find((f) => f.key === selectedType)
+								?.needsPlayer && (
+								<>
+									<p className="mb-2 font-medium">
+										Quel joueur a commis la faute ?
+									</p>
+									<div className="grid grid-cols-2 gap-2">
+										{players
+											.filter((p) => p.onCourt)
+											.map((p) => (
+												<Button
+													key={p.id}
+													onClick={() => {
+														addPoint(
+															currentTeam!,
+															p.id,
+															selectedType
+														);
+														setEventOpen(false);
+														setSelectedType(
+															"POINT"
+														);
+													}}
+												>
+													{p.name} ({p.position})
+												</Button>
+											))}
+									</div>
+								</>
+							)}
+						</>
+					)}
+				</DialogContent>
+			</Dialog>
+
+			{/* ---- Modal remplacement ---- */}
+			<Dialog open={subOpen} onOpenChange={setSubOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Remplacement</DialogTitle>
+					</DialogHeader>
+
+					<p className="mb-2 font-medium">Qui sort ?</p>
+					<div className="grid grid-cols-2 gap-2 mb-4">
+						{players
+							.filter((p) => p.onCourt)
+							.map((p) => (
+								<Button
+									key={p.id}
+									variant={
+										outId === p.id ? "default" : "outline"
+									}
+									onClick={() => setOutId(p.id)}
+								>
+									{p.name} ({p.position})
+								</Button>
+							))}
+					</div>
+
+					<p className="mb-2 font-medium">Qui entre ?</p>
+					<div className="grid grid-cols-2 gap-2 mb-4">
+						{players
+							.filter((p) => !p.onCourt)
+							.map((p) => (
+								<Button
+									key={p.id}
+									variant={
+										inId === p.id ? "default" : "outline"
+									}
+									onClick={() => setInId(p.id)}
+								>
+									{p.name} ({p.position})
+								</Button>
+							))}
+					</div>
+
+					<Button
+						className="w-full"
+						disabled={!outId || !inId}
+						onClick={() => {
+							substitutePlayer(
+								result.data?.team?.id || "team",
+								outId,
+								inId
+							);
+							setSubOpen(false);
+							setOutId("");
+							setInId("");
+						}}
+					>
+						Valider le remplacement
 					</Button>
 				</DialogContent>
 			</Dialog>
