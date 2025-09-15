@@ -7,7 +7,7 @@ import {
 	faultTypes,
 } from "@/lib/stores/useMatchStore";
 import { useAction } from "next-safe-action/hooks";
-import { getMatchById } from "@/lib/action/match/match.action";
+import { finalizeMatch, getMatchById } from "@/lib/action/match/match.action";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -28,8 +28,6 @@ export default function MatchPage({
 	const useMatchStore = createMatchStore(matchId);
 
 	const {
-		starting,
-		players,
 		selectStarter,
 		setPlayers,
 		score,
@@ -52,7 +50,8 @@ export default function MatchPage({
 
 	// Hook next-safe-action
 	const { execute, result, status } = useAction(getMatchById);
-    const hydrated = useRef(false);
+	const { execute: finalize } = useAction(finalizeMatch);
+	const hydrated = useRef(false);
 
 	useEffect(() => {
 		execute({ matchId: matchId });
@@ -117,18 +116,13 @@ export default function MatchPage({
 		}
 	}, [status, result.data]); // ✅ pas de setPlayers ni selectStarter ici
 
-	// useEffect(() => {
-	// 	const onCourtCount = useMatchStore
-	// 		.getState()
-	// 		.players.filter((p) => p.onCourt).length;
-
-	// 	console.log(onCourtCount);
-	// 	if (onCourtCount < 6) {
-	// 		setOpen(true);
-	// 	} else {
-	// 		setOpen(false);
-	// 	}
-	// }, [useMatchStore((s) => s.players.map((p) => p.onCourt).join(","))]);
+	const handleFinalize = () => {
+		const state = useMatchStore.getState();
+		finalize({
+			matchId,
+			events: state.points
+		});
+	};
 
 	const teamName = result.data?.team?.name || "Équipe";
 	const opponent = result.data?.oponentName || "Adversaire";
@@ -561,6 +555,9 @@ export default function MatchPage({
 								return "Indéterminé";
 							})}
 						</p>
+						<Button onClick={handleFinalize}>
+							Enregistrer le match
+						</Button>
 					</CardContent>
 				</Card>
 			)}
