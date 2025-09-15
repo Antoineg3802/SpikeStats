@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useMatchStore } from "@/lib/stores/useMatchStore";
+import { use, useEffect, useState } from "react";
+import { useMatchStore, PointType } from "@/lib/stores/useMatchStore"; // ⚡ Assure-toi que PointType inclut SERVICE
 import { useAction } from "next-safe-action/hooks";
 import { getMatchById } from "@/lib/action/match/match.action";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const pointTypes: PointType[] = ["POINT", "FAULT", "ACE", "BLOCK", "SERVICE"];
+
 export default function MatchPage({ params }: { params: { matchId: string } }) {
 	const { starting, selectStarter, setPlayers, score, addPoint, addTimeout } =
 		useMatchStore();
 
 	const [open, setOpen] = useState(false);
+
+	// modal événement
+	const [eventOpen, setEventOpen] = useState(false);
+	const [currentTeam, setCurrentTeam] = useState<string | null>(null);
+	const [selectedType, setSelectedType] = useState<PointType>("POINT");
+	const [selectedPlayer, setSelectedPlayer] = useState<string>("");
 
 	// Hook next-safe-action
 	const { execute, result, status } = useAction(getMatchById);
@@ -30,7 +38,6 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 		if (status === "hasSucceeded" && result.data) {
 			const match = result.data;
 
-			// Hydrater Zustand avec tous les joueurs de l’équipe
 			const players = match.team.teamMembers.map((tm) => ({
 				id: tm.id,
 				name: tm.user?.name || "Joueur",
@@ -39,7 +46,6 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 
 			setPlayers(players);
 
-			// S’il y a déjà des joueurs sélectionnés -> pré-remplir le store
 			match.playerSelected.forEach((tm) => {
 				if (tm.playerProfile?.position) {
 					selectStarter(tm.playerProfile.position, {
@@ -50,18 +56,33 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 				}
 			});
 
-			// Ouvrir la modal uniquement si aucune sélection encore
 			if (match.playerSelected.length === 0) {
 				setOpen(true);
 			}
 		}
 	}, [status, result, setPlayers, selectStarter]);
 
+	useEffect(() => {
+		const onCourtCount = useMatchStore
+			.getState()
+			.players.filter((p) => p.onCourt).length;
+
+		if (onCourtCount < 6) {
+			setOpen(true);
+		} else {
+			setOpen(false);
+		}
+	}, [useMatchStore((s) => s.players.map((p) => p.onCourt).join(","))]);
+
 	const teamName = result.data?.team?.name || "Équipe";
 	const opponent = result.data?.oponentName || "Adversaire";
 
-	function allSelected() {
-		return Object.values(starting).every((p) => p !== null);
+	function handleConfirmEvent() {
+		if (!currentTeam || !selectedPlayer) return;
+		addPoint(currentTeam, selectedPlayer, selectedType);
+		setEventOpen(false);
+		setSelectedPlayer("");
+		setSelectedType("POINT");
 	}
 
 	return (
@@ -70,55 +91,130 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Sélection des titulaires</DialogTitle>
+						<DialogTitle>
+							Choisir les joueurs sur le terrain
+						</DialogTitle>
 					</DialogHeader>
+
 					{status === "executing" ? (
 						<p>Chargement des joueurs...</p>
 					) : (
-						<div className="space-y-4">
-							{Object.keys(starting).map((pos) => (
-								<div
-									key={pos}
-									className="flex gap-2 items-center"
-								>
-									<span className="w-40">{pos}</span>
-									<select
-										className="border rounded p-1"
-										onChange={(e) => {
-											const playerId = e.target.value;
-											const player = useMatchStore
+						<div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto">
+							{useMatchStore.getState().players.map((p) => {
+								const selected =
+									starting[p.position]?.id === p.id; // si tu veux garder logique par poste
+								const onCourt = p.onCourt; // flag venant du store
+
+								return (
+									<Button
+										key={p.id}
+										variant={
+											onCourt ? "default" : "outline"
+										}
+										onClick={() => {
+											// toggle selection
+											const newOnCourt = useMatchStore
 												.getState()
-												.players.find(
-													(p) => p.id === playerId
-												);
-											if (player)
-												selectStarter(pos, player);
+												.players.filter(
+													(pl) => pl.onCourt
+												)
+												.map((pl) => pl.id);
+
+											if (onCourt) {
+												// remove
+												useMatchStore
+													.getState()
+													.setOnCourt(
+														newOnCourt.filter(
+															(id) => id !== p.id
+														)
+													);
+											} else {
+												if (newOnCourt.length < 6) {
+													useMatchStore
+														.getState()
+														.setOnCourt([
+															...newOnCourt,
+															p.id,
+														]);
+												} else {
+													alert(
+														"Tu ne peux pas mettre plus de 6 joueurs sur le terrain !"
+													);
+												}
+											}
 										}}
-										value={starting[pos]?.id || ""}
 									>
-										<option value="">-- Choisir --</option>
-										{useMatchStore
-											.getState()
-											.players.filter(
-												(p) => p.position === pos
-											)
-											.map((p) => (
-												<option key={p.id} value={p.id}>
-													{p.name}
-												</option>
-											))}
-									</select>
-								</div>
-							))}
+										{p.name} ({p.position})
+									</Button>
+								);
+							})}
 						</div>
 					)}
+
 					<Button
 						onClick={() => setOpen(false)}
-						disabled={!allSelected()}
-						className="mt-4"
+						disabled={
+							useMatchStore
+								.getState()
+								.players.filter((p) => p.onCourt).length !== 6
+						}
+						className="mt-4 w-full"
 					>
 						Valider
 					</Button>
+				</DialogContent>
+			</Dialog>
+
+			{/* Modal ajout événement */}
+			<Dialog open={eventOpen} onOpenChange={setEventOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Nouvel événement</DialogTitle>
+					</DialogHeader>
+
+					{/* Choix du type */}
+					<p className="mb-2 font-medium">Type d’action</p>
+					<div className="grid grid-cols-2 gap-2 mb-4">
+						{pointTypes.map((type) => (
+							<Button
+								key={type}
+								variant={
+									selectedType === type
+										? "default"
+										: "outline"
+								}
+								onClick={() => setSelectedType(type)}
+							>
+								{type}
+							</Button>
+						))}
+					</div>
+
+					{/* Choix du joueur (⚡ clic = validation immédiate) */}
+					<p className="mb-2 font-medium">Qui a réalisé l’action ?</p>
+					<div className="grid grid-cols-2 gap-2">
+						{useMatchStore
+							.getState()
+							.players.filter((p) => p.onCourt) // seulement joueurs sur le terrain
+							.map((p) => (
+								<Button
+									key={p.id}
+									onClick={() => {
+										if (!currentTeam) return;
+										addPoint(
+											currentTeam,
+											p.id,
+											selectedType
+										); // enregistre direct
+										setEventOpen(false); // ferme la modale
+										setSelectedType("POINT"); // reset pour la prochaine
+									}}
+								>
+									{p.name} ({p.position})
+								</Button>
+							))}
+					</div>
 				</DialogContent>
 			</Dialog>
 
@@ -147,10 +243,15 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 				<CardContent className="flex justify-around text-3xl">
 					<div>
 						{teamName}:{" "}
-                        <span className="text-primary">{score[result.data?.team?.id || "team"] || 0}</span>
+						<span className="text-primary">
+							{score[result.data?.team?.id || "team"] || 0}
+						</span>
 					</div>
 					<div>
-						{opponent}: <span className="text-primary">{score["opponent"] || 0}</span>
+						{opponent}:{" "}
+						<span className="text-primary">
+							{score["opponent"] || 0}
+						</span>
 					</div>
 				</CardContent>
 			</Card>
@@ -160,16 +261,22 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 				<CardHeader>
 					<CardTitle>Actions rapides</CardTitle>
 				</CardHeader>
-				<CardContent className="flex gap-4">
+				<CardContent className="flex gap-4 flex-wrap">
 					<Button
-						onClick={() =>
-							addPoint(result.data?.team?.id || "team")
-						}
+						onClick={() => {
+							setCurrentTeam(result.data?.team?.id || "team");
+							setEventOpen(true);
+						}}
 					>
-						+1 Point {teamName}
+						+1 {teamName}
 					</Button>
-					<Button onClick={() => addPoint("opponent")}>
-						+1 Point {opponent}
+					<Button
+						onClick={() => {
+							setCurrentTeam("opponent");
+							setEventOpen(true);
+						}}
+					>
+						+1 {opponent}
 					</Button>
 					<Button
 						onClick={() =>

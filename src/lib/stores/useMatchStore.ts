@@ -3,12 +3,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type PointType = "POINT" | "FAULT" | "ACE" | "BLOCK";
+export type PointType = "POINT" | "FAULT" | "ACE" | "BLOCK" | "SERVICE";
 
 interface Player {
 	id: string;
 	name: string;
 	position: string;
+	onCourt?: boolean;
 }
 
 interface PointEvent {
@@ -41,6 +42,7 @@ interface MatchState {
 	score: Record<string, number>;
 
 	setPlayers: (players: Player[]) => void;
+	setOnCourt: (playerIds: string[]) => void;
 	selectStarter: (position: string, player: Player) => void;
 	addPoint: (teamId: string, playerId?: string, type?: PointType) => void;
 	addSub: (playerOutId: string, playerInId: string) => void;
@@ -65,6 +67,14 @@ export const useMatchStore = create<MatchState>()(
 			score: {},
 
 			setPlayers: (players) => set({ players }),
+
+			setOnCourt: (playerIds) =>
+				set((state) => ({
+					players: state.players.map((p) => ({
+						...p,
+						onCourt: playerIds.includes(p.id),
+					})),
+				})),
 
 			selectStarter: (position, player) =>
 				set((state) => ({
