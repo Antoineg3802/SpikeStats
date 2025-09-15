@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
 	useMatchStore,
 	PointType,
@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const pointTypes: PointType[] = ["POINT", "ACE", "BLOCK", "SERVICE"];
 
-export default function MatchPage({ params }: { params: { matchId: string } }) {
+export default function MatchPage({ params }: { params: Promise<{ matchId: string }> }) {
 	const {
 		starting,
 		selectStarter,
@@ -29,6 +29,8 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 		addTimeout,
 		substitutePlayer,
 	} = useMatchStore();
+
+    const { matchId } = use(params);
 
 	const [open, setOpen] = useState(false);
 
@@ -46,8 +48,8 @@ export default function MatchPage({ params }: { params: { matchId: string } }) {
 	const { execute, result, status } = useAction(getMatchById);
 
 	useEffect(() => {
-		execute({ matchId: params.matchId });
-	}, [params.matchId, execute]);
+		execute({ matchId: matchId });
+	}, [matchId, execute]);
 
 	useEffect(() => {
 		if (status === "hasSucceeded" && result.data) {
